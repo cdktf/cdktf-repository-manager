@@ -33,7 +33,7 @@ class TerraformCdkProviderStack extends TerraformStack {
       topics: ['cdktf', 'terraform', 'terraform-cdk', 'cdk', 'provider']
     })
 
-    const providers = ['aws', 'google', 'azurerm', 'null', 'kubernetes', 'docker', 'github']
+    const providers = ['aws', 'google', 'azurerm', 'null', 'kubernetes', 'docker', 'github', 'random']
     providers.forEach((provider) => {
       const repo = new Repository(this, `provider-${provider}`, {
         name: `cdktf-provider-${provider}`,
