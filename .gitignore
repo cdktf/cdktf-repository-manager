@@ -2,6 +2,9 @@
 *.js
 node_modules
 cdktf.out
+terraform.*.tfstate*
 terraform.tfstate*
 .gen
 .terraform
+.yalc
+yalc.lock

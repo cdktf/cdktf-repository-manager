@@ -1,62 +1,71 @@
 import { Construct } from 'constructs';
-import { App, TerraformStack, TerraformOutput } from 'cdktf';
-import { Repository, GithubProvider } from './.gen/providers/github'
+import { App, TerraformStack, TerraformOutput, RemoteBackend } from 'cdktf';
+import { GithubProvider } from '@cdktf/provider-github'
+import { GithubRepository, SecretFromVariable } from './lib'
 
+interface GitUrls {
+  html: string;
+  ssh: string;
+}
 class TerraformCdkProviderStack extends TerraformStack {
   constructor(scope: Construct, name: string) {
     super(scope, name);
 
+    new RemoteBackend(this, {
+      organization: 'cdktf-team',
+      workspaces: {
+        name: 'prebuilt-providers'
+      }
+    })
+
+    new SecretFromVariable(this, 'github-token');
+
     new GithubProvider(this, 'terraform-cdk-providers', {
-      token: process.env.GITHUB_TOKEN,
-      organization: 'terraform-cdk-providers'
+      // see https://github.com/hashicorp/terraform-cdk/issues/898
+      token: '${var.github-token}',
+      owner: 'hashicorp'
     })
 
-    const self = new Repository(this, 'self', {
-      name: 'repository-manager',
-      description: 'Repository management for prebuilt cdktf providers via cdktf',
-      homepageUrl: 'https://cdk.tf',
-      hasIssues: true,
-      hasWiki: false,
-      hasProjects: false,
-      deleteBranchOnMerge: true,
-      topics: ['cdktf', 'terraform', 'terraform-cdk', 'cdk', 'provider']
-    })
+    const tfCloudToken = new SecretFromVariable(this, 'tf-cloud-token');
+    const self = new GithubRepository(this, 'cdktf-repository-manager', {})
+    tfCloudToken.for(self.resource.name)
 
-    const templateRepository = new Repository(this, 'template', {
-      name: 'cdktf-provider-project',
-      description: 'Template for setting up repositories to automatically build provider packages for Terraform CDK',
-      homepageUrl: 'https://cdk.tf',
-      hasIssues: true,
-      hasWiki: false,
-      hasProjects: false,
-      deleteBranchOnMerge: true,
-      topics: ['cdktf', 'terraform', 'terraform-cdk', 'cdk', 'provider']
-    })
+    const templateRepository = new GithubRepository(this, 'cdktf-provider-project', {})
 
-    const providers = ['aws', 'google', 'azurerm', 'null', 'kubernetes', 'docker', 'github']
-    providers.forEach((provider) => {
-      const repo = new Repository(this, `provider-${provider}`, {
-        name: `cdktf-provider-${provider}`,
-        description: `Prebuilt Terraform CDK (cdktf) provider for ${provider}`,
-        homepageUrl: 'https://cdk.tf',
-        hasIssues: false,
-        hasWiki: false,
-        hasProjects: false,
-        deleteBranchOnMerge: true,
-        topics: ['cdktf', 'terraform', 'terraform-cdk', 'cdk', 'provider', provider]
+    const secrets = [
+      'npm-token',
+      'nuget-api-key',
+      'twine-user-name',
+      'twine-password'
+    ].map(name => new SecretFromVariable(this, name))
+
+    const providers = ['aws', 'google', 'azurerm', 'null', 'kubernetes', 'docker', 'github', 'external', 'datadog']
+
+
+    const providerRepos:GitUrls[] = providers.map((provider) => {
+      const repo = new GithubRepository(this, `cdktf-provider-${provider}`, {
+        description: `Prebuilt Terraform CDK (cdktf) provider for ${provider}.`,
+        topics: [provider],
       })
 
-      new TerraformOutput(this, `${provider}RepoUrl`, {
-        value: repo.htmlUrl
-      })
+      secrets.forEach(secret => secret.for(repo.resource.name))
+
+      return {
+        html: repo.resource.htmlUrl,
+        ssh: repo.resource.sshCloneUrl
+      }
+    })
+
+    new TerraformOutput(this, `providerRepos`, {
+      value: `\${[${providerRepos.map(e => (`"${e.ssh}"`)).join(',')}]}`
     })
 
     new TerraformOutput(this, 'templateRepoUrl', {
-      value: templateRepository.htmlUrl
+      value: templateRepository.resource.htmlUrl
     })
 
     new TerraformOutput(this, 'selfRepoUrl', {
-      value: self.htmlUrl
+      value: self.resource.htmlUrl
     })
   }
 }
