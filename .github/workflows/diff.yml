@@ -1,0 +1,54 @@
+name: 'Repository Manager'
+
+on: [pull_request]
+
+jobs:
+  terraform:
+    name: 'Terraform CDK Diff'
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v1
+      with:
+        terraform_version: 1.0.4
+        cli_config_credentials_token: ${{ secrets.TF_CLOUD_TOKEN }}
+
+    - uses: actions/setup-node@v1
+      with:
+        node-version: '14'
+
+    - run: yarn install
+    - name: Synth
+      run: "$(yarn bin)/cdktf synth"
+    - name: Plan
+      id: plan
+      run: "cd cdktf.out/stacks/repos && rm -rf .terraform && terraform init && terraform plan -no-color"
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_COMMENT_TOKEN }}
+      continue-on-error: true
+    - uses: actions/github-script@0.9.0
+      if: github.event_name == 'pull_request'
+      env:
+        PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
+      with:
+        github-token: ${{ steps.generate_token.outputs.token }}
+        script: |
+          const output = `#### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
+
+          <details><summary>Show Plan</summary>
+
+          \`\`\`${process.env.PLAN}\`\`\`
+
+          </details>
+
+          *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`, Working Directory: \`${{ env.tf_actions_working_dir }}\`, Workflow: \`${{ github.workflow }}\`*`;
+
+          github.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: output
+          })

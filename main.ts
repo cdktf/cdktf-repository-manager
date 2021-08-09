@@ -26,9 +26,12 @@ class TerraformCdkProviderStack extends TerraformStack {
       owner: 'hashicorp'
     })
 
-    const tfCloudToken = new SecretFromVariable(this, 'tf-cloud-token');
+    const selfTokens = [
+      new SecretFromVariable(this, 'tf-cloud-token'),
+      new SecretFromVariable(this, 'github-comment-token')
+    ]
     const self = new GithubRepository(this, 'cdktf-repository-manager', {})
-    tfCloudToken.for(self.resource.name)
+    selfTokens.forEach(token => token.for(self.resource.name))
 
     const templateRepository = new GithubRepository(this, 'cdktf-provider-project', {})
 
