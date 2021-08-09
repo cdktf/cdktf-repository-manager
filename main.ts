@@ -28,7 +28,7 @@ class TerraformCdkProviderStack extends TerraformStack {
 
     const selfTokens = [
       new SecretFromVariable(this, 'tf-cloud-token'),
-      new SecretFromVariable(this, 'github-comment-token')
+      new SecretFromVariable(this, 'gh-comment-token')
     ]
     const self = new GithubRepository(this, 'cdktf-repository-manager', {})
     selfTokens.forEach(token => token.for(self.resource.name))
