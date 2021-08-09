@@ -2,8 +2,10 @@
 # yarn lockfile v1
 
 
-"@cdktf/provider-github@file:.yalc/@cdktf/provider-github":
-  version "0.0.0"
+"@cdktf/provider-github@^0.3.1":
+  version "0.3.1"
+  resolved "https://registry.yarnpkg.com/@cdktf/provider-github/-/provider-github-0.3.1.tgz#abe0e0c96d6dedb209bc323c97a8eba79a6d3b8e"
+  integrity sha512-WMOWmEDZV4yNg1Md6Rltz3fItEA56gIQHRsmzuGGoX9cNfri0fF94bPfvzpv49MjT6iqUV5Y5xEp7JfTtyvUUg==
 
 "@types/node@^14.0.27":
   version "14.14.37"
