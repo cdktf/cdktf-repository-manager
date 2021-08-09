@@ -1,10 +1,15 @@
 import { Construct } from 'constructs';
 import { Resource } from 'cdktf';
-import { Repository } from '@cdktf/provider-github'
+import { Repository, TeamRepository } from '@cdktf/provider-github'
+
+export interface ITeam {
+  id: string;
+}
 
 export interface RepositoryConfig {
   description?: string;
   topics?: string[];
+  team: ITeam;
 }
 
 export class GithubRepository extends Resource {
@@ -16,6 +21,7 @@ export class GithubRepository extends Resource {
     const {
       topics = [],
       description = 'Repository management for prebuilt cdktf providers via cdktf',
+      team,
     } = config;
 
     this.resource = new Repository(this, 'repo', {
@@ -28,6 +34,12 @@ export class GithubRepository extends Resource {
       hasProjects: false,
       deleteBranchOnMerge: true,
       topics: ['cdktf', 'terraform', 'terraform-cdk', 'cdk', 'provider', 'pre-built-provider', ...topics]
+    })
+
+    new TeamRepository(this, 'managing-team', {
+      repository: this.resource.name,
+      teamId: team.id,
+      permission: 'admin'
     })
   }
 }

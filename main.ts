@@ -1,6 +1,6 @@
 import { Construct } from 'constructs';
 import { App, TerraformStack, TerraformOutput, RemoteBackend } from 'cdktf';
-import { GithubProvider } from '@cdktf/provider-github'
+import { GithubProvider, DataGithubTeam } from '@cdktf/provider-github'
 import { GithubRepository, SecretFromVariable } from './lib'
 
 interface GitUrls {
@@ -10,6 +10,10 @@ interface GitUrls {
 class TerraformCdkProviderStack extends TerraformStack {
   constructor(scope: Construct, name: string) {
     super(scope, name);
+
+    const team = new DataGithubTeam(this, 'cdktf-team', {
+      slug: 'cdktf',
+    });
 
     new RemoteBackend(this, {
       organization: 'cdktf-team',
@@ -30,10 +34,14 @@ class TerraformCdkProviderStack extends TerraformStack {
       new SecretFromVariable(this, 'tf-cloud-token'),
       new SecretFromVariable(this, 'gh-comment-token')
     ]
-    const self = new GithubRepository(this, 'cdktf-repository-manager', {})
+    const self = new GithubRepository(this, 'cdktf-repository-manager', {
+      team
+    })
     selfTokens.forEach(token => token.for(self.resource.name))
 
-    const templateRepository = new GithubRepository(this, 'cdktf-provider-project', {})
+    const templateRepository = new GithubRepository(this, 'cdktf-provider-project', {
+      team
+    })
 
     const secrets = [
       'npm-token',
@@ -49,6 +57,7 @@ class TerraformCdkProviderStack extends TerraformStack {
       const repo = new GithubRepository(this, `cdktf-provider-${provider}`, {
         description: `Prebuilt Terraform CDK (cdktf) provider for ${provider}.`,
         topics: [provider],
+        team
       })
 
       secrets.forEach(secret => secret.for(repo.resource.name))
