@@ -50,8 +50,18 @@ class TerraformCdkProviderStack extends TerraformStack {
       'twine-password'
     ].map(name => new SecretFromVariable(this, name))
 
-    const providers = ['aws', 'google', 'azurerm', 'null', 'kubernetes', 'docker', 'github', 'external', 'datadog']
-
+    const providers = [
+      'aws',
+      'google',
+      'azurerm',
+      'null',
+      'kubernetes',
+      'docker',
+      'github',
+      'external',
+      'datadog',
+      'random'
+    ]
 
     const providerRepos:GitUrls[] = providers.map((provider) => {
       const repo = new GithubRepository(this, `cdktf-provider-${provider}`, {
