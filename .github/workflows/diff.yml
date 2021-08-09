@@ -26,15 +26,13 @@ jobs:
     - name: Plan
       id: plan
       run: "cd cdktf.out/stacks/repos && rm -rf .terraform && terraform init && terraform plan -no-color"
-      env:
-        GITHUB_TOKEN: ${{ secrets.GH_COMMENT_TOKEN }}
       continue-on-error: true
     - uses: actions/github-script@0.9.0
       if: github.event_name == 'pull_request'
       env:
         PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
       with:
-        github-token: ${{ steps.generate_token.outputs.token }}
+        github-token: ${{ secrets.GH_COMMENT_TOKEN }}
         script: |
           const output = `#### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
 
