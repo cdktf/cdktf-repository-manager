@@ -22,11 +22,17 @@ class TerraformCdkProviderStack extends TerraformStack {
       }
     })
 
-    new SecretFromVariable(this, 'github-token');
+    const secrets = [
+      'gh-token',
+      'npm-token',
+      'nuget-api-key',
+      'twine-user-name',
+      'twine-password'
+    ].map(name => new SecretFromVariable(this, name))
 
     new GithubProvider(this, 'terraform-cdk-providers', {
       // see https://github.com/hashicorp/terraform-cdk/issues/898
-      token: '${var.github-token}',
+      token: '${var.gh-token}',
       owner: 'hashicorp'
     })
 
