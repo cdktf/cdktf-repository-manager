@@ -49,13 +49,6 @@ class TerraformCdkProviderStack extends TerraformStack {
       team
     })
 
-    const secrets = [
-      'npm-token',
-      'nuget-api-key',
-      'twine-user-name',
-      'twine-password'
-    ].map(name => new SecretFromVariable(this, name))
-
     const providers = [
       'aws',
       'google',
