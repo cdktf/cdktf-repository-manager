@@ -38,7 +38,7 @@ jobs:
         script: |
           const path = require('path')
           const fs = require('fs')
-          const provider = __original_require__('./main/provider.json')
+          const provider = require('./main/provider.json')
           const providerVersion = provider["${{ matrix.provider }}"]
           const template = fs.readFileSync(path.join(process.env.GITHUB_WORKSPACE, 'main', 'projenrc.template.js'), 'utf-8')
           const projenrc = template.gsub('__PROVIDER__', providerVersion)
