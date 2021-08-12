@@ -51,7 +51,7 @@ jobs:
           github.pulls.create({
             owner: "hashicorp",
             repo: "cdktf-provider-${{ matrix.provider }}",
-            head: "upgrade-provider-project-${{ github.run_number }}"
+            head: "upgrade-provider-project-${{ github.run_number }}",
             base: "main",
             title: "Upgrade provider project and projen",
             maintainer_can_modify: true,
