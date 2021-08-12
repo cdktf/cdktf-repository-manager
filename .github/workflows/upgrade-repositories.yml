@@ -18,4 +18,4 @@ jobs:
         git config user.name github-team-tf-cdk
         git config user.email github-team-tf-cdk@hashicorp.com
         git checkout -b foo-bar-${{ github.run_number }}
-        git push --set-upstream
+        git push --set-upstream origin foo-bar-${{ github.run_number }}
