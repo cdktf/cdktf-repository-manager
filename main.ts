@@ -33,6 +33,9 @@ class TerraformCdkProviderStack extends TerraformStack {
       'twine-password'
     ].map(name => new SecretFromVariable(this, name))
 
+    const npmSecret = secrets.find(s => s.name === 'npm-token')
+    if (!npmSecret) throw new Error('npm-token secret not found');
+
     new GithubProvider(this, 'terraform-cdk-providers', {
       // see https://github.com/hashicorp/terraform-cdk/issues/898
       token: '${var.gh-token}',
@@ -51,6 +54,8 @@ class TerraformCdkProviderStack extends TerraformStack {
     const templateRepository = new GithubRepository(this, 'cdktf-provider-project', {
       team
     })
+
+    npmSecret.for(templateRepository.resource.name)
 
     const providerRepos:GitUrls[] = Object.keys(providers).map((provider) => {
       const repo = new GithubRepository(this, `cdktf-provider-${provider}`, {
