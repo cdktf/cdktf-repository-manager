@@ -49,7 +49,6 @@ jobs:
         git checkout -b foo-bar-${{ github.run_number }}
         yarn add --dev @cdktf/provider-project@latest projen
         npx projen
-        npx projen build
         yarn install --check-files
         npx projen
       working-directory: ./provider
