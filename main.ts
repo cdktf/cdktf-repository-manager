@@ -5,7 +5,7 @@ import { GithubRepository, SecretFromVariable } from './lib'
 import * as fs from 'fs'
 import * as path from 'path'
 
-const providers: Record<string, string> = JSON.parse(fs.readFileSync(path.join(__dirname, 'providers.json'), 'utf8'));
+const providers: Record<string, string> = JSON.parse(fs.readFileSync(path.join(__dirname, 'provider.json'), 'utf8'));
 interface GitUrls {
   html: string;
   ssh: string;
