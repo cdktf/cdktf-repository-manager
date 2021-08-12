@@ -1,6 +1,6 @@
 import { Construct } from 'constructs';
 import { Resource } from 'cdktf';
-import { Repository, TeamRepository } from '@cdktf/provider-github'
+import { Repository, TeamRepository, Branch, BranchDefault } from '@cdktf/provider-github'
 
 export interface ITeam {
   id: string;
@@ -33,7 +33,17 @@ export class GithubRepository extends Resource {
       hasWiki: false,
       hasProjects: false,
       deleteBranchOnMerge: true,
-      topics: ['cdktf', 'terraform', 'terraform-cdk', 'cdk', 'provider', 'pre-built-provider', ...topics]
+      topics: ['cdktf', 'terraform', 'terraform-cdk', 'cdk', 'provider', 'pre-built-provider', ...topics],
+    })
+
+    const branch = new Branch(this, 'main', {
+      branch: 'main',
+      repository: this.resource.name,
+    })
+
+    new BranchDefault(this, 'main-default', {
+      branch: branch.branch,
+      repository: this.resource.name,
     })
 
     new TeamRepository(this, 'managing-team', {
