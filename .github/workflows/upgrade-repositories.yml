@@ -52,6 +52,8 @@ jobs:
       with:
         github-token: ${{ secrets.GH_COMMENT_TOKEN }}
         script: |
+          const { GITHUB_SERVER_URL, GITHUB_REPOSITORY, GITHUB_RUN_ID } = process.env
+          const url = `${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}`
           github.pulls.create({
             owner: "hashicorp",
             repo: "cdktf-provider-${{ matrix.provider }}",
@@ -59,5 +61,5 @@ jobs:
             base: "main",
             title: "Upgrade provider project and projen",
             maintainer_can_modify: true,
-            body: "upgrade-provider-project-${{ github.run_number }}"
+            body: `Triggered by ${url}`
           })
