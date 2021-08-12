@@ -7,15 +7,47 @@ jobs:
   terraform:
     name: 'Upgrade'
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        provider:
+          # - "aws"
+          # - "google"
+          # - "azurerm"
+          # - "null"
+          # - "kubernetes"
+          - "docker"
+          # - "github"
+          # - "external"
+          # - "datadog"
+          # - "random"
     steps:
     - name: Checkout
       uses: actions/checkout@v2
       with:
-        repository: hashicorp/cdktf-provider-null
+        repository: hashicorp/cdktf-provider-${{ matrix.provider }}
         token: ${{ secrets.GH_COMMENT_TOKEN }}
-    - run: yarn add --dev @cdktf/provider-project@latest projen@latest
     - run: |
         git config user.name github-team-tf-cdk
         git config user.email github-team-tf-cdk@hashicorp.com
         git checkout -b foo-bar-${{ github.run_number }}
-        git push --set-upstream origin foo-bar-${{ github.run_number }}
+        yarn add --dev @cdktf/provider-project@latest projen@latest
+        npx projen
+    - name: Check for changes
+      id: git_diff
+      run: git diff --exit-code || echo "::set-output name=has_changes::true"
+    - if: steps.git_diff.outputs.has_changes
+      name: Commit and push changes (if changed)
+      run: 'git add . && git commit -m "chore: upgrade provider-project and projen" && git push --set-upstream origin upgrade-provider-project-${{ github.run_number }}'
+    - if: steps.git_diff.outputs.has_changes
+      - uses: actions/github-script@v4
+          with:
+            script: |
+              github.pulls.create({
+                owner: "hashicorp",
+                repo: "cdktf-provider-${{ matrix.provider }}",
+                head: "upgrade-provider-project-${{ github.run_number }}"
+                base: "main",
+                title: "Upgrade provider project and projen",
+                maintainer_can_modify: true,
+                body: "upgrade-provider-project-${{ github.run_number }}"
+              })
