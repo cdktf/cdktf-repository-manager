@@ -43,15 +43,15 @@ jobs:
         git commit -m "chore: upgrade provider-project and projen"
         git push --set-upstream origin upgrade-provider-project-${{ github.run_number }}
     - if: steps.git_diff.outputs.has_changes
-      - uses: actions/github-script@v4
-          with:
-            script: |
-              github.pulls.create({
-                owner: "hashicorp",
-                repo: "cdktf-provider-${{ matrix.provider }}",
-                head: "upgrade-provider-project-${{ github.run_number }}"
-                base: "main",
-                title: "Upgrade provider project and projen",
-                maintainer_can_modify: true,
-                body: "upgrade-provider-project-${{ github.run_number }}"
-              })
+      uses: actions/github-script@v4
+      with:
+        script: |
+          github.pulls.create({
+            owner: "hashicorp",
+            repo: "cdktf-provider-${{ matrix.provider }}",
+            head: "upgrade-provider-project-${{ github.run_number }}"
+            base: "main",
+            title: "Upgrade provider project and projen",
+            maintainer_can_modify: true,
+            body: "upgrade-provider-project-${{ github.run_number }}"
+          })
