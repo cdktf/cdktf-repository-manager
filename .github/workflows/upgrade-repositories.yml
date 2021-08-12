@@ -26,8 +26,23 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
       with:
+        path: main
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
         repository: hashicorp/cdktf-provider-${{ matrix.provider }}
         token: ${{ secrets.GH_COMMENT_TOKEN }}
+        path: provider
+    - uses: actions/github-script@v4
+      with:
+        script: |
+          const path = require('path')
+          const fs = require('fs')
+          const provider = __original_require__('./main/provider.json')
+          const providerVersion = provider["${{ matrix.provider }}"]
+          const template = fs.readFileSync(path.join(process.env.GITHUB_WORKSPACE, 'main', 'projenrc.template.js', 'utf-8')
+          const projenrc = template.gsub('__PROVIDER__', providerVersion)
+          fs.writeFileSync(path.join(process.env.GITHUB_WORKSPACE, 'provider', '.projenrc.js')
     - run: |
         git config user.name github-team-tf-cdk
         git config user.email github-team-tf-cdk@hashicorp.com
@@ -36,10 +51,12 @@ jobs:
         npx projen build
         yarn install --check-files
         npx projen
+      working-directory: ./provider
     - name: Check for changes
       id: git_diff
       run: |
         git diff --exit-code || echo "::set-output name=has_changes::true"
+      working-directory: ./provider
     - if: steps.git_diff.outputs.has_changes
       name: Commit and push changes (if changed)
       run: |
@@ -47,6 +64,7 @@ jobs:
         git add .
         git commit -m "chore: upgrade provider-project and projen"
         git push --set-upstream origin upgrade-provider-project-${{ github.run_number }}
+      working-directory: ./provider
     - if: steps.git_diff.outputs.has_changes
       uses: actions/github-script@v4
       with:
