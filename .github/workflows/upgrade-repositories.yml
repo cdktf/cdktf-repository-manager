@@ -46,6 +46,7 @@ jobs:
     - if: steps.git_diff.outputs.has_changes
       uses: actions/github-script@v4
       with:
+        github-token: ${{ secrets.GH_COMMENT_TOKEN }}
         script: |
           github.pulls.create({
             owner: "hashicorp",
