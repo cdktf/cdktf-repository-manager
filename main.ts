@@ -2,7 +2,10 @@ import { Construct } from 'constructs';
 import { App, TerraformStack, TerraformOutput, RemoteBackend } from 'cdktf';
 import { GithubProvider, DataGithubTeam } from '@cdktf/provider-github'
 import { GithubRepository, SecretFromVariable } from './lib'
+import * as fs from 'fs'
+import * as path from 'path'
 
+const providers: Record<string, string> = JSON.parse(fs.readFileSync(path.join(__dirname, 'providers.json'), 'utf8'));
 interface GitUrls {
   html: string;
   ssh: string;
@@ -49,20 +52,7 @@ class TerraformCdkProviderStack extends TerraformStack {
       team
     })
 
-    const providers = [
-      'aws',
-      'google',
-      'azurerm',
-      'null',
-      'kubernetes',
-      'docker',
-      'github',
-      'external',
-      'datadog',
-      'random'
-    ]
-
-    const providerRepos:GitUrls[] = providers.map((provider) => {
+    const providerRepos:GitUrls[] = Object.keys(providers).map((provider) => {
       const repo = new GithubRepository(this, `cdktf-provider-${provider}`, {
         description: `Prebuilt Terraform CDK (cdktf) provider for ${provider}.`,
         topics: [provider],
