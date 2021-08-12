@@ -32,6 +32,7 @@ jobs:
         git checkout -b foo-bar-${{ github.run_number }}
         yarn add --dev @cdktf/provider-project@latest projen@latest
         npx projen
+        yarn
     - name: Check for changes
       id: git_diff
       run: |
