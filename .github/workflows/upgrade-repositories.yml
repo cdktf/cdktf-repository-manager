@@ -13,9 +13,9 @@ jobs:
       with:
         repository: hashicorp/cdktf-provider-null
         token: ${{ secrets.GH_TOKEN }}
-      - run: yarn add --dev @cdktf/provider-project@latest projen@latest
-      - run: |
-          git config user.name github-team-tf-cdk
-          git config user.email github-team-tf-cdk@hashicorp.com
-          git checkout -b foo-bar-${{ github.run_number }}
-          git push --set-upstream
+    - run: yarn add --dev @cdktf/provider-project@latest projen@latest
+    - run: |
+        git config user.name github-team-tf-cdk
+        git config user.email github-team-tf-cdk@hashicorp.com
+        git checkout -b foo-bar-${{ github.run_number }}
+        git push --set-upstream
