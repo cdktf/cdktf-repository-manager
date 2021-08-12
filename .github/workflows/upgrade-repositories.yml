@@ -39,6 +39,7 @@ jobs:
     - if: steps.git_diff.outputs.has_changes
       name: Commit and push changes (if changed)
       run: |
+        git checkout -b upgrade-provider-project-${{ github.run_number }}
         git add .
         git commit -m "chore: upgrade provider-project and projen"
         git push --set-upstream origin upgrade-provider-project-${{ github.run_number }}
