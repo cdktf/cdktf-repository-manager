@@ -41,7 +41,7 @@ jobs:
           const provider = require('./main/provider.json')
           const providerVersion = provider["${{ matrix.provider }}"]
           const template = fs.readFileSync(path.join(process.env.GITHUB_WORKSPACE, 'main', 'projenrc.template.js'), 'utf-8')
-          const projenrc = template.gsub('__PROVIDER__', providerVersion)
+          const projenrc = template.replace('__PROVIDER__', providerVersion)
           fs.writeFileSync(path.join(process.env.GITHUB_WORKSPACE, 'provider', '.projenrc.js'), projenrc)
     - run: |
         git config user.name github-team-tf-cdk
