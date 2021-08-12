@@ -35,6 +35,7 @@ jobs:
         yarn add --dev @cdktf/provider-project@latest projen@latest
         npx projen build
         yarn install --check-files
+        npx projen
     - name: Check for changes
       id: git_diff
       run: |
