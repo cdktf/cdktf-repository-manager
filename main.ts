@@ -29,7 +29,7 @@ class TerraformCdkProviderStack extends TerraformStack {
       'gh-token',
       'npm-token',
       'nuget-api-key',
-      'twine-user-name',
+      'twine-username',
       'twine-password'
     ].map(name => new SecretFromVariable(this, name))
 
