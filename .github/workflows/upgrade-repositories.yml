@@ -95,7 +95,7 @@ jobs:
         script: |
           const { GITHUB_SERVER_URL, GITHUB_REPOSITORY, GITHUB_RUN_ID } = process.env
           const url = `${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}`
-          github.pulls.create({
+          const pr = await github.pulls.create({
             owner: "hashicorp",
             repo: "cdktf-provider-${{ matrix.provider }}",
             head: "upgrade-provider-project-${{ github.run_number }}",
@@ -104,3 +104,4 @@ jobs:
             maintainer_can_modify: true,
             body: `Triggered by ${url}`
           })
+          console.log(`Created a PR: ${pr.html_url}`)
