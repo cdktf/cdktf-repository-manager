@@ -15,33 +15,15 @@ jobs:
         run: |
           provider=$(jq -rcM "{ provider: keys }" provider.json)
           echo "::set-output name=matrix::$provider"
-  job2:
-    needs: build-provider-matrix
-    runs-on: ubuntu-latest
-    strategy:
-      matrix: ${{fromJSON(needs.build-provider-matrix.outputs.matrix)}}
-    steps:
-      - run: |
-          echo ${{ matrix.provider }}
 
   upgrade-provider:
+    needs: build-provider-matrix
     name: 'Upgrade'
     runs-on: ubuntu-latest
     container:
       image: hashicorp/jsii-terraform
     strategy:
-      matrix:
-        provider:
-          # - "aws"
-          # - "google"
-          # - "azurerm"
-          # - "null"
-          # - "kubernetes"
-          # - "docker"
-          # - "github"
-          # - "external"
-          # - "datadog"
-          - "random"
+      matrix: ${{fromJSON(needs.build-provider-matrix.outputs.matrix)}}
     steps:
     - name: Checkout
       uses: actions/checkout@v2
