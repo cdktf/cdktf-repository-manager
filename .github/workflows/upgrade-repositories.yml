@@ -52,7 +52,7 @@ jobs:
         yarn add --dev @cdktf/provider-project@latest projen
         npx projen
         yarn install --check-files
-        yarn fetch
+        yarn build-provider
         npx projen
       working-directory: ./provider
     - name: Check for changes
