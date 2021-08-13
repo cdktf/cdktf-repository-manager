@@ -31,19 +31,10 @@ export class GithubRepository extends Resource {
       homepageUrl: 'https://cdk.tf',
       hasIssues: true,
       hasWiki: false,
+      autoInit: true,
       hasProjects: false,
       deleteBranchOnMerge: true,
       topics: ['cdktf', 'terraform', 'terraform-cdk', 'cdk', 'provider', 'pre-built-provider', ...topics],
-    })
-
-    const branch = new Branch(this, 'main', {
-      branch: 'main',
-      repository: this.resource.name,
-    })
-
-    new BranchDefault(this, 'main-default', {
-      branch: branch.branch,
-      repository: this.resource.name,
     })
 
     new TeamRepository(this, 'managing-team', {
