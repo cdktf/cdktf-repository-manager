@@ -1,6 +1,6 @@
 import { Construct } from 'constructs';
 import { Resource } from 'cdktf';
-import { Repository, TeamRepository } from '@cdktf/provider-github'
+import { Repository, TeamRepository, BranchProtection } from '@cdktf/provider-github'
 
 export interface ITeam {
   id: string;
@@ -10,6 +10,7 @@ export interface RepositoryConfig {
   description?: string;
   topics?: string[];
   team: ITeam;
+  protectMain?: boolean;
 }
 
 export class GithubRepository extends Resource {
@@ -22,6 +23,7 @@ export class GithubRepository extends Resource {
       topics = [],
       description = 'Repository management for prebuilt cdktf providers via cdktf',
       team,
+      protectMain = false,
     } = config;
 
     this.resource = new Repository(this, 'repo', {
@@ -36,6 +38,20 @@ export class GithubRepository extends Resource {
       deleteBranchOnMerge: true,
       topics: ['cdktf', 'terraform', 'terraform-cdk', 'cdk', 'provider', 'pre-built-provider', ...topics],
     })
+
+    if (protectMain) {
+      new BranchProtection(this, 'main-protection', {
+        pattern: 'main',
+        repositoryId: this.resource.id,
+        enforceAdmins: true,
+        allowsDeletions: false,
+        allowsForcePushes: false,
+        requiredStatusChecks: [{
+          strict: true,
+          contexts: ['build'],
+        }],
+      })
+    }
 
     new TeamRepository(this, 'managing-team', {
       repository: this.resource.name,
