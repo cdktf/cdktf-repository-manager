@@ -42,7 +42,7 @@ export class GithubRepository extends Resource {
     if (protectMain) {
       new BranchProtection(this, 'main-protection', {
         pattern: 'main',
-        repositoryId: this.resource.id,
+        repositoryId: this.resource.name,
         enforceAdmins: true,
         allowsDeletions: false,
         allowsForcePushes: false,
