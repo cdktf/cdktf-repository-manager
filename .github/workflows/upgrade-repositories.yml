@@ -7,6 +7,8 @@ jobs:
   terraform:
     name: 'Upgrade'
     runs-on: ubuntu-latest
+    container:
+      image: hashicorp/jsii-terraform
     strategy:
       matrix:
         provider:
