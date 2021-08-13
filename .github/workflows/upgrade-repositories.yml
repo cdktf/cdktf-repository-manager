@@ -4,7 +4,27 @@ on:
   workflow_dispatch: {}
 
 jobs:
-  terraform:
+  build-provider-matrix:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - id: set-matrix
+        run: |
+          $provider = $(cat provider.json | jq '{ provider: keys }')
+          echo "::set-output name=matrix::$provider"
+  job2:
+    needs: build-provider-matrix
+    runs-on: ubuntu-latest
+    strategy:
+      matrix: ${{fromJSON(needs.build-provider-matrix.outputs.matrix)}}
+    steps:
+      - run: |
+          echo ${{ matrix.provider }}
+
+  upgrade-provider:
     name: 'Upgrade'
     runs-on: ubuntu-latest
     container:
