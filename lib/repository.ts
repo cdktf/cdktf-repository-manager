@@ -1,6 +1,6 @@
 import { Construct } from 'constructs';
 import { Resource } from 'cdktf';
-import { Repository, TeamRepository, Branch, BranchDefault } from '@cdktf/provider-github'
+import { Repository, TeamRepository } from '@cdktf/provider-github'
 
 export interface ITeam {
   id: string;
