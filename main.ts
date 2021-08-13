@@ -61,7 +61,8 @@ class TerraformCdkProviderStack extends TerraformStack {
       const repo = new GithubRepository(this, `cdktf-provider-${provider}`, {
         description: `Prebuilt Terraform CDK (cdktf) provider for ${provider}.`,
         topics: [provider],
-        team
+        team,
+        protectMain: true
       })
 
       secrets.forEach(secret => secret.for(repo.resource.name))
