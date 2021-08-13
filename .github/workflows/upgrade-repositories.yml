@@ -13,7 +13,7 @@ jobs:
         uses: actions/checkout@v2
       - id: set-matrix
         run: |
-          provider=$(cat provider.json | jq '{ provider: keys }')
+          provider=$(jq "{ provider: keys }" provider.json)
           echo "::set-output name=matrix::$provider"
   job2:
     needs: build-provider-matrix
