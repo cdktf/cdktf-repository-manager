@@ -37,8 +37,6 @@ class TerraformCdkProviderStack extends TerraformStack {
     if (!npmSecret) throw new Error('npm-token secret not found');
 
     new GithubProvider(this, 'terraform-cdk-providers', {
-      // see https://github.com/hashicorp/terraform-cdk/issues/898
-      token: '${var.gh-token}',
       owner: 'hashicorp'
     })
 
