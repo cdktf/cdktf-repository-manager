@@ -1,6 +1,6 @@
 import { Construct } from 'constructs';
 import { Resource } from 'cdktf';
-import { Repository, TeamRepository, BranchProtection } from '@cdktf/provider-github'
+import { Repository, TeamRepository, BranchProtection, IssueLabel } from '@cdktf/provider-github'
 
 export interface ITeam {
   id: string;
@@ -37,6 +37,13 @@ export class GithubRepository extends Resource {
       hasProjects: false,
       deleteBranchOnMerge: true,
       topics: ['cdktf', 'terraform', 'terraform-cdk', 'cdk', 'provider', 'pre-built-provider', ...topics],
+    })
+
+
+    new IssueLabel(this, `automerge-label`, {
+      color: '5DC8DB',
+      name: 'automerge',
+      repository: this.resource.name,
     })
 
     if (protectMain) {

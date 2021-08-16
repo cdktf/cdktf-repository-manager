@@ -77,13 +77,21 @@ jobs:
         script: |
           const { GITHUB_SERVER_URL, GITHUB_REPOSITORY, GITHUB_RUN_ID } = process.env
           const url = `${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}`
-          const pr = await github.pulls.create({
-            owner: "hashicorp",
-            repo: "cdktf-provider-${{ matrix.provider }}",
+          const repo = "cdktf-provider-${{ matrix.provider }}"
+          const owner = 'hashicorp'
+          const { data } = await github.pulls.create({
+            owner,
+            repo,
             head: "upgrade-provider-project-${{ github.run_number }}",
             base: "main",
             title: "Upgrade provider project and projen",
             maintainer_can_modify: true,
             body: `Triggered by ${url}`
           })
-          console.log(`Created a PR: ${pr.html_url}`)
+          console.log(`Created a PR: ${data.html_url}`)
+          await github.issues.addLabels({
+            owner,
+            repo,
+            issue_number: data.id
+            labels: ['automerge']
+          })
