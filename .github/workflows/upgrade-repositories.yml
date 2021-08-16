@@ -93,6 +93,6 @@ jobs:
           await github.issues.addLabels({
             owner,
             repo,
-            issue_number: data.id,
+            issue_number: data.number,
             labels: ['automerge']
           })
