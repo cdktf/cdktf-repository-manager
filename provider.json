@@ -11,5 +11,6 @@
   "random": "hashicorp/random@~> 3.1",
   "pagerduty": "PagerDuty/pagerduty@~> 1.10",
   "archive": "hashicorp/archive@~> 2.2",
-  "local": "hashicorp/local@~> 2.1"
+  "local": "hashicorp/local@~> 2.1",
+  "azuread": "hashicorp/azuread"
 }
