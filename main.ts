@@ -86,5 +86,7 @@ class TerraformCdkProviderStack extends TerraformStack {
 }
 
 const app = new App();
-new TerraformCdkProviderStack(app, 'repos');
+const stack = new TerraformCdkProviderStack(app, 'repos');
+// Override until https://github.com/integrations/terraform-provider-github/issues/910 is fixed
+stack.addOverride('terraform.required_providers.github.version', '4.14.0');
 app.synth();
