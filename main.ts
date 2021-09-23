@@ -47,13 +47,13 @@ class TerraformCdkProviderStack extends TerraformStack {
     const self = new GithubRepository(this, 'cdktf-repository-manager', {
       team
     })
-    selfTokens.forEach(token => token.for(self.resource.name))
+    selfTokens.forEach(token => token.for(self.resource))
 
     const templateRepository = new GithubRepository(this, 'cdktf-provider-project', {
       team
     })
 
-    npmSecret.for(templateRepository.resource.name)
+    npmSecret.for(templateRepository.resource)
 
     const providerRepos:GitUrls[] = Object.keys(providers).map((provider) => {
       const repo = new GithubRepository(this, `cdktf-provider-${provider}`, {
@@ -63,7 +63,7 @@ class TerraformCdkProviderStack extends TerraformStack {
         protectMain: true
       })
 
-      secrets.forEach(secret => secret.for(repo.resource.name))
+      secrets.forEach(secret => secret.for(repo.resource))
 
       return {
         html: repo.resource.htmlUrl,
@@ -86,5 +86,7 @@ class TerraformCdkProviderStack extends TerraformStack {
 }
 
 const app = new App();
-new TerraformCdkProviderStack(app, 'repos');
+const stack = new TerraformCdkProviderStack(app, 'repos');
+// Override until https://github.com/integrations/terraform-provider-github/issues/910 is fixed
+stack.addOverride('terraform.required_providers.github.version', '4.14.0');
 app.synth();

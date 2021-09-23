@@ -1,6 +1,6 @@
 import { Construct } from 'constructs';
 import { Resource, TerraformVariable } from 'cdktf';
-import { ActionsSecret } from '@cdktf/provider-github'
+import { ActionsSecret, Repository } from '@cdktf/provider-github'
 import { constantCase } from 'change-case';
 
 export class SecretFromVariable extends Resource {
@@ -20,11 +20,11 @@ export class SecretFromVariable extends Resource {
     this.name = name;
   }
 
-  public for(repository: string) {
-    return new ActionsSecret(this, `secret-${repository}-${this.name}`, {
+  public for(repository: Repository) {
+    return new ActionsSecret(repository, `secret-${this.name}`, {
       plaintextValue: this.variable.value,
       secretName: constantCase(this.name),
-      repository
+      repository: repository.name,
     });
   }
 }
