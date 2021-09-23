@@ -2,6 +2,7 @@
   "aws": "aws@~> 3.0",
   "google": "google@~> 3.0",
   "azurerm": "azurerm@~> 2.0",
+  "azuread": "hashicorp/azuread@~> 2.0",
   "null": "null@~> 2.0",
   "kubernetes": "kubernetes@~> 2.0",
   "docker": "kreuzwerker/docker@~> 2.12",
