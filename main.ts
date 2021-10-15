@@ -30,7 +30,12 @@ class TerraformCdkProviderStack extends TerraformStack {
       'npm-token',
       'nuget-api-key',
       'twine-username',
-      'twine-password'
+      'twine-password',
+      'maven-username',
+      'maven-password',
+      'maven-gpg-private-key',
+      'maven-gpg-private-key-passphrase',
+      'maven-staging-profile-id'
     ].map(name => new SecretFromVariable(this, name))
 
     const npmSecret = secrets.find(s => s.name === 'npm-token')
