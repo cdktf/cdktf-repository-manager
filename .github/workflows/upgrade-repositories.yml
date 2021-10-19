@@ -68,7 +68,7 @@ jobs:
       run: |
         git checkout -b upgrade-provider-project-${{ github.run_number }}
         git add .
-        git commit -m "chore: upgrade provider-project and projen"
+        git commit -m "chore(deps): BREAKING CHANGE upgrade cdktf to 0.7"
         git push --set-upstream origin upgrade-provider-project-${{ github.run_number }}
       working-directory: ./provider
     - if: steps.git_diff.outputs.has_changes
@@ -85,7 +85,7 @@ jobs:
             repo,
             head: "upgrade-provider-project-${{ github.run_number }}",
             base: "main",
-            title: "Upgrade provider project and projen",
+            title: "chore(deps): BREAKING CHANGE upgrade cdktf to 0.7",
             maintainer_can_modify: true,
             body: `Triggered by ${url}`
           })
