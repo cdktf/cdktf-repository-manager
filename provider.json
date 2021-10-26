@@ -14,5 +14,6 @@
   "archive": "hashicorp/archive@~> 2.2",
   "local": "hashicorp/local@~> 2.1",
   "tls": "hashicorp/tls@~> 3.1",
-  "postgresql": "cyrilgdn/postgresql@-> 1.14.0"
+  "postgresql": "cyrilgdn/postgresql@-> 1.14.0",
+  "cloudinit": "hashicorp/cloudinit@~> 2.2.0"
 }
