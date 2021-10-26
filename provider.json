@@ -13,5 +13,6 @@
   "pagerduty": "PagerDuty/pagerduty@~> 1.10",
   "archive": "hashicorp/archive@~> 2.2",
   "local": "hashicorp/local@~> 2.1",
-  "postgresql": "cyrilgdn/postgresql@-> 1.14.0"
+  "postgresql": "cyrilgdn/postgresql@-> 1.14.0",
+  "tls": "hashicorp/tls@~> 3.1"
 }
