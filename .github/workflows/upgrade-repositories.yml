@@ -2,6 +2,14 @@ name: 'Upgrade Provider Repositories'
 
 on:
   workflow_dispatch: {}
+  # Deploy upgrades into newly created repos
+  workflow_run:
+    workflows:
+      - "Repository Manager"
+    branches:
+      - main
+    types:
+      - completed
 
 jobs:
   build-provider-matrix:
