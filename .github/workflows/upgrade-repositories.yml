@@ -25,6 +25,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix: ${{fromJSON(needs.build-provider-matrix.outputs.matrix)}}
+      max-parallel: 10
     steps:
     - name: Checkout
       uses: actions/checkout@v2
