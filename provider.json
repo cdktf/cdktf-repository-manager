@@ -9,6 +9,7 @@
   "external": "external@~> 2.1",
   "github": "integrations/github@~> 4.0",
   "google": "google@~> 3.0",
+  "helm": "helm@~> 2.3",
   "kubernetes": "kubernetes@~> 2.0",
   "local": "hashicorp/local@~> 2.1",
   "null": "null@~> 2.0",
