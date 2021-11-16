@@ -13,6 +13,7 @@
   "kubernetes": "kubernetes@~> 2.0",
   "local": "hashicorp/local@~> 2.1",
   "null": "null@~> 2.0",
+  "opentelekomcloud": "opentelekomcloud/opentelekomcloud@~> 1.26",
   "pagerduty": "PagerDuty/pagerduty@~> 1.10",
   "postgresql": "cyrilgdn/postgresql@~> 1.14",
   "random": "hashicorp/random@~> 3.1",
