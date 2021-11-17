@@ -12,6 +12,7 @@
   "helm": "helm@~> 2.3",
   "kubernetes": "kubernetes@~> 2.0",
   "local": "hashicorp/local@~> 2.1",
+  "newrelic": "newrelic/newrelic@~> 2.32",
   "null": "null@~> 2.0",
   "opentelekomcloud": "opentelekomcloud/opentelekomcloud@~> 1.26",
   "pagerduty": "PagerDuty/pagerduty@~> 1.10",
