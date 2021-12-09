@@ -14,7 +14,7 @@
   "local": "hashicorp/local@~> 2.1",
   "newrelic": "newrelic/newrelic@~> 2.32",
   "null": "null@~> 2.0",
-  "okta": "okta@~> 3.20.2",
+  "okta": "okta/okta@~> 3.20.2",
   "opentelekomcloud": "opentelekomcloud/opentelekomcloud@~> 1.26",
   "pagerduty": "PagerDuty/pagerduty@~> 1.10",
   "postgresql": "cyrilgdn/postgresql@~> 1.14",
