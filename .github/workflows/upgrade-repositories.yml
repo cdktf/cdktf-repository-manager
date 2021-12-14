@@ -72,8 +72,18 @@ jobs:
         script: |
           const path = require('path')
           const fs = require('fs')
-          const before = (await exec.getExecOutput('git', ['show', 'HEAD:.projenrc.js'], { cwd: path.join(process.env.GITHUB_WORKSPACE, 'provider') })).stdout
           const after = fs.readFileSync(path.join(process.env.GITHUB_WORKSPACE, 'provider', '.projenrc.js')).toString()
+          let before;
+          try {
+            before = (await exec.getExecOutput('git', ['show', 'HEAD:.projenrc.js'], { cwd: path.join(process.env.GITHUB_WORKSPACE, 'provider') })).stdout
+          } catch (e) {
+            if (e.message.includes("path '.projenrc.js' exists on disk, but not in 'HEAD'")) {
+              console.error(e);
+              before = after; // no previous version yet? use the current one as previous
+            } else {
+              throw e;
+            }
+          }
           const v = (key, input) =>
             new RegExp(`${key}:[\\D]*(\\d+(\\.\\d+)*)`).exec(input)[1];
           const parse = (version) => {
