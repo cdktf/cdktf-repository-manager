@@ -1,4 +1,5 @@
 {
+  "acme": "vancluever/acme@~> 2.7",
   "archive": "hashicorp/archive@~> 2.2",
   "aws": "aws@~> 3.0",
   "azuread": "hashicorp/azuread@~> 2.0",
