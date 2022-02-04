@@ -20,6 +20,7 @@
   "pagerduty": "PagerDuty/pagerduty@~> 1.10",
   "postgresql": "cyrilgdn/postgresql@~> 1.14",
   "random": "hashicorp/random@~> 3.1",
+  "snowflake": "chanzuckerberg/snowflake@ ~> 0.25",
   "tls": "hashicorp/tls@~> 3.1",
   "tfe": "hashicorp/tfe@~> 0.26.1"
 }
