@@ -1,7 +1,7 @@
 {
   "acme": "vancluever/acme@~> 2.7",
   "archive": "hashicorp/archive@~> 2.2",
-  "aws": "aws@~> 3.0",
+  "aws": "aws@~> 4.0",
   "azuread": "hashicorp/azuread@~> 2.0",
   "azurerm": "azurerm@~> 2.0",
   "cloudinit": "hashicorp/cloudinit@~> 2.2.0",
