@@ -11,6 +11,7 @@
   "external": "external@~> 2.1",
   "github": "integrations/github@~> 4.0",
   "google": "google@~> 4.0",
+  "googlebeta": "google-beta@~> 4.17",
   "helm": "helm@~> 2.3",
   "ionoscloud": "ionos-cloud/ionoscloud@~> 6.2",
   "kubernetes": "kubernetes@~> 2.0",
