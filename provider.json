@@ -10,6 +10,7 @@
   "docker": "kreuzwerker/docker@~> 2.12",
   "external": "external@~> 2.1",
   "github": "integrations/github@~> 4.0",
+  "gitlab": "gitlabhq/gitlab@~> 3.14.0",
   "google": "google@~> 4.0",
   "googlebeta": "google-beta@~> 4.17",
   "helm": "helm@~> 2.3",
