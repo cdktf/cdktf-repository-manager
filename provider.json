@@ -4,6 +4,7 @@
   "aws": "aws@~> 4.0",
   "azuread": "hashicorp/azuread@~> 2.0",
   "azurerm": "azurerm@~> 2.0",
+  "cloudflare": "cloudflare/cloudflare@~> 3.14.0",
   "cloudinit": "hashicorp/cloudinit@~> 2.2.0",
   "datadog": "DataDog/datadog@~> 3.0",
   "digitalocean": "digitalocean/digitalocean@~> 2.19",
