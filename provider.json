@@ -28,8 +28,10 @@
   "random": "hashicorp/random@~> 3.1",
   "snowflake": "chanzuckerberg/snowflake@ ~> 0.25",
   "spotinst": "spotinst/spotinst@~> 1.0",
-  "tls": "hashicorp/tls@~> 3.1",
+  "template": "hashicorp/template@~> 2.2",
   "tfe": "hashicorp/tfe@~> 0.26.1",
+  "time": "hashicorp/time@~> 0.7",
+  "tls": "hashicorp/tls@~> 3.1",
   "upcloud": "UpCloudLtd/upcloud@~> 2.4",
   "yandex": "yandex-cloud/yandex@~> 0.73.0"
 }
