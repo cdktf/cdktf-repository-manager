@@ -3,7 +3,7 @@
   "archive": "hashicorp/archive@~> 2.2",
   "aws": "aws@~> 4.0",
   "azuread": "hashicorp/azuread@~> 2.0",
-  "azurerm": "azurerm@~> 2.0",
+  "azurerm": "azurerm@~> 3.10",
   "cloudflare": "cloudflare/cloudflare@~> 3.14.0",
   "cloudinit": "hashicorp/cloudinit@~> 2.2.0",
   "databricks": "databrickslabs/databricks@~> 0.5",
