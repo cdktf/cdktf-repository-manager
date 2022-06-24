@@ -33,5 +33,6 @@
   "time": "hashicorp/time@~> 0.7",
   "tls": "hashicorp/tls@~> 3.1",
   "upcloud": "UpCloudLtd/upcloud@~> 2.4",
+  "vault": "hashicorp/vault@~> 3.7",
   "yandex": "yandex-cloud/yandex@~> 0.73.0"
 }
