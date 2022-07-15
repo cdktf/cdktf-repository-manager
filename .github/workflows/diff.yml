@@ -32,8 +32,8 @@ jobs:
       with:
         github-token: ${{ secrets.GH_COMMENT_TOKEN }}
         script: |
-          const { readFile } = require("fs/promises")
-          const data = await readFile('plan_stdout.txt')
+          const { readFileSync } = require("fs")
+          const data = readFileSync('plan_stdout.txt', 'utf-8')
           const plan = data.length > 65000 ? `${data.substring(0, 65000)}...` : data
 
           const output = `#### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
