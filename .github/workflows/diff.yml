@@ -25,20 +25,22 @@ jobs:
       run: "$(yarn bin)/cdktf synth"
     - name: Plan
       id: plan
-      run: "cd cdktf.out/stacks/repos && rm -rf .terraform && terraform init && terraform plan -no-color"
+      run: "cd cdktf.out/stacks/repos && rm -rf .terraform && terraform init && terraform plan -no-color > plan_stdout.txt"
       continue-on-error: true
     - uses: actions/github-script@0.9.0
       if: github.event_name == 'pull_request'
-      env:
-        PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
       with:
         github-token: ${{ secrets.GH_COMMENT_TOKEN }}
         script: |
+          const { readFile } = require("fs/promises")
+          const data = await readFile('plan_stdout.txt')
+          const plan = data.length > 65000 ? `${data.substring(0, 65000)}...` : data
+
           const output = `#### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
 
           <details><summary>Show Plan</summary>
 
-          \`\`\`${process.env.PLAN}\`\`\`
+          \`\`\`${plan}\`\`\`
 
           </details>
 
