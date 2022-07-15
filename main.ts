@@ -1,5 +1,11 @@
 import { Construct } from "constructs";
-import { App, TerraformStack, TerraformOutput, RemoteBackend } from "cdktf";
+import {
+  App,
+  TerraformStack,
+  TerraformOutput,
+  RemoteBackend,
+  Annotations,
+} from "cdktf";
 import { GithubProvider, DataGithubTeam } from "@cdktf/provider-github";
 import { GithubRepository, SecretFromVariable } from "./lib";
 import * as fs from "fs";
@@ -15,6 +21,13 @@ interface GitUrls {
 class TerraformCdkProviderStack extends TerraformStack {
   constructor(scope: Construct, name: string) {
     super(scope, name);
+
+    // validate that providers contain only valid names (-go suffix is forbidden)
+    if (Object.keys(providers).some((key) => key.endsWith("-go"))) {
+      Annotations.of(this).addError(
+        "providers contain a provider key with a suffix -go which is not allowed due to conflicts with go package repositories"
+      );
+    }
 
     const team = new DataGithubTeam(this, "cdktf-team", {
       slug: "cdktf",
@@ -47,6 +60,7 @@ class TerraformCdkProviderStack extends TerraformStack {
     if (!ghSecret) throw new Error("gh-token secret not found");
 
     ghSecret.addAlias("PROJEN_GITHUB_TOKEN");
+    ghSecret.addAlias("GO_GITHUB_TOKEN"); // used for publishing Go packages to separate repo
 
     new GithubProvider(this, "terraform-cdk-providers", {
       owner: "hashicorp",
@@ -77,6 +91,14 @@ class TerraformCdkProviderStack extends TerraformStack {
         topics: [provider],
         team,
         protectMain: true,
+      });
+
+      // repo to publish go packages to
+      new GithubRepository(this, `cdktf-provider-${provider}-go`, {
+        description: `CDK for Terraform Go provider bindings for ${provider}.`,
+        topics: [provider],
+        team,
+        protectMain: false,
       });
 
       secrets.forEach((secret) => secret.for(repo.resource));
