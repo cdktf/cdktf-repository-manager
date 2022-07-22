@@ -29,6 +29,7 @@
   "random": "hashicorp/random@~> 3.1",
   "snowflake": "chanzuckerberg/snowflake@ ~> 0.25",
   "spotinst": "spotinst/spotinst@~> 1.0",
+  "sumologic": "sumologic/sumologic@~> 2.16.2",
   "template": "hashicorp/template@~> 2.2",
   "tfe": "hashicorp/tfe@~> 0.33",
   "time": "hashicorp/time@~> 0.7",
