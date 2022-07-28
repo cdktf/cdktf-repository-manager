@@ -1,4 +1,4 @@
-name: 'Upgrade Provider Repositories'
+name: "Upgrade Provider Repositories"
 
 on:
   workflow_dispatch: {}
@@ -18,7 +18,7 @@ jobs:
 
   upgrade-provider:
     needs: build-provider-matrix
-    name: 'Upgrade'
+    name: "Upgrade"
     runs-on: ubuntu-latest
     container:
       image: docker.mirror.hashicorp.services/hashicorp/jsii-terraform
@@ -27,136 +27,136 @@ jobs:
       matrix: ${{fromJSON(needs.build-provider-matrix.outputs.matrix)}}
       max-parallel: 10
     steps:
-    - name: Checkout
-      uses: actions/checkout@v2
-      with:
-        path: main
-    - name: Checkout
-      uses: actions/checkout@v2
-      with:
-        repository: hashicorp/cdktf-provider-${{ matrix.provider }}
-        token: ${{ secrets.GH_COMMENT_TOKEN }}
-        path: provider
-    - uses: actions/github-script@v4
-      with:
-        script: |
-          const path = require('path')
-          const fs = require('fs')
-          const provider = require('./main/provider.json')
-          const providerVersion = provider["${{ matrix.provider }}"]
-          const template = fs.readFileSync(path.join(process.env.GITHUB_WORKSPACE, 'main', 'projenrc.template.js'), 'utf-8')
-          const projenrc = template.replace('__PROVIDER__', providerVersion)
-          fs.writeFileSync(path.join(process.env.GITHUB_WORKSPACE, 'provider', '.projenrc.js'), projenrc)
-    - name: Upgrade provider project
-      run: |
-        unset CI
-        git config user.name github-team-tf-cdk
-        git config user.email github-team-tf-cdk@hashicorp.com
-        git checkout -b foo-bar-${{ github.run_number }}
-        yarn add --dev @cdktf/provider-project@latest projen
-        npx projen
-        yarn install --check-files
-        yarn build-provider
-        npx projen
-      working-directory: ./provider
-    - name: Check for changes
-      id: git_diff
-      run: |
-        git diff --exit-code || echo "::set-output name=has_changes::true"
-      working-directory: ./provider
-    - if: steps.git_diff.outputs.has_changes
-      name: Detect breaking version changes
-      id: diff_breaking
-      uses: actions/github-script@v4
-      with:
-        script: |
-          const path = require('path')
-          const fs = require('fs')
-          const after = fs.readFileSync(path.join(process.env.GITHUB_WORKSPACE, 'provider', '.projenrc.js')).toString()
-          let before;
-          try {
-            before = (await exec.getExecOutput('git', ['show', 'HEAD:.projenrc.js'], { cwd: path.join(process.env.GITHUB_WORKSPACE, 'provider') })).stdout
-          } catch (e) {
-            if (e.message.includes("failed with exit code 128")) {
-              console.log(e);
-              before = after; // no previous version yet? use the current one as previous
-            } else {
-              throw e;
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          path: main
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          repository: hashicorp/cdktf-provider-${{ matrix.provider }}
+          token: ${{ secrets.GH_COMMENT_TOKEN }}
+          path: provider
+      - uses: actions/github-script@v4
+        with:
+          script: |
+            const path = require('path')
+            const fs = require('fs')
+            const provider = require('./main/provider.json')
+            const providerVersion = provider["${{ matrix.provider }}"]
+            const template = fs.readFileSync(path.join(process.env.GITHUB_WORKSPACE, 'main', 'projenrc.template.js'), 'utf-8')
+            const projenrc = template.replace('__PROVIDER__', providerVersion)
+            fs.writeFileSync(path.join(process.env.GITHUB_WORKSPACE, 'provider', '.projenrc.js'), projenrc)
+      - name: Upgrade provider project
+        run: |
+          unset CI
+          git config user.name github-team-tf-cdk
+          git config user.email github-team-tf-cdk@hashicorp.com
+          git checkout -b foo-bar-${{ github.run_number }}
+          yarn add --dev @cdktf/provider-project@latest projen
+          npx projen
+          yarn install --check-files
+          yarn build-provider
+          npx projen
+        working-directory: ./provider
+      - name: Check for changes
+        id: git_diff
+        run: |
+          git diff --exit-code || echo "::set-output name=has_changes::true"
+        working-directory: ./provider
+      - if: steps.git_diff.outputs.has_changes
+        name: Detect breaking version changes
+        id: diff_breaking
+        uses: actions/github-script@v4
+        with:
+          script: |
+            const path = require('path')
+            const fs = require('fs')
+            const after = fs.readFileSync(path.join(process.env.GITHUB_WORKSPACE, 'provider', '.projenrc.js')).toString()
+            let before;
+            try {
+              before = (await exec.getExecOutput('git', ['show', 'HEAD:.projenrc.js'], { cwd: path.join(process.env.GITHUB_WORKSPACE, 'provider') })).stdout
+            } catch (e) {
+              if (e.message.includes("failed with exit code 128")) {
+                console.log(e);
+                before = after; // no previous version yet? use the current one as previous
+              } else {
+                throw e;
+              }
             }
-          }
-          const v = (key, input) =>
-            new RegExp(`${key}:[\\D]*(\\d+(\\.\\d+)*)`).exec(input)[1];
-          const parse = (version) => {
-            const parts = version.split(".");
-            return {
-              major: Number(parts[0]),
-              minor: Number(parts[1]),
-              patch: Number(parts[2]),
+            const v = (key, input) =>
+              new RegExp(`${key}:[\\D]*(\\d+(\\.\\d+)*)`).exec(input)[1];
+            const parse = (version) => {
+              const parts = version.split(".");
+              return {
+                major: Number(parts[0]),
+                minor: Number(parts[1]),
+                patch: Number(parts[2]),
+              };
             };
-          };
-          const isBreaking = (key) => {
-            const bef = parse(v(key, before));
-            const aft = parse(v(key, after));
-            const majorIncreased = aft.major > bef.major;
-            const isDev = aft.major === 0 && bef.major === 0;
-            const minorIncreased = aft.minor > bef.minor;
-            return majorIncreased || (isDev && minorIncreased);
-          };
-          const results = [
-            "terraformProvider",
-            "cdktfVersion",
-            "constructsVersion",
-            "minNodeVersion",
-            "jsiiVersion",
-          ].map((key) => ({
-            key,
-            before: v(key, before),
-            after: v(key, after),
-            breaking: isBreaking(key),
-          }));
-          const hasBreakingChanges = results.some(res => res.breaking);
-          console.log(hasBreakingChanges ? "Found breaking changes!" : "No breaking changes.");
-          results.forEach(res => console.log(`${res.key}: ${res.before} => ${res.after} (${res.breaking ? "breaking" : "non-breaking"})`));
-          if (hasBreakingChanges) console.log(`::set-output name=has_breaking_changes::true`);
+            const isBreaking = (key) => {
+              const bef = parse(v(key, before));
+              const aft = parse(v(key, after));
+              const majorIncreased = aft.major > bef.major;
+              const isDev = aft.major === 0 && bef.major === 0;
+              const minorIncreased = aft.minor > bef.minor;
+              return majorIncreased || (isDev && minorIncreased);
+            };
+            const results = [
+              "terraformProvider",
+              "cdktfVersion",
+              "constructsVersion",
+              "minNodeVersion",
+              "jsiiVersion",
+            ].map((key) => ({
+              key,
+              before: v(key, before),
+              after: v(key, after),
+              breaking: isBreaking(key),
+            }));
+            const hasBreakingChanges = results.some(res => res.breaking);
+            console.log(hasBreakingChanges ? "Found breaking changes!" : "No breaking changes.");
+            results.forEach(res => console.log(`${res.key}: ${res.before} => ${res.after} (${res.breaking ? "breaking" : "non-breaking"})`));
+            if (hasBreakingChanges) console.log(`::set-output name=has_breaking_changes::true`);
 
-    - if: steps.git_diff.outputs.has_changes && !steps.diff_breaking.outputs.has_breaking_changes
-      name: Commit (non breaking) and push changes (if changed)
-      run: |
-        git checkout -b upgrade-provider-project-${{ github.run_number }}
-        git add .
-        git commit -m "chore(deps): upgrade provider project"
-        git push --set-upstream origin upgrade-provider-project-${{ github.run_number }}
-      working-directory: ./provider
-    - if: steps.git_diff.outputs.has_changes && steps.diff_breaking.outputs.has_breaking_changes
-      name: Commit (breaking) and push changes (if changed)
-      run: |
-        git checkout -b upgrade-provider-project-${{ github.run_number }}
-        git add .
-        git commit -m "chore(deps)!: upgrade provider project"
-        git push --set-upstream origin upgrade-provider-project-${{ github.run_number }}
-      working-directory: ./provider
-    - if: steps.git_diff.outputs.has_changes
-      uses: actions/github-script@v4
-      with:
-        github-token: ${{ secrets.GH_COMMENT_TOKEN }}
-        script: |
-          const { GITHUB_SERVER_URL, GITHUB_REPOSITORY, GITHUB_RUN_ID } = process.env
-          const url = `${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}`
-          const repo = "cdktf-provider-${{ matrix.provider }}"
-          const owner = 'hashicorp'
-          const { data } = await github.pulls.create({
-            owner,
-            repo,
-            head: "upgrade-provider-project-${{ github.run_number }}",
-            base: "main",
-            title: "chore(deps): upgrade provider project",
-            maintainer_can_modify: true,
-            body: `Triggered by ${url}`
-          })
-          console.log(`Created a PR: ${data.html_url}`)
-          await github.issues.addLabels({
-            owner,
-            repo,
-            issue_number: data.number,
-            labels: ['automerge']
-          })
+      - if: steps.git_diff.outputs.has_changes && !steps.diff_breaking.outputs.has_breaking_changes
+        name: Commit (non breaking) and push changes (if changed)
+        run: |
+          git checkout -b upgrade-provider-project-${{ github.run_number }}
+          git add .
+          git commit -m "chore(deps): upgrade provider project"
+          git push --set-upstream origin upgrade-provider-project-${{ github.run_number }}
+        working-directory: ./provider
+      - if: steps.git_diff.outputs.has_changes && steps.diff_breaking.outputs.has_breaking_changes
+        name: Commit (breaking) and push changes (if changed)
+        run: |
+          git checkout -b upgrade-provider-project-${{ github.run_number }}
+          git add .
+          git commit -m "chore(deps)!: upgrade provider project"
+          git push --set-upstream origin upgrade-provider-project-${{ github.run_number }}
+        working-directory: ./provider
+      - if: steps.git_diff.outputs.has_changes
+        uses: actions/github-script@v4
+        with:
+          github-token: ${{ secrets.GH_COMMENT_TOKEN }}
+          script: |
+            const { GITHUB_SERVER_URL, GITHUB_REPOSITORY, GITHUB_RUN_ID } = process.env
+            const url = `${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}`
+            const repo = "cdktf-provider-${{ matrix.provider }}"
+            const owner = 'hashicorp'
+            const { data } = await github.pulls.create({
+              owner,
+              repo,
+              head: "upgrade-provider-project-${{ github.run_number }}",
+              base: "main",
+              title: "chore(deps): upgrade provider project",
+              maintainer_can_modify: true,
+              body: `Triggered by ${url}`
+            })
+            console.log(`Created a PR: ${data.html_url}`)
+            await github.issues.addLabels({
+              owner,
+              repo,
+              issue_number: data.number,
+              labels: ['automerge']
+            })
