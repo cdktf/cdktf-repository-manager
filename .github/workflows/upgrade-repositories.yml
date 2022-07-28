@@ -129,7 +129,7 @@ jobs:
             console.log(
               hasBreakingChanges ? "Found breaking changes!" : "No breaking changes."
             );
-            results.forEach((res) =>
+            [...results, ...providerNameChanged].forEach((res) =>
               console.log(
                 `${res.key}: ${res.before} => ${res.after} (${
                   res.breaking ? "breaking" : "non-breaking"
