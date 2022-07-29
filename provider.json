@@ -10,7 +10,7 @@
   "datadog": "DataDog/datadog@~> 3.0",
   "digitalocean": "digitalocean/digitalocean@~> 2.19",
   "docker": "kreuzwerker/docker@~> 2.12",
-  "dnssimple": "dnsimple/dnsimple@~> 0.13",
+  "dnsimple": "dnsimple/dnsimple@~> 0.13",
   "external": "external@~> 2.1",
   "github": "integrations/github@~> 4.0",
   "gitlab": "gitlabhq/gitlab@~> 3.14",
