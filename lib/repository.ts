@@ -5,6 +5,7 @@ import {
   TeamRepository,
   BranchProtection,
   IssueLabel,
+  RepositoryWebhook,
 } from "@cdktf/provider-github";
 
 export interface ITeam {
@@ -16,6 +17,7 @@ export interface RepositoryConfig {
   topics?: string[];
   team: ITeam;
   protectMain?: boolean;
+  webhookUrl: string;
 }
 
 export class GithubRepository extends Resource {
@@ -78,6 +80,21 @@ export class GithubRepository extends Resource {
       repository: this.resource.name,
       teamId: team.id,
       permission: "admin",
+    });
+
+    // Slack integration so we can be notified about new PRs and Issues
+    new RepositoryWebhook(this, "slack-webhook", {
+      repository: this.resource.name,
+
+      configuration: [
+        {
+          url: config.webhookUrl,
+          contentType: "json",
+        },
+      ],
+
+      // We don't need to notify about PRs since they are auto-created
+      events: ["issues"],
     });
   }
 }

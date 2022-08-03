@@ -10,6 +10,7 @@ import { GithubProvider, DataGithubTeam } from "@cdktf/provider-github";
 import { GithubRepository, SecretFromVariable } from "./lib";
 import * as fs from "fs";
 import * as path from "path";
+import { TerraformVariable } from "cdktf";
 
 const providers: Record<string, string> = JSON.parse(
   fs.readFileSync(path.join(__dirname, "provider.json"), "utf8")
@@ -39,6 +40,11 @@ class TerraformCdkProviderStack extends TerraformStack {
         name: "prebuilt-providers",
       },
     });
+
+    const slackWebhook = new TerraformVariable(this, "slack-webhook", {
+      type: "string",
+    });
+    slackWebhook.overrideLogicalId("slack-webhook");
 
     const secrets = [
       "gh-token",
@@ -72,6 +78,7 @@ class TerraformCdkProviderStack extends TerraformStack {
     ];
     const self = new GithubRepository(this, "cdktf-repository-manager", {
       team,
+      webhookUrl: slackWebhook.stringValue,
     });
     selfTokens.forEach((token) => token.for(self.resource));
 
@@ -80,6 +87,7 @@ class TerraformCdkProviderStack extends TerraformStack {
       "cdktf-provider-project",
       {
         team,
+        webhookUrl: slackWebhook.stringValue,
       }
     );
 
@@ -91,6 +99,7 @@ class TerraformCdkProviderStack extends TerraformStack {
         topics: [provider],
         team,
         protectMain: true,
+        webhookUrl: slackWebhook.stringValue,
       });
 
       // repo to publish go packages to
@@ -99,6 +108,7 @@ class TerraformCdkProviderStack extends TerraformStack {
         topics: [provider],
         team,
         protectMain: false,
+        webhookUrl: slackWebhook.stringValue,
       });
 
       secrets.forEach((secret) => secret.for(repo.resource));
