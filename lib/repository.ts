@@ -1,6 +1,11 @@
-import { Construct } from 'constructs';
-import { Resource } from 'cdktf';
-import { Repository, TeamRepository, BranchProtection, IssueLabel } from '@cdktf/provider-github'
+import { Construct } from "constructs";
+import { Resource } from "cdktf";
+import {
+  Repository,
+  TeamRepository,
+  BranchProtection,
+  IssueLabel,
+} from "@cdktf/provider-github";
 
 export interface ITeam {
   id: string;
@@ -21,49 +26,58 @@ export class GithubRepository extends Resource {
 
     const {
       topics = [],
-      description = 'Repository management for prebuilt cdktf providers via cdktf',
+      description = "Repository management for prebuilt cdktf providers via cdktf",
       team,
       protectMain = false,
     } = config;
 
-    this.resource = new Repository(this, 'repo', {
+    this.resource = new Repository(this, "repo", {
       name,
       description,
-      visibility: 'public',
-      homepageUrl: 'https://cdk.tf',
+      visibility: "public",
+      homepageUrl: "https://cdk.tf",
       hasIssues: true,
       hasWiki: false,
       autoInit: true,
       hasProjects: false,
       deleteBranchOnMerge: true,
-      topics: ['cdktf', 'terraform', 'terraform-cdk', 'cdk', 'provider', 'pre-built-provider', ...topics],
-    })
-
+      topics: [
+        "cdktf",
+        "terraform",
+        "terraform-cdk",
+        "cdk",
+        "provider",
+        "pre-built-provider",
+        ...topics,
+      ],
+    });
 
     new IssueLabel(this, `automerge-label`, {
-      color: '5DC8DB',
-      name: 'automerge',
+      color: "5DC8DB",
+      name: "automerge",
       repository: this.resource.name,
-    })
+    });
 
     if (protectMain) {
-      new BranchProtection(this, 'main-protection', {
-        pattern: 'main',
+      new BranchProtection(this, "main-protection", {
+        pattern: "main",
         repositoryId: this.resource.name,
         enforceAdmins: true,
         allowsDeletions: false,
         allowsForcePushes: false,
-        requiredStatusChecks: [{
-          strict: true,
-          contexts: ['build'],
-        }],
-      })
+        requiredStatusChecks: [
+          {
+            strict: true,
+            contexts: ["build"],
+          },
+        ],
+      });
     }
 
-    new TeamRepository(this, 'managing-team', {
+    new TeamRepository(this, "managing-team", {
       repository: this.resource.name,
       teamId: team.id,
-      permission: 'admin'
-    })
+      permission: "admin",
+    });
   }
 }

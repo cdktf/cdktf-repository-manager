@@ -6,6 +6,7 @@
   "license": "MPL-2.0",
   "private": true,
   "scripts": {
+    "format": "prettier --write '**/*.{ts,js,md,yml}'",
     "get": "cdktf get",
     "build": "yarn get && tsc",
     "synth": "cdktf synth",
@@ -15,7 +16,8 @@
     "upgrade": "npm i cdktf@latest cdktf-cli@latest",
     "upgrade:next": "npm i cdktf@next cdktf-cli@next",
     "output": "cd cdktf.out && terraform output -json -state ../terraform.tfstate",
-    "repos": "yarn -s output | jq  'with_entries(select(.key|match(\"providerRepos\";\"i\")))[] | .value'"
+    "repos": "yarn -s output | jq  'with_entries(select(.key|match(\"providerRepos\";\"i\")))[] | .value'",
+    "prepare": "husky install"
   },
   "engines": {
     "node": ">=10.12"
@@ -29,6 +31,12 @@
   },
   "devDependencies": {
     "@types/node": "^14.0.27",
+    "husky": ">=6",
+    "lint-staged": ">=10",
+    "prettier": "^2.7.1",
     "typescript": "^3.9.7"
+  },
+  "lint-staged": {
+    "*.{ts,js,md,yml}": "prettier --write"
   }
 }
