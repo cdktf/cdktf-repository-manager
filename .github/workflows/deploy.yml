@@ -31,6 +31,7 @@ jobs:
         run: "$(yarn bin)/cdktf deploy --auto-approve 'repos'"
         env:
           TERRAFORM_CLOUD_TOKEN: ${{ secrets.TF_CLOUD_TOKEN }}
-
-      - name: Upgrade Repositories
-        uses: ./.github/workflows/upgrade-repositories.yml
+  upgrade:
+    needs:
+      - terraform
+    uses: ./.github/workflows/upgrade-repositories.yml
