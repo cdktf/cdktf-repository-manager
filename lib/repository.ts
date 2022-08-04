@@ -88,12 +88,10 @@ export class GithubRepository extends Resource {
     new RepositoryWebhook(this, "slack-webhook", {
       repository: this.resource.name,
 
-      configuration: [
-        {
-          url: config.webhookUrl,
-          contentType: "json",
-        },
-      ],
+      configuration: {
+        url: config.webhookUrl,
+        contentType: "json",
+      },
 
       // We don't need to notify about PRs since they are auto-created
       events: ["issues"],
