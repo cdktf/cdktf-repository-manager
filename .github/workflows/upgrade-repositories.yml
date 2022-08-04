@@ -180,5 +180,14 @@ jobs:
               owner,
               repo,
               issue_number: data.number,
-              labels: ['automerge']
             })
+      - name: Send failures to Slack
+        if: ${{ failure() && !cancelled() }}
+        uses: slackapi/slack-github-action@v1.21.0
+        with:
+          payload: |
+            {
+              "run_url": "https://github.com/hashicorp/terraform-ls/actions/runs/${{ github.run_id }}"
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.FAILURE_SLACK_WEBHOOK_URL }}
