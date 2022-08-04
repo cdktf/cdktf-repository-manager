@@ -24,8 +24,11 @@ jobs:
         with:
           node-version: "14"
 
-      - run: yarn install
-      - name: Synth
-        run: "$(yarn bin)/cdktf synth"
+      - name: Install
+        run: yarn install
+
       - name: Deploy
-        run: "cd cdktf.out/stacks/repos && rm -rf .terraform && terraform init && terraform apply -auto-approve"
+        run: "$(yarn bin)/cdktf deploy --auto-approve 'repos'"
+
+      - name: Upgrade Repositories
+        uses: ./.github/workflows/upgrade-repositories.yml
