@@ -24,9 +24,34 @@ class TerraformCdkProviderStack extends TerraformStack {
     super(scope, name);
 
     // validate that providers contain only valid names (-go suffix is forbidden)
-    if (Object.keys(providers).some((key) => key.endsWith("-go"))) {
+    const goSuffixProviders = Object.keys(providers).filter((key) =>
+      key.endsWith("-go")
+    );
+    if (goSuffixProviders.length > 0) {
       Annotations.of(this).addError(
-        "providers contain a provider key with a suffix -go which is not allowed due to conflicts with go package repositories"
+        `Providers contain a provider key with a suffix -go which is not allowed due to conflicts with go package repositories. Please remove the -go suffix from these provider keys ${goSuffixProviders.join(
+          ", "
+        )}`
+      );
+    }
+
+    // validate key matches provider name
+    const notMatchingProviders = Object.entries(providers).filter(
+      ([key, value]) => {
+        const fullProviderName = new RegExp("(.*)@", "g").exec(value)![1];
+        const providerName = fullProviderName.includes("/")
+          ? fullProviderName.split("/")[1]
+          : fullProviderName;
+
+        const sanitizedProviderName = providerName.replace(/-/g, "");
+        return key !== sanitizedProviderName;
+      }
+    );
+    if (notMatchingProviders.length > 0) {
+      Annotations.of(this).addError(
+        `Provider name and provider key do not match for ${notMatchingProviders.join(
+          ", "
+        )}. This leads to issues when deploying go packages. Please rename the provider key to match the provider name.`
       );
     }
 
