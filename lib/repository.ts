@@ -17,6 +17,7 @@ export interface RepositoryConfig {
   topics?: string[];
   team: ITeam;
   protectMain?: boolean;
+  protectMainChecks?: string[];
   webhookUrl: string;
 }
 
@@ -31,6 +32,7 @@ export class GithubRepository extends Resource {
       description = "Repository management for prebuilt cdktf providers via cdktf",
       team,
       protectMain = false,
+      protectMainChecks = ["build"],
     } = config;
 
     this.resource = new Repository(this, "repo", {
@@ -70,7 +72,7 @@ export class GithubRepository extends Resource {
         requiredStatusChecks: [
           {
             strict: true,
-            contexts: ["build"],
+            contexts: protectMainChecks,
           },
         ],
       });

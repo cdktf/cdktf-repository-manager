@@ -99,6 +99,14 @@ class TerraformCdkProviderStack extends TerraformStack {
         topics: [provider],
         team,
         protectMain: true,
+        protectMainChecks: [
+          "build",
+          "package-js",
+          "package-java",
+          "package-python",
+          "package-dotnet",
+          "package-go",
+        ],
         webhookUrl: slackWebhook.stringValue,
       });
 
