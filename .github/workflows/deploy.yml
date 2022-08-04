@@ -35,3 +35,4 @@ jobs:
     needs:
       - terraform
     uses: ./.github/workflows/upgrade-repositories.yml
+    secrets: inherit
