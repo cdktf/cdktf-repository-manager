@@ -2,6 +2,7 @@ name: "Upgrade Provider Repositories"
 
 on:
   workflow_dispatch: {}
+  workflow_call: {}
 
 jobs:
   build-provider-matrix:
