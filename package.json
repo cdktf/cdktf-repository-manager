@@ -23,9 +23,9 @@
     "node": ">=10.12"
   },
   "dependencies": {
-    "@cdktf/provider-github": "^0.3.6",
-    "cdktf": "^0.6.0",
-    "cdktf-cli": "^0.6.0",
+    "@cdktf/provider-github": "^2.0.10",
+    "cdktf": "^0.12.0",
+    "cdktf-cli": "^0.12.0",
     "change-case": "^4.1.2",
     "constructs": "^10.0"
   },
