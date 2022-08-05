@@ -180,6 +180,7 @@ jobs:
               owner,
               repo,
               issue_number: data.number,
+              labels: ['automerge']
             })
       - name: Send failures to Slack
         if: ${{ failure() && !cancelled() }}
