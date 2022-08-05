@@ -188,7 +188,7 @@ jobs:
           payload: |
             {
               "provider_name": "${{ matrix.provider }}",
-              "run_url": "https://github.com/hashicorp/cdktf-repository-manager/runs/${{ github.run_id }}"
+              "run_url": "https://github.com/hashicorp/cdktf-repository-manager/actions/runs/${{ github.run_id }}"
             }
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.FAILURE_SLACK_WEBHOOK_URL }}
