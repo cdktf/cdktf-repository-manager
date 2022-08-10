@@ -123,15 +123,17 @@ class TerraformCdkProviderStack extends TerraformStack {
         description: `Prebuilt Terraform CDK (cdktf) provider for ${provider}.`,
         topics: [provider],
         team,
-        protectMain: true,
-        protectMainChecks: [
-          "build",
-          "package-js",
-          "package-java",
-          "package-python",
-          "package-dotnet",
-          "package-go",
-        ],
+        // temporarily disabled since the automerge check runs for shorter than
+        // the jobs might take, therefore nothing is merged
+        protectMain: false,
+        // protectMainChecks: [
+        //   "build",
+        //   "package-js",
+        //   "package-java",
+        //   "package-python",
+        //   "package-dotnet",
+        //   "package-go",
+        // ],
         webhookUrl: slackWebhook.stringValue,
       });
 
