@@ -1,0 +1,34 @@
+name: "Create Next PR"
+
+on:
+  workflow_dispatch: {}
+  workflow_call: {}
+
+jobs:
+  build-provider-matrix:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - id: set-matrix
+        run: |
+          provider=$(jq -rcM "{ provider: keys }" provider.json)
+          echo "::set-output name=matrix::$provider"
+
+  create-next-pr:
+    needs: build-provider-matrix
+    name: "Create Next PR"
+    runs-on: ubuntu-latest
+    container:
+      image: docker.mirror.hashicorp.services/hashicorp/jsii-terraform
+    strategy:
+      fail-fast: false
+      matrix: ${{fromJSON(needs.build-provider-matrix.outputs.matrix)}}
+      max-parallel: 10
+    steps:
+      - name: Trigger workflow
+        run: gh workflow run next-cdktf-version-pr -R hashicorp/cdktf-provider-${{ matrix.provider }}
+        env:
+          GH_TOKEN: ${{ secrets.GH_COMMENT_TOKEN }}
