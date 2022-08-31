@@ -1,1 +1,1 @@
-["azurerm", "google", "googlebeta", "kubernetes"]
+["aws", "azurerm", "datadog", "google", "googlebeta", "kubernetes"]
