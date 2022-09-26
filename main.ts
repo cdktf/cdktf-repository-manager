@@ -98,7 +98,7 @@ class TerraformCdkProviderStack extends TerraformStack {
       provider: githubProviderHashiCorp,
     });
     const teamCdktf = new DataGithubTeam(this, "cdktf-team-cdktf", {
-      slug: "cdktf",
+      slug: "tf-cdk-team",
       provider: githubProviderCdktf,
     });
 
