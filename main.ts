@@ -15,6 +15,16 @@ import { TerraformVariable } from "cdktf";
 const providers: Record<string, string> = JSON.parse(
   fs.readFileSync(path.join(__dirname, "provider.json"), "utf8")
 );
+
+const GITHUB_ACCOUNT_TARGETS: { [provider: string]: "hashicorp" | "cdktf" } = {
+  // default all to "hashicorp"
+  ...Object.fromEntries(
+    Object.keys(providers).map((provider) => [provider, "hashicorp"])
+  ),
+  // overrides
+  hashicups: "cdktf",
+};
+
 interface GitUrls {
   html: string;
   ssh: string;
@@ -93,9 +103,33 @@ class TerraformCdkProviderStack extends TerraformStack {
     ghSecret.addAlias("PROJEN_GITHUB_TOKEN");
     ghSecret.addAlias("GO_GITHUB_TOKEN"); // used for publishing Go packages to separate repo
 
-    new GithubProvider(this, "terraform-cdk-providers", {
-      owner: "hashicorp",
-    });
+    const githubProviderHashiCorp = new GithubProvider(
+      this,
+      "github-provider-hashicorp",
+      {
+        owner: "hashicorp",
+      }
+    );
+
+    const githubProviderCdktf = new GithubProvider(
+      this,
+      "github-provider-cdktf",
+      {
+        owner: "cdktf",
+        alias: "cdktf",
+      }
+    );
+
+    function getTargetGithubProvider(provider: string): GithubProvider {
+      switch (GITHUB_ACCOUNT_TARGETS[provider]) {
+        case "cdktf":
+          return githubProviderCdktf;
+        case "hashicorp":
+          return githubProviderHashiCorp;
+        default:
+          throw new Error(`Unexpected provider name ${provider}`);
+      }
+    }
 
     const selfTokens = [
       new SecretFromVariable(this, "tf-cloud-token"),
@@ -104,8 +138,11 @@ class TerraformCdkProviderStack extends TerraformStack {
     const self = new GithubRepository(this, "cdktf-repository-manager", {
       team,
       webhookUrl: slackWebhook.stringValue,
+      provider: githubProviderHashiCorp,
     });
-    selfTokens.forEach((token) => token.for(self.resource));
+    selfTokens.forEach((token) =>
+      token.for(self.resource, githubProviderHashiCorp)
+    );
 
     const templateRepository = new GithubRepository(
       this,
@@ -113,12 +150,15 @@ class TerraformCdkProviderStack extends TerraformStack {
       {
         team,
         webhookUrl: slackWebhook.stringValue,
+        provider: githubProviderHashiCorp,
       }
     );
 
-    npmSecret.for(templateRepository.resource);
+    npmSecret.for(templateRepository.resource, githubProviderHashiCorp);
 
     const providerRepos: GitUrls[] = Object.keys(providers).map((provider) => {
+      const ghProvider = getTargetGithubProvider(provider);
+
       const repo = new GithubRepository(this, `cdktf-provider-${provider}`, {
         description: `Prebuilt Terraform CDK (cdktf) provider for ${provider}.`,
         topics: [provider],
@@ -133,6 +173,7 @@ class TerraformCdkProviderStack extends TerraformStack {
           "package-go",
         ],
         webhookUrl: slackWebhook.stringValue,
+        provider: ghProvider,
       });
 
       // repo to publish go packages to
@@ -142,9 +183,10 @@ class TerraformCdkProviderStack extends TerraformStack {
         team,
         protectMain: false,
         webhookUrl: slackWebhook.stringValue,
+        provider: ghProvider,
       });
 
-      secrets.forEach((secret) => secret.for(repo.resource));
+      secrets.forEach((secret) => secret.for(repo.resource, ghProvider));
 
       return {
         html: repo.resource.htmlUrl,

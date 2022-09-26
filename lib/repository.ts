@@ -6,6 +6,7 @@ import {
   BranchProtection,
   IssueLabel,
   RepositoryWebhook,
+  GithubProvider,
 } from "@cdktf/provider-github";
 
 export interface ITeam {
@@ -19,6 +20,7 @@ export interface RepositoryConfig {
   protectMain?: boolean;
   protectMainChecks?: string[];
   webhookUrl: string;
+  provider: GithubProvider;
 }
 
 export class GithubRepository extends Resource {
@@ -33,6 +35,7 @@ export class GithubRepository extends Resource {
       team,
       protectMain = false,
       protectMainChecks = ["build"],
+      provider,
     } = config;
 
     this.resource = new Repository(this, "repo", {
@@ -54,12 +57,14 @@ export class GithubRepository extends Resource {
         "pre-built-provider",
         ...topics,
       ],
+      provider,
     });
 
     new IssueLabel(this, `automerge-label`, {
       color: "5DC8DB",
       name: "automerge",
       repository: this.resource.name,
+      provider,
     });
 
     if (protectMain) {
@@ -75,6 +80,7 @@ export class GithubRepository extends Resource {
             contexts: protectMainChecks,
           },
         ],
+        provider,
       });
     }
 
@@ -82,6 +88,7 @@ export class GithubRepository extends Resource {
       repository: this.resource.name,
       teamId: team.id,
       permission: "admin",
+      provider,
     });
 
     // Slack integration so we can be notified about new PRs and Issues
@@ -95,6 +102,7 @@ export class GithubRepository extends Resource {
 
       // We don't need to notify about PRs since they are auto-created
       events: ["issues"],
+      provider,
     });
   }
 }
