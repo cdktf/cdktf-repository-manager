@@ -65,9 +65,53 @@ class TerraformCdkProviderStack extends TerraformStack {
       );
     }
 
-    const team = new DataGithubTeam(this, "cdktf-team", {
+    const githubProviderHashiCorp = new GithubProvider(
+      this,
+      "github-provider-hashicorp",
+      {
+        owner: "hashicorp",
+      }
+    );
+
+    const githubProviderCdktf = new GithubProvider(
+      this,
+      "github-provider-cdktf",
+      {
+        owner: "cdktf",
+        alias: "cdktf",
+      }
+    );
+
+    function getTargetGithubProvider(provider: string): GithubProvider {
+      switch (GITHUB_ACCOUNT_TARGETS[provider]) {
+        case "cdktf":
+          return githubProviderCdktf;
+        case "hashicorp":
+          return githubProviderHashiCorp;
+        default:
+          throw new Error(`Unexpected provider name ${provider}`);
+      }
+    }
+
+    const teamHashiCorp = new DataGithubTeam(this, "cdktf-team-hashicorp", {
       slug: "cdktf",
+      provider: githubProviderHashiCorp,
     });
+    const teamCdktf = new DataGithubTeam(this, "cdktf-team-cdktf", {
+      slug: "cdktf",
+      provider: githubProviderCdktf,
+    });
+
+    function getTargetTeam(provider: string): DataGithubTeam {
+      switch (GITHUB_ACCOUNT_TARGETS[provider]) {
+        case "cdktf":
+          return teamCdktf;
+        case "hashicorp":
+          return teamHashiCorp;
+        default:
+          throw new Error(`Unexpected provider name ${provider}`);
+      }
+    }
 
     new RemoteBackend(this, {
       organization: "cdktf-team",
@@ -103,40 +147,12 @@ class TerraformCdkProviderStack extends TerraformStack {
     ghSecret.addAlias("PROJEN_GITHUB_TOKEN");
     ghSecret.addAlias("GO_GITHUB_TOKEN"); // used for publishing Go packages to separate repo
 
-    const githubProviderHashiCorp = new GithubProvider(
-      this,
-      "github-provider-hashicorp",
-      {
-        owner: "hashicorp",
-      }
-    );
-
-    const githubProviderCdktf = new GithubProvider(
-      this,
-      "github-provider-cdktf",
-      {
-        owner: "cdktf",
-        alias: "cdktf",
-      }
-    );
-
-    function getTargetGithubProvider(provider: string): GithubProvider {
-      switch (GITHUB_ACCOUNT_TARGETS[provider]) {
-        case "cdktf":
-          return githubProviderCdktf;
-        case "hashicorp":
-          return githubProviderHashiCorp;
-        default:
-          throw new Error(`Unexpected provider name ${provider}`);
-      }
-    }
-
     const selfTokens = [
       new SecretFromVariable(this, "tf-cloud-token"),
       new SecretFromVariable(this, "gh-comment-token"),
     ];
     const self = new GithubRepository(this, "cdktf-repository-manager", {
-      team,
+      team: teamHashiCorp,
       webhookUrl: slackWebhook.stringValue,
       provider: githubProviderHashiCorp,
     });
@@ -148,7 +164,7 @@ class TerraformCdkProviderStack extends TerraformStack {
       this,
       "cdktf-provider-project",
       {
-        team,
+        team: teamHashiCorp,
         webhookUrl: slackWebhook.stringValue,
         provider: githubProviderHashiCorp,
       }
@@ -158,6 +174,7 @@ class TerraformCdkProviderStack extends TerraformStack {
 
     const providerRepos: GitUrls[] = Object.keys(providers).map((provider) => {
       const ghProvider = getTargetGithubProvider(provider);
+      const team = getTargetTeam(provider);
 
       const repo = new GithubRepository(this, `cdktf-provider-${provider}`, {
         description: `Prebuilt Terraform CDK (cdktf) provider for ${provider}.`,
