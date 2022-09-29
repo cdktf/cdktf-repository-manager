@@ -1,9 +1,10 @@
 
-module.exports = ({ steps, github, stackName }) => {
+module.exports = ({ context, github, stackName }) => {
     const { readFileSync } = require("fs")
     const data = readFileSync(`./plan_stdout_${stackName}.txt`, 'utf-8')
     const isLargeOutput = data.length > 65000
     const refreshLinesRegex = /: Refreshing state\.\.\.\s*\[id=/i
+    const { steps } = context
 
     let plan = data
     if (isLargeOutput)
@@ -27,7 +28,7 @@ module.exports = ({ steps, github, stackName }) => {
 
         </details>
 
-        *Pusher: @${github.actor}, Action: \`${github.event_name}\`, Working Directory: \`${process.env.tf_actions_working_dir}\`, Workflow: \`${github.workflow}\`*`;
+        *Pusher: @${github.actor}, Action: \`${github.event_name}\`, Working Directory: \`${context.env.tf_actions_working_dir}\`, Workflow: \`${github.workflow}\`*`;
 
     github.issues.createComment({
         issue_number: context.issue.number,
