@@ -60,6 +60,7 @@ jobs:
             const scriptPath = resolve("./.github/lib/comment-plan-output")
             require(scriptPath)({
               context, 
+              github,
               planOutcome: "${{steps.plan.outcome}}",
               pusher: "${{github.actor}}",
               actionName: "${{github.event_name}}",
