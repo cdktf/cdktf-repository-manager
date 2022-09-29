@@ -1,5 +1,5 @@
 
-module.exports = ({ context, github, planOutcome, stackName }) => {
+module.exports = ({ context, github, planOutcome, pusher, actionName, workflowName, workingDirectory, stackName }) => {
     const { readFileSync } = require("fs")
     const data = readFileSync(`./plan_stdout_${stackName}.txt`, 'utf-8')
     const isLargeOutput = data.length > 65000
@@ -27,7 +27,7 @@ module.exports = ({ context, github, planOutcome, stackName }) => {
 
         </details>
 
-        *Pusher: @${github.actor}, Action: \`${github.event_name}\`, Working Directory: \`${context.env.tf_actions_working_dir}\`, Workflow: \`${github.workflow}\`*`;
+        *Pusher: @${pusher}, Action: \`${actionName}\`, Working Directory: \`${workingDirectory}\`, Workflow: \`${workflowName}\`*`;
 
     github.issues.createComment({
         issue_number: context.issue.number,

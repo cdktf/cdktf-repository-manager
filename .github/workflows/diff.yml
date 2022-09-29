@@ -58,4 +58,12 @@ jobs:
           script: |
             const {resolve} = require('path')
             const scriptPath = resolve("./.github/lib/comment-plan-output")
-            require(scriptPath)({github, context, planOutcome: "${{steps.plan.outcome}}", stackName: "${{matrix.stack}}" })
+            require(scriptPath)({
+              context, 
+              planOutcome: "${{steps.plan.outcome}}",
+              pusher: "${{github.actor}}",
+              actionName: "${{github.event_name}}",
+              workingDirectory: "${{env.tf_actions_working_dir}}",
+              workflowName: "${{github.workflow}}",
+              stackName: "${{matrix.stack}}" 
+            })
