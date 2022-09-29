@@ -43,7 +43,13 @@ jobs:
         name: Create projen run commands file
         with:
           script: |
-            require("./main/.github/lib/create-projen-files")()
+            const {resolve} = require('path')
+            const scriptPath = resolve("./main/.github/lib/create-projen-files")
+            const script = require(scriptPath)
+            script({
+              providerName: "${{matrix.provider}}"
+            })
+
 
       - name: Upgrade provider project
         run: |
