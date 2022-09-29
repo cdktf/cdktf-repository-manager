@@ -58,4 +58,4 @@ jobs:
           script: |
             const {resolve} = require('path')
             const scriptPath = resolve("./.github/lib/comment-plan-output")
-            require(scriptPath)({github, steps, stackName: ${{matrix.stack}}})
+            require(scriptPath)({github, context, planOutcome: steps.plan.outcome, stackName: matrix.stack})

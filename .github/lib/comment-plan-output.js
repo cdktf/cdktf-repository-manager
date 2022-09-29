@@ -1,10 +1,9 @@
 
-module.exports = ({ context, github, stackName }) => {
+module.exports = ({ context, github, planOutcome, stackName }) => {
     const { readFileSync } = require("fs")
     const data = readFileSync(`./plan_stdout_${stackName}.txt`, 'utf-8')
     const isLargeOutput = data.length > 65000
     const refreshLinesRegex = /: Refreshing state\.\.\.\s*\[id=/i
-    const { steps } = context
 
     let plan = data
     if (isLargeOutput)
@@ -16,7 +15,7 @@ module.exports = ({ context, github, stackName }) => {
     const remoteRunLinkMatch = remoteRunLinkRegex.exec(plan)
     const remoteRunLink = remoteRunLinkMatch !== null ? remoteRunLinkMatch[1] : null
 
-    const output = `#### [\`${stackName}\`] Terraform Plan 📖\`${steps.plan.outcome}\`
+    const output = `#### [\`${stackName}\`] Terraform Plan 📖\`${planOutcome}\`
 
         ${remoteRunLink ? `<a href="${remoteRunLink}" target="_blank">Remote Plan Link ↗️</a>` : ""}
 
