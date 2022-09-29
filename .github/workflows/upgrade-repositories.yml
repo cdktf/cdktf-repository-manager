@@ -97,8 +97,13 @@ jobs:
         with:
           github-token: ${{ secrets.GH_COMMENT_TOKEN }}
           script: |
-            const script = require("./main/.github/lib/create-pr")
-            await script({github})
+            const {resolve} = require('path')
+            const scriptPath = resolve("./main/.github/lib/create-pr")
+            await script({
+              github,
+              runNumber: "${{github.run_number}}",
+              providerName: "${{matrix.provider}}"
+            })
 
       - name: Send failures to Slack
         if: ${{ failure() && !cancelled() }}
