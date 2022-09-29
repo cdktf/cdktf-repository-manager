@@ -17,17 +17,17 @@ module.exports = ({ context, github, planOutcome, pusher, actionName, workflowNa
 
     const output = `#### [\`${stackName}\`] Terraform Plan 📖\`${planOutcome}\`
 
-        ${remoteRunLink ? `<a href="${remoteRunLink}" target="_blank">Remote Plan Link ↗️</a>` : ""}
+${remoteRunLink ? `<a href="${remoteRunLink}" target="_blank">Remote Plan Link ↗️</a>` : ""}
 
-        <details><summary>Show Plan</summary>
+<details><summary>Show Plan</summary>
 
-        \`\`\`tf
-        ${plan}
-        \`\`\`
+\`\`\`tf
+${plan}
+\`\`\`
 
-        </details>
+</details>
 
-        *Pusher: @${pusher}, Action: \`${actionName}\`, Working Directory: \`${workingDirectory}\`, Workflow: \`${workflowName}\`*`;
+*Pusher: @${pusher}, Action: \`${actionName}\`, Working Directory: \`${workingDirectory}\`, Workflow: \`${workflowName}\`*`;
 
     github.issues.createComment({
         issue_number: context.issue.number,
