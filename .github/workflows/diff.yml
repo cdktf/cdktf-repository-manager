@@ -56,4 +56,6 @@ jobs:
         with:
           github-token: ${{ secrets.GH_COMMENT_TOKEN }}
           script: |
-            require("./.github/lib/comment-plan-output")({github, steps, stackName: matrix.stack})
+            const {resolve} = require('path')
+            const scriptPath = resolve("./.github/lib/comment-plan-output")
+            require(scriptPath)({github, steps, stackName: ${{matrix.stack}}})
