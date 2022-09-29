@@ -19,7 +19,7 @@ const providers: Record<string, string> = JSON.parse(
 const GITHUB_ACCOUNT_TARGETS: { [provider: string]: "hashicorp" | "cdktf" } = {
   // default all to "hashicorp"
   ...Object.fromEntries(
-    Object.keys(providers).map((provider) => [provider, "hashicorp"])
+    Object.keys(providers).map((provider) => [provider, "cdktf"])
   ),
   // overrides
   hashicups: "cdktf",
