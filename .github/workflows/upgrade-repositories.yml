@@ -70,7 +70,9 @@ jobs:
         uses: actions/github-script@v4
         with:
           script: |
-            const script = require("./main/.github/lib/detect-breaking-changes")
+            const {resolve} = require('path')
+            const scriptPath = resolve("./main/.github/lib/detect-breaking-changes")
+            const script = require(scriptPath)
             await script({core, exec})
 
       - if: steps.git_diff.outputs.has_changes && !steps.diff_breaking.outputs.has_breaking_changes
@@ -99,6 +101,7 @@ jobs:
           script: |
             const {resolve} = require('path')
             const scriptPath = resolve("./main/.github/lib/create-pr")
+            const script = require(scriptPath)
             await script({
               github,
               runNumber: "${{github.run_number}}",
