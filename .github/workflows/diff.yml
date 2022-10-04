@@ -68,7 +68,7 @@ jobs:
             plan = plan.length > 65000 ? `${plan.substring(0, 65000)}...` : plan
 
             const remoteRunLinkRegex = /^(.*app\.terraform\.io\/app.*)$/m
-            const remoteRunLinkMatch = remoteRunRegex.exec(plan)
+            const remoteRunLinkMatch = remoteRunLinkRegex.exec(plan)
             let remoteRunLink = remoteRunLinkMatch !== null ? remoteRunLinkMatch[1] : null
 
             const output = `#### [\`${{matrix.stack}}\`] Terraform Plan 📖\`${{ steps.plan.outcome }}\`
