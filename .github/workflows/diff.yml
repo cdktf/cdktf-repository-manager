@@ -3,9 +3,27 @@ name: "Repository Manager"
 on: [pull_request]
 
 jobs:
+  build-shard-matrix:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - id: set-matrix
+        run: |
+          stack=$(jq -rcM ".stacks | { stack: keys }" sharded-stacks.json)
+          echo "::set-output name=matrix::$stack"
+
   terraform:
+    needs: build-shard-matrix
     name: "Terraform CDK Diff"
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix: ${{fromJSON(needs.build-shard-matrix.outputs.matrix)}}
+      max-parallel: 10
+
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -27,10 +45,10 @@ jobs:
         id: plan
         run: |
           set -o pipefail
-          cd cdktf.out/stacks/repos 
+          cd cdktf.out/stacks/${{ matrix.stack }}
           rm -rf .terraform 
           terraform init 
-          terraform plan -no-color | tee ../../../plan_stdout.txt; echo $?
+          terraform plan -no-color | tee ../../../plan_stdout_${{ matrix.stack }}.txt; echo $?
           set +o pipefail
         continue-on-error: true
       - uses: actions/github-script@0.9.0
@@ -39,7 +57,7 @@ jobs:
           github-token: ${{ secrets.GH_COMMENT_TOKEN }}
           script: |
             const { readFileSync } = require("fs")
-            const data = readFileSync('./plan_stdout.txt', 'utf-8')
+            const data = readFileSync('./plan_stdout_${{ matrix.stack }}.txt', 'utf-8')
             const isLargeOutput = data.length > 65000
             const refreshLinesRegex = /: Refreshing state\.\.\.\s*\[id=/i
 
@@ -49,7 +67,13 @@ jobs:
 
             plan = plan.length > 65000 ? `${plan.substring(0, 65000)}...` : plan
 
-            const output = `#### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
+            const remoteRunLinkRegex = /^(.*app\.terraform\.io\/app.*)$/m
+            const remoteRunLinkMatch = remoteRunRegex.exec(plan)
+            let remoteRunLink = remoteRunLinkMatch !== null ? remoteRunLinkMatch[1] : null
+
+            const output = `#### [\`${{matrix.stack}}\`] Terraform Plan 📖\`${{ steps.plan.outcome }}\`
+
+            ${remoteRunLink ? `<a href="${remoteRunLink}">Remote Plan Link</a>` : ""}
 
             <details><summary>Show Plan</summary>
 
