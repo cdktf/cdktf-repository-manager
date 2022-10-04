@@ -73,11 +73,11 @@ jobs:
 
             const output = `#### [\`${{matrix.stack}}\`] Terraform Plan 📖\`${{ steps.plan.outcome }}\`
 
-            ${remoteRunLink ? `<a href="${remoteRunLink}">Remote Plan Link</a>` : ""}
+            ${remoteRunLink ? `<a href="${remoteRunLink}" target="_blank">Remote Plan Link ↗️</a>` : ""}
 
             <details><summary>Show Plan</summary>
 
-            \`\`\`
+            \`\`\`tf
             ${plan}
             \`\`\`
 
