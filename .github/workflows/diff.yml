@@ -25,7 +25,13 @@ jobs:
         run: "$(yarn bin)/cdktf synth"
       - name: Plan
         id: plan
-        run: "cd cdktf.out/stacks/repos && rm -rf .terraform && terraform init && terraform plan -no-color | tee ../../../plan_stdout.txt"
+        run: |
+          set -o pipefail
+          cd cdktf.out/stacks/repos 
+          rm -rf .terraform 
+          terraform init 
+          terraform plan -no-color | tee ../../../plan_stdout.txt; echo $?
+          set +o pipefail
         continue-on-error: true
       - uses: actions/github-script@0.9.0
         if: github.event_name == 'pull_request'
@@ -34,7 +40,14 @@ jobs:
           script: |
             const { readFileSync } = require("fs")
             const data = readFileSync('./plan_stdout.txt', 'utf-8')
-            const plan = data.length > 65000 ? `${data.substring(0, 65000)}...` : data
+            const isLargeOutput = data.length > 65000
+            const refreshLinesRegex = /: Refreshing state\.\.\.\s*\[id=/i
+
+            let plan = data
+            if (isLargeOutput)
+                plan = plan.split("\n").filter(line => !refreshLinesRegex.test(line)).join("\n")
+
+            plan = plan.length > 65000 ? `${plan.substring(0, 65000)}...` : plan
 
             const output = `#### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
 
