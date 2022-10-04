@@ -12,14 +12,18 @@ import * as fs from "fs";
 import * as path from "path";
 import { TerraformVariable } from "cdktf";
 
-const providers: Record<string, string> = JSON.parse(
+const allProviders: Record<string, string> = JSON.parse(
   fs.readFileSync(path.join(__dirname, "provider.json"), "utf8")
+);
+
+const shardedStacks: Record<string, string[]> = JSON.parse(
+  fs.readFileSync(path.join(__dirname, "sharded-stacks.json"), "utf8")
 );
 
 const GITHUB_ACCOUNT_TARGETS: { [provider: string]: "hashicorp" | "cdktf" } = {
   // default all to "hashicorp"
   ...Object.fromEntries(
-    Object.keys(providers).map((provider) => [provider, "cdktf"])
+    Object.keys(allProviders).map((provider) => [provider, "cdktf"])
   ),
   // overrides
   hashicups: "cdktf",
@@ -32,6 +36,15 @@ interface GitUrls {
 class TerraformCdkProviderStack extends TerraformStack {
   constructor(scope: Construct, name: string) {
     super(scope, name);
+
+    const stackProvidersList = shardedStacks[name];
+
+    const providers = Object.entries(allProviders)
+      .filter(([key, _value]) => stackProvidersList.includes(key))
+      .reduce((result: Record<string, string>, entry: string[]) => {
+        result[entry[0]] = entry[1];
+        return result;
+      }, {});
 
     // validate that providers contain only valid names (-go suffix is forbidden)
     const goSuffixProviders = Object.keys(providers).filter((key) =>
@@ -226,7 +239,11 @@ class TerraformCdkProviderStack extends TerraformStack {
 }
 
 const app = new App();
-const stack = new TerraformCdkProviderStack(app, "repos");
-// Override until https://github.com/integrations/terraform-provider-github/issues/910 is fixed
-stack.addOverride("terraform.required_providers.github.version", "4.14.0");
+
+Object.keys(shardedStacks).map((stackName) => {
+  const stack = new TerraformCdkProviderStack(app, stackName);
+  // Override until https://github.com/integrations/terraform-provider-github/issues/910 is fixed
+  stack.addOverride("terraform.required_providers.github.version", "4.14.0");
+});
+
 app.synth();
