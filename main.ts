@@ -56,12 +56,11 @@ function getShardedStackProviders(name: string): Record<string, string> {
   const stackShardInformation = shardedStacks.stacks[name];
   const stackProvidersList = stackShardInformation.providers;
 
-  return Object.entries(allProviders)
-    .filter(([key, _value]) => stackProvidersList.includes(key))
-    .reduce((result: Record<string, string>, entry: string[]) => {
-      result[entry[0]] = entry[1];
-      return result;
-    }, {});
+  return Object.fromEntries(
+    Object.entries(allProviders).filter(([key]) =>
+      stackProvidersList.includes(key)
+    )
+  );
 }
 
 class TerraformCdkProviderStack extends TerraformStack {
@@ -299,7 +298,7 @@ if (!stackNames.includes(primaryStackName)) {
   throw new Error("Cannot proceed with a non-existent stack as primary");
 }
 
-stackNames.map((stackName) => {
+stackNames.forEach((stackName) => {
   const stack = new TerraformCdkProviderStack(
     app,
     stackName,

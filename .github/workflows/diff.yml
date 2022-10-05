@@ -40,7 +40,7 @@ jobs:
 
       - run: yarn install
       - name: Synth
-        run: "$(yarn bin)/cdktf synth ${{ matrix.stack }}"
+        run: "$(yarn bin)/cdktf synth"
       - name: Plan
         id: plan
         run: |

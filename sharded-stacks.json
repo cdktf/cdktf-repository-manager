@@ -52,7 +52,6 @@
       },
       "providers": [
         "ad",
-        "awscc",
         "azurestack",
         "boundary",
         "consul",
