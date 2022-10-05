@@ -47,8 +47,7 @@
     },
     "repos-official-new": {
       "backend": {
-        "workspaceName": "prebuilt-providers-official-new",
-        "isPrimaryStack": false
+        "workspaceName": "prebuilt-providers-official-new"
       },
       "providers": [
         "ad",
