@@ -1,0 +1,70 @@
+{
+  "primaryStack": "repos",
+  "stacks": {
+    "repos": {
+      "backend": {
+        "workspaceName": "prebuilt-providers"
+      },
+      "providers": [
+        "acme",
+        "archive",
+        "aws",
+        "azuread",
+        "azurerm",
+        "cloudflare",
+        "cloudinit",
+        "databricks",
+        "datadog",
+        "digitalocean",
+        "dnsimple",
+        "docker",
+        "external",
+        "github",
+        "gitlab",
+        "google",
+        "googlebeta",
+        "hashicups",
+        "helm",
+        "ionoscloud",
+        "kubernetes",
+        "local",
+        "newrelic",
+        "null",
+        "okta",
+        "opentelekomcloud",
+        "pagerduty",
+        "postgresql",
+        "random",
+        "snowflake",
+        "spotinst",
+        "template",
+        "tfe",
+        "time",
+        "tls",
+        "upcloud",
+        "vault"
+      ]
+    },
+    "repos-official-new": {
+      "backend": {
+        "workspaceName": "prebuilt-providers-official-new"
+      },
+      "providers": [
+        "ad",
+        "azurestack",
+        "boundary",
+        "consul",
+        "dns",
+        "googleworkspace",
+        "hcp",
+        "hcs",
+        "http",
+        "nomad",
+        "opc",
+        "oraclepaas",
+        "salesforce",
+        "vsphere"
+      ]
+    }
+  }
+}

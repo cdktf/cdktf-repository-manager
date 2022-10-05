@@ -3,9 +3,27 @@ name: "Repository Manager"
 on: [pull_request]
 
 jobs:
+  build-shard-matrix:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - id: set-matrix
+        run: |
+          stack=$(jq -rcM ".stacks | { stack: keys }" sharded-stacks.json)
+          echo "::set-output name=matrix::$stack"
+
   terraform:
+    needs: build-shard-matrix
     name: "Terraform CDK Diff"
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix: ${{fromJSON(needs.build-shard-matrix.outputs.matrix)}}
+      max-parallel: 10
+
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -25,7 +43,13 @@ jobs:
         run: "$(yarn bin)/cdktf synth"
       - name: Plan
         id: plan
-        run: "cd cdktf.out/stacks/repos && rm -rf .terraform && terraform init && terraform plan -no-color | tee ../../../plan_stdout.txt"
+        run: |
+          set -o pipefail
+          cd cdktf.out/stacks/${{ matrix.stack }}
+          rm -rf .terraform 
+          terraform init 
+          terraform plan -no-color | tee ../../../plan_stdout_${{ matrix.stack }}.txt; echo $?
+          set +o pipefail
         continue-on-error: true
       - uses: actions/github-script@0.9.0
         if: github.event_name == 'pull_request'
@@ -33,14 +57,27 @@ jobs:
           github-token: ${{ secrets.GH_COMMENT_TOKEN }}
           script: |
             const { readFileSync } = require("fs")
-            const data = readFileSync('./plan_stdout.txt', 'utf-8')
-            const plan = data.length > 65000 ? `${data.substring(0, 65000)}...` : data
+            const data = readFileSync('./plan_stdout_${{ matrix.stack }}.txt', 'utf-8')
+            const isLargeOutput = data.length > 65000
+            const refreshLinesRegex = /: Refreshing state\.\.\.\s*\[id=/i
 
-            const output = `#### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
+            let plan = data
+            if (isLargeOutput)
+                plan = plan.split("\n").filter(line => !refreshLinesRegex.test(line)).join("\n")
+
+            plan = plan.length > 65000 ? `${plan.substring(0, 65000)}...` : plan
+
+            const remoteRunLinkRegex = /^(.*app\.terraform\.io\/app.*)$/m
+            const remoteRunLinkMatch = remoteRunLinkRegex.exec(plan)
+            let remoteRunLink = remoteRunLinkMatch !== null ? remoteRunLinkMatch[1] : null
+
+            const output = `#### [\`${{matrix.stack}}\`] Terraform Plan 📖\`${{ steps.plan.outcome }}\`
+
+            ${remoteRunLink ? `<a href="${remoteRunLink}" target="_blank">Remote Plan Link ↗️</a>` : ""}
 
             <details><summary>Show Plan</summary>
 
-            \`\`\`
+            \`\`\`tf
             ${plan}
             \`\`\`
 
