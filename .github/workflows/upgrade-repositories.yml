@@ -35,7 +35,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
         with:
-          repository: hashicorp/cdktf-provider-${{ matrix.provider }}
+          repository: cdktf/cdktf-provider-${{ matrix.provider }}
           token: ${{ secrets.GH_COMMENT_TOKEN }}
           path: provider
       - uses: actions/github-script@v4
@@ -167,7 +167,7 @@ jobs:
             const { GITHUB_SERVER_URL, GITHUB_REPOSITORY, GITHUB_RUN_ID } = process.env
             const url = `${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}`
             const repo = "cdktf-provider-${{ matrix.provider }}"
-            const owner = 'hashicorp'
+            const owner = 'cdktf'
             const { data } = await github.pulls.create({
               owner,
               repo,
