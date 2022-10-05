@@ -291,6 +291,37 @@ const app = new App();
 
 const primaryStackName = shardedStacks.primaryStack;
 const stackNames = Object.keys(shardedStacks.stacks);
+const allProvidersInShards = Object.values(shardedStacks.stacks)
+  .map((stack) => stack.providers)
+  .flat() as string[];
+const allProviderNames = Object.keys(allProviders);
+
+// Validations for provider names
+const shardProviderSet = new Set(allProvidersInShards);
+const allProviderSet = new Set(allProviderNames);
+const missingProvidersInShards = new Set(
+  [...allProviderSet].filter((provider) => !shardProviderSet.has(provider))
+);
+const missingProvidersInAllProviders = new Set(
+  [...shardProviderSet].filter((provider) => !allProviderSet.has(provider))
+);
+
+if (shardProviderSet.size < allProvidersInShards.length) {
+  throw new Error("Duplicates present in sharded-stacks.json");
+}
+
+if (missingProvidersInShards.size > 0) {
+  throw new Error(
+    "A provider present in provider.json is not present in sharded-stacks.json."
+  );
+}
+
+if (missingProvidersInAllProviders.size > 0) {
+  throw new Error(
+    "A provider present in sharded-stacks.json is not present in provider.json."
+  );
+}
+
 if (!primaryStackName) {
   throw new Error("Cannot proceed without a primary stack");
 }
