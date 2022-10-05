@@ -312,13 +312,17 @@ if (shardProviderSet.size < allProvidersInShards.length) {
 
 if (missingProvidersInShards.size > 0) {
   throw new Error(
-    "A provider present in provider.json is not present in sharded-stacks.json."
+    `One or more providers present in provider.json are missing in sharded-stacks.json: ${[
+      ...missingProvidersInShards,
+    ]}`
   );
 }
 
 if (missingProvidersInAllProviders.size > 0) {
   throw new Error(
-    "A provider present in sharded-stacks.json is not present in provider.json."
+    `One or more providers present in sharded-stacks.json are missing in provider.json: ${[
+      ...missingProvidersInAllProviders,
+    ]}`
   );
 }
 
