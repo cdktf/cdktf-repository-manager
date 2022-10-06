@@ -1,4 +1,4 @@
-name: "Repository Manager"
+name: "Plan"
 
 on: [pull_request]
 

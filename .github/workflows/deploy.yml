@@ -1,4 +1,4 @@
-name: "Repository Manager"
+name: "Deploy"
 
 on:
   workflow_dispatch: {}
