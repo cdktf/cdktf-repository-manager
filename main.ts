@@ -55,23 +55,20 @@ function getShardedStackProviders(name: string): Record<string, string> {
 }
 
 class TerraformCdkProviderStack extends TerraformStack {
-  githubProvider: GithubProvider;
-  githubTeam: DataGithubTeam;
-
   constructor(scope: Construct, name: string, isPrimaryStack: boolean) {
     super(scope, name);
 
     const providers = getShardedStackProviders(name);
     this.validateProviderNames(providers);
 
-    this.githubProvider = new GithubProvider(this, "github-provider-cdktf", {
+    const githubProvider = new GithubProvider(this, "github-provider-cdktf", {
       owner: "cdktf",
       alias: "cdktf",
     });
 
-    this.githubTeam = new DataGithubTeam(this, "cdktf-team-cdktf", {
+    const githubTeam = new DataGithubTeam(this, "cdktf-team-cdktf", {
       slug: "tf-cdk-team",
-      provider: this.githubProvider,
+      provider: githubProvider,
     });
 
     new RemoteBackend(this, {
@@ -109,15 +106,24 @@ class TerraformCdkProviderStack extends TerraformStack {
     ghSecret.addAlias("GO_GITHUB_TOKEN"); // used for publishing Go packages to separate repo
 
     if (isPrimaryStack) {
-      this.createRepositoryManagerRepo(slackWebhook);
-      this.createProviderProjectRepo(slackWebhook, npmSecret);
+      this.createRepositoryManagerRepo(
+        slackWebhook,
+        githubProvider,
+        githubTeam
+      );
+      this.createProviderProjectRepo(
+        slackWebhook,
+        npmSecret,
+        githubProvider,
+        githubTeam
+      );
     }
 
     const providerRepos: GitUrls[] = Object.keys(providers).map((provider) => {
       const repo = new GithubRepository(this, `cdktf-provider-${provider}`, {
         description: `Prebuilt Terraform CDK (cdktf) provider for ${provider}.`,
         topics: [provider],
-        team: this.githubTeam,
+        team: githubTeam,
         protectMain: true,
         protectMainChecks: [
           "build",
@@ -128,22 +134,20 @@ class TerraformCdkProviderStack extends TerraformStack {
           "package-go",
         ],
         webhookUrl: slackWebhook.stringValue,
-        provider: this.githubProvider,
+        provider: githubProvider,
       });
 
       // repo to publish go packages to
       new GithubRepository(this, `cdktf-provider-${provider}-go`, {
         description: `CDK for Terraform Go provider bindings for ${provider}.`,
         topics: [provider],
-        team: this.githubTeam,
+        team: githubTeam,
         protectMain: false,
         webhookUrl: slackWebhook.stringValue,
-        provider: this.githubProvider,
+        provider: githubProvider,
       });
 
-      secrets.forEach((secret) =>
-        secret.for(repo.resource, this.githubProvider)
-      );
+      secrets.forEach((secret) => secret.for(repo.resource, githubProvider));
 
       return {
         html: repo.resource.htmlUrl,
@@ -158,40 +162,44 @@ class TerraformCdkProviderStack extends TerraformStack {
 
   private createProviderProjectRepo(
     slackWebhook: TerraformVariable,
-    npmSecret: SecretFromVariable
+    npmSecret: SecretFromVariable,
+    githubProvider: GithubProvider,
+    githubTeam: DataGithubTeam
   ) {
     const templateRepository = new GithubRepository(
       this,
       "cdktf-provider-project",
       {
-        team: this.githubTeam,
+        team: githubTeam,
         webhookUrl: slackWebhook.stringValue,
-        provider: this.githubProvider,
+        provider: githubProvider,
       }
     );
 
-    npmSecret.for(templateRepository.resource, this.githubProvider);
+    npmSecret.for(templateRepository.resource, githubProvider);
 
     new TerraformOutput(this, "templateRepoUrl", {
       value: templateRepository?.resource.htmlUrl,
     });
   }
 
-  private createRepositoryManagerRepo(slackWebhook: TerraformVariable) {
+  private createRepositoryManagerRepo(
+    slackWebhook: TerraformVariable,
+    githubProvider: GithubProvider,
+    githubTeam: DataGithubTeam
+  ) {
     const selfTokens = [
       new SecretFromVariable(this, "tf-cloud-token"),
       new SecretFromVariable(this, "gh-comment-token"),
     ];
 
     const self = new GithubRepository(this, "cdktf-repository-manager", {
-      team: this.githubTeam,
+      team: githubTeam,
       webhookUrl: slackWebhook.stringValue,
-      provider: this.githubProvider,
+      provider: githubProvider,
     });
 
-    selfTokens.forEach((token) =>
-      token.for(self.resource, this.githubProvider)
-    );
+    selfTokens.forEach((token) => token.for(self.resource, githubProvider));
 
     new TerraformOutput(this, "selfRepoUrl", {
       value: self.resource.htmlUrl,
