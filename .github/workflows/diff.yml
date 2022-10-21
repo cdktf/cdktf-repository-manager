@@ -56,38 +56,15 @@ jobs:
         with:
           github-token: ${{ secrets.GH_COMMENT_TOKEN }}
           script: |
-            const { readFileSync } = require("fs")
-            const data = readFileSync('./plan_stdout_${{ matrix.stack }}.txt', 'utf-8')
-            const isLargeOutput = data.length > 65000
-            const refreshLinesRegex = /: Refreshing state\.\.\.\s*\[id=/i
-
-            let plan = data
-            if (isLargeOutput)
-                plan = plan.split("\n").filter(line => !refreshLinesRegex.test(line)).join("\n")
-
-            plan = plan.length > 65000 ? `${plan.substring(0, 65000)}...` : plan
-
-            const remoteRunLinkRegex = /^(.*app\.terraform\.io\/app.*)$/m
-            const remoteRunLinkMatch = remoteRunLinkRegex.exec(plan)
-            let remoteRunLink = remoteRunLinkMatch !== null ? remoteRunLinkMatch[1] : null
-
-            const output = `#### [\`${{matrix.stack}}\`] Terraform Plan 📖\`${{ steps.plan.outcome }}\`
-
-            ${remoteRunLink ? `<a href="${remoteRunLink}" target="_blank">Remote Plan Link ↗️</a>` : ""}
-
-            <details><summary>Show Plan</summary>
-
-            \`\`\`tf
-            ${plan}
-            \`\`\`
-
-            </details>
-
-            *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`, Working Directory: \`${{ env.tf_actions_working_dir }}\`, Workflow: \`${{ github.workflow }}\`*`;
-
-            github.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: output
+            const {resolve} = require('path')
+            const scriptPath = resolve("./.github/lib/comment-plan-output")
+            require(scriptPath)({
+              context, 
+              github,
+              planOutcome: "${{steps.plan.outcome}}",
+              pusher: "${{github.actor}}",
+              actionName: "${{github.event_name}}",
+              workingDirectory: "${{env.tf_actions_working_dir}}",
+              workflowName: "${{github.workflow}}",
+              stackName: "${{matrix.stack}}" 
             })
