@@ -32,15 +32,6 @@ const shardedStacks: StackShards = JSON.parse(
   fs.readFileSync(path.join(__dirname, "sharded-stacks.json"), "utf8")
 );
 
-const GITHUB_ACCOUNT_TARGETS: { [provider: string]: "hashicorp" | "cdktf" } = {
-  // default all to "hashicorp"
-  ...Object.fromEntries(
-    Object.keys(allProviders).map((provider) => [provider, "cdktf"])
-  ),
-  // overrides
-  hashicups: "cdktf",
-};
-
 interface GitUrls {
   html: string;
   ssh: string;
@@ -64,44 +55,20 @@ function getShardedStackProviders(name: string): Record<string, string> {
 }
 
 class TerraformCdkProviderStack extends TerraformStack {
-  githubProviderHashiCorp: GithubProvider;
-  githubProviderCdktf: GithubProvider;
-  teamHashiCorp: DataGithubTeam;
-  teamCdktf: DataGithubTeam;
-
   constructor(scope: Construct, name: string, isPrimaryStack: boolean) {
     super(scope, name);
 
     const providers = getShardedStackProviders(name);
     this.validateProviderNames(providers);
 
-    // Setup provider blocks
-    this.githubProviderHashiCorp = new GithubProvider(
-      this,
-      "github-provider-hashicorp",
-      {
-        owner: "hashicorp",
-      }
-    );
-
-    this.githubProviderCdktf = new GithubProvider(
-      this,
-      "github-provider-cdktf",
-      {
-        owner: "cdktf",
-        alias: "cdktf",
-      }
-    );
-
-    // Read Github Teams
-    this.teamHashiCorp = new DataGithubTeam(this, "cdktf-team-hashicorp", {
-      slug: "cdktf",
-      provider: this.githubProviderHashiCorp,
+    const githubProvider = new GithubProvider(this, "github-provider-cdktf", {
+      owner: "cdktf",
+      alias: "cdktf",
     });
 
-    this.teamCdktf = new DataGithubTeam(this, "cdktf-team-cdktf", {
+    const githubTeam = new DataGithubTeam(this, "cdktf-team-cdktf", {
       slug: "tf-cdk-team",
-      provider: this.githubProviderCdktf,
+      provider: githubProvider,
     });
 
     new RemoteBackend(this, {
@@ -139,18 +106,24 @@ class TerraformCdkProviderStack extends TerraformStack {
     ghSecret.addAlias("GO_GITHUB_TOKEN"); // used for publishing Go packages to separate repo
 
     if (isPrimaryStack) {
-      this.createRepositoryManagerRepo(slackWebhook);
-      this.createProviderProjectRepo(slackWebhook, npmSecret);
+      this.createRepositoryManagerRepo(
+        slackWebhook,
+        githubProvider,
+        githubTeam
+      );
+      this.createProviderProjectRepo(
+        slackWebhook,
+        npmSecret,
+        githubProvider,
+        githubTeam
+      );
     }
 
     const providerRepos: GitUrls[] = Object.keys(providers).map((provider) => {
-      const ghProvider = this.getTargetGithubProvider(provider);
-      const team = this.getTargetTeam(provider);
-
       const repo = new GithubRepository(this, `cdktf-provider-${provider}`, {
         description: `Prebuilt Terraform CDK (cdktf) provider for ${provider}.`,
         topics: [provider],
-        team,
+        team: githubTeam,
         protectMain: true,
         protectMainChecks: [
           "build",
@@ -161,20 +134,20 @@ class TerraformCdkProviderStack extends TerraformStack {
           "package-go",
         ],
         webhookUrl: slackWebhook.stringValue,
-        provider: ghProvider,
+        provider: githubProvider,
       });
 
       // repo to publish go packages to
       new GithubRepository(this, `cdktf-provider-${provider}-go`, {
         description: `CDK for Terraform Go provider bindings for ${provider}.`,
         topics: [provider],
-        team,
+        team: githubTeam,
         protectMain: false,
         webhookUrl: slackWebhook.stringValue,
-        provider: ghProvider,
+        provider: githubProvider,
       });
 
-      secrets.forEach((secret) => secret.for(repo.resource, ghProvider));
+      secrets.forEach((secret) => secret.for(repo.resource, githubProvider));
 
       return {
         html: repo.resource.htmlUrl,
@@ -189,40 +162,44 @@ class TerraformCdkProviderStack extends TerraformStack {
 
   private createProviderProjectRepo(
     slackWebhook: TerraformVariable,
-    npmSecret: SecretFromVariable
+    npmSecret: SecretFromVariable,
+    githubProvider: GithubProvider,
+    githubTeam: DataGithubTeam
   ) {
     const templateRepository = new GithubRepository(
       this,
       "cdktf-provider-project",
       {
-        team: this.teamHashiCorp,
+        team: githubTeam,
         webhookUrl: slackWebhook.stringValue,
-        provider: this.githubProviderHashiCorp,
+        provider: githubProvider,
       }
     );
 
-    npmSecret.for(templateRepository.resource, this.githubProviderHashiCorp);
+    npmSecret.for(templateRepository.resource, githubProvider);
 
     new TerraformOutput(this, "templateRepoUrl", {
       value: templateRepository?.resource.htmlUrl,
     });
   }
 
-  private createRepositoryManagerRepo(slackWebhook: TerraformVariable) {
+  private createRepositoryManagerRepo(
+    slackWebhook: TerraformVariable,
+    githubProvider: GithubProvider,
+    githubTeam: DataGithubTeam
+  ) {
     const selfTokens = [
       new SecretFromVariable(this, "tf-cloud-token"),
       new SecretFromVariable(this, "gh-comment-token"),
     ];
 
     const self = new GithubRepository(this, "cdktf-repository-manager", {
-      team: this.teamHashiCorp,
+      team: githubTeam,
       webhookUrl: slackWebhook.stringValue,
-      provider: this.githubProviderHashiCorp,
+      provider: githubProvider,
     });
 
-    selfTokens.forEach((token) =>
-      token.for(self.resource, this.githubProviderHashiCorp)
-    );
+    selfTokens.forEach((token) => token.for(self.resource, githubProvider));
 
     new TerraformOutput(this, "selfRepoUrl", {
       value: self.resource.htmlUrl,
@@ -260,29 +237,6 @@ class TerraformCdkProviderStack extends TerraformStack {
           ", "
         )}. This leads to issues when deploying go packages. Please rename the provider key to match the provider name.`
       );
-    }
-  }
-
-  private getTargetGithubProvider(provider: string): GithubProvider {
-    switch (GITHUB_ACCOUNT_TARGETS[provider]) {
-      case "cdktf":
-        return this.githubProviderCdktf;
-      case "hashicorp":
-        return this.githubProviderHashiCorp;
-      default:
-        throw new Error(`Unexpected provider name ${provider}`);
-    }
-  }
-
-  // Convenience method for getting the right team per-provider
-  private getTargetTeam(provider: string): DataGithubTeam {
-    switch (GITHUB_ACCOUNT_TARGETS[provider]) {
-      case "cdktf":
-        return this.teamCdktf;
-      case "hashicorp":
-        return this.teamHashiCorp;
-      default:
-        throw new Error(`Unexpected provider name ${provider}`);
     }
   }
 }
