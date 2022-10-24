@@ -50,7 +50,6 @@ jobs:
               providerName: "${{matrix.provider}}"
             })
 
-
       - name: Upgrade provider project
         run: |
           unset CI
@@ -84,19 +83,19 @@ jobs:
       - if: steps.git_diff.outputs.has_changes && !steps.diff_breaking.outputs.has_breaking_changes
         name: Commit (non breaking) and push changes (if changed)
         run: |
-          git checkout -b upgrade-provider-project-${{ github.run_number }}
+          git checkout -b upgrade-provider-project-${{ github.run_number }}-${{ github.run_attempt }}
           git add .
           git commit -m "chore(deps): upgrade provider project"
-          git push --set-upstream origin upgrade-provider-project-${{ github.run_number }}
+          git push --set-upstream origin upgrade-provider-project-${{ github.run_number }}-${{ github.run_attempt }}
         working-directory: ./provider
 
       - if: steps.git_diff.outputs.has_changes && steps.diff_breaking.outputs.has_breaking_changes
         name: Commit (breaking) and push changes (if changed)
         run: |
-          git checkout -b upgrade-provider-project-${{ github.run_number }}
+          git checkout -b upgrade-provider-project-${{ github.run_number }}-${{ github.run_attempt }}
           git add .
           git commit -m "chore(deps)!: upgrade provider project"
-          git push --set-upstream origin upgrade-provider-project-${{ github.run_number }}
+          git push --set-upstream origin upgrade-provider-project-${{ github.run_number }}-${{ github.run_attempt }}
         working-directory: ./provider
 
       - if: steps.git_diff.outputs.has_changes
