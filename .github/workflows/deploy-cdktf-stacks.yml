@@ -1,0 +1,61 @@
+name: "Deploy CDKTF Stack"
+
+on:
+  workflow_call:
+    inputs:
+      stacks:
+        required: true
+        description: JSON-stringified list of stacks to deploy, e.g. # [{ "stack": "my-stack" }]
+        type: string
+      upgrade-repositories:
+        required: true
+        type: boolean
+
+jobs:
+  terraform:
+    name: "Terraform CDK Diff"
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix: ${{fromJSON(inputs.stacks)}}
+      max-parallel: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: 1.0.7
+          cli_config_credentials_token: ${{ secrets.TF_CLOUD_TOKEN }}
+
+      - uses: actions/setup-node@v1
+        with:
+          node-version: "14"
+
+      - name: Install
+        run: yarn install
+
+      - name: Deploy
+        run: "$(yarn bin)/cdktf deploy --auto-approve '${{ matrix.stack }}'"
+        env:
+          TERRAFORM_CLOUD_TOKEN: ${{ secrets.TF_CLOUD_TOKEN }}
+
+      - name: Send failures to Slack
+        if: ${{ failure() && !cancelled() }}
+        uses: slackapi/slack-github-action@v1.21.0
+        with:
+          payload: |
+            {
+              "run_url": "https://github.com/hashicorp/terraform-ls/actions/runs/${{ github.run_id }}"
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.FAILURE_SLACK_WEBHOOK_URL }}
+
+  upgrade:
+    if: inputs.upgrade-repositories
+    needs:
+      - terraform
+    uses: ./.github/workflows/upgrade-repositories.yml
+    secrets: inherit

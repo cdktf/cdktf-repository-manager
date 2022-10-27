@@ -1,5 +1,4 @@
 import { Construct } from "constructs";
-import { Resource } from "cdktf";
 import {
   Repository,
   TeamRepository,
@@ -7,6 +6,7 @@ import {
   IssueLabel,
   RepositoryWebhook,
   GithubProvider,
+  DataGithubRepository,
 } from "@cdktf/provider-github";
 
 export interface ITeam {
@@ -23,7 +23,76 @@ export interface RepositoryConfig {
   provider: GithubProvider;
 }
 
-export class GithubRepository extends Resource {
+export class RepositorySetup extends Construct {
+  constructor(
+    scope: Construct,
+    name: string,
+    config: Pick<
+      RepositoryConfig,
+      "team" | "webhookUrl" | "provider" | "protectMain" | "protectMainChecks"
+    > & {
+      repository: Repository | DataGithubRepository;
+    }
+  ) {
+    super(scope, name);
+
+    const {
+      protectMain = false,
+      protectMainChecks = ["build"],
+      provider,
+      repository,
+      team,
+      webhookUrl,
+    } = config;
+
+    new IssueLabel(this, `automerge-label`, {
+      color: "5DC8DB",
+      name: "automerge",
+      repository: repository.name,
+      provider,
+    });
+
+    if (protectMain) {
+      new BranchProtection(this, "main-protection", {
+        pattern: "main",
+        repositoryId: repository.name,
+        enforceAdmins: true,
+        allowsDeletions: false,
+        allowsForcePushes: false,
+        requiredStatusChecks: [
+          {
+            strict: true,
+            contexts: protectMainChecks,
+          },
+        ],
+        provider,
+      });
+    }
+
+    new TeamRepository(this, "managing-team", {
+      repository: repository.name,
+      teamId: team.id,
+      permission: "admin",
+      provider,
+    });
+
+    // Slack integration so we can be notified about new PRs and Issues
+    new RepositoryWebhook(this, "slack-webhook", {
+      repository: repository.name,
+
+      configuration: {
+        url: webhookUrl,
+        contentType: "json",
+      },
+
+      // We don't need to notify about PRs since they are auto-created
+      events: ["issues"],
+      provider,
+    });
+  }
+}
+
+export class GithubRepository extends Construct {
   public readonly resource: Repository;
 
   constructor(scope: Construct, name: string, config: RepositoryConfig) {
@@ -32,9 +101,6 @@ export class GithubRepository extends Resource {
     const {
       topics = [],
       description = "Repository management for prebuilt cdktf providers via cdktf",
-      team,
-      protectMain = false,
-      protectMainChecks = ["build"],
       provider,
     } = config;
 
@@ -60,49 +126,33 @@ export class GithubRepository extends Resource {
       provider,
     });
 
-    new IssueLabel(this, `automerge-label`, {
-      color: "5DC8DB",
-      name: "automerge",
-      repository: this.resource.name,
-      provider,
+    new RepositorySetup(this, "repository-setup", {
+      ...config,
+      repository: this.resource,
     });
+  }
+}
 
-    if (protectMain) {
-      new BranchProtection(this, "main-protection", {
-        pattern: "main",
-        repositoryId: this.resource.name,
-        enforceAdmins: true,
-        allowsDeletions: false,
-        allowsForcePushes: false,
-        requiredStatusChecks: [
-          {
-            strict: true,
-            contexts: protectMainChecks,
-          },
-        ],
-        provider,
-      });
+export class GithubRepositoryFromExistingRepository extends Construct {
+  public readonly resource: DataGithubRepository;
+
+  constructor(
+    scope: Construct,
+    name: string,
+    config: Pick<RepositoryConfig, "team" | "webhookUrl" | "provider"> & {
+      repositoryName: string;
     }
+  ) {
+    super(scope, name);
 
-    new TeamRepository(this, "managing-team", {
-      repository: this.resource.name,
-      teamId: team.id,
-      permission: "admin",
-      provider,
+    this.resource = new DataGithubRepository(this, "repo", {
+      name: config.repositoryName,
+      provider: config.provider,
     });
 
-    // Slack integration so we can be notified about new PRs and Issues
-    new RepositoryWebhook(this, "slack-webhook", {
-      repository: this.resource.name,
-
-      configuration: {
-        url: config.webhookUrl,
-        contentType: "json",
-      },
-
-      // We don't need to notify about PRs since they are auto-created
-      events: ["issues"],
-      provider,
+    new RepositorySetup(this, "repository-setup", {
+      ...config,
+      repository: this.resource,
     });
   }
 }
