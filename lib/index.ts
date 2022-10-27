@@ -1,2 +1,2 @@
 export * from "./repository";
-export * from "./secret";
+export * from "./secrets";

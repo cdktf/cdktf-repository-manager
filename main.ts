@@ -7,7 +7,12 @@ import {
   Annotations,
 } from "cdktf";
 import { GithubProvider, DataGithubTeam } from "@cdktf/provider-github";
-import { GithubRepository, SecretFromVariable } from "./lib";
+import {
+  GithubRepository,
+  GithubRepositoryFromExistingRepository,
+  SecretFromVariable,
+  PublishingSecretSet,
+} from "./lib";
 import * as fs from "fs";
 import * as path from "path";
 import { TerraformVariable } from "cdktf";
@@ -83,27 +88,7 @@ class TerraformCdkProviderStack extends TerraformStack {
     });
     slackWebhook.overrideLogicalId("slack-webhook");
 
-    const secrets = [
-      "gh-token",
-      "npm-token",
-      "nuget-api-key",
-      "twine-username",
-      "twine-password",
-      "maven-username",
-      "maven-password",
-      "maven-gpg-private-key",
-      "maven-gpg-private-key-passphrase",
-      "maven-staging-profile-id",
-    ].map((name) => new SecretFromVariable(this, name));
-
-    const npmSecret = secrets.find((s) => s.name === "npm-token");
-    if (!npmSecret) throw new Error("npm-token secret not found");
-
-    const ghSecret = secrets.find((s) => s.name === "gh-token");
-    if (!ghSecret) throw new Error("gh-token secret not found");
-
-    ghSecret.addAlias("PROJEN_GITHUB_TOKEN");
-    ghSecret.addAlias("GO_GITHUB_TOKEN"); // used for publishing Go packages to separate repo
+    const secrets = new PublishingSecretSet(this, "secret-set");
 
     if (isPrimaryStack) {
       this.createRepositoryManagerRepo(
@@ -113,7 +98,7 @@ class TerraformCdkProviderStack extends TerraformStack {
       );
       this.createProviderProjectRepo(
         slackWebhook,
-        npmSecret,
+        secrets.npmSecret,
         githubProvider,
         githubTeam
       );
@@ -147,7 +132,7 @@ class TerraformCdkProviderStack extends TerraformStack {
         provider: githubProvider,
       });
 
-      secrets.forEach((secret) => secret.for(repo.resource, githubProvider));
+      secrets.forAllLanguages(repo.resource, githubProvider);
 
       return {
         html: repo.resource.htmlUrl,
@@ -241,6 +226,71 @@ class TerraformCdkProviderStack extends TerraformStack {
   }
 }
 
+class CustomConstructsStack extends TerraformStack {
+  constructor(
+    scope: Construct,
+    name: string,
+    constructRepos: {
+      name: string;
+      languages: ("typescript" | "python" | "csharp" | "java" | "go")[];
+    }[]
+  ) {
+    super(scope, name);
+    const githubProvider = new GithubProvider(this, "github-provider-cdktf", {
+      owner: "cdktf",
+      alias: "cdktf",
+    });
+
+    const githubTeam = new DataGithubTeam(this, "cdktf-team-cdktf", {
+      slug: "tf-cdk-team",
+      provider: githubProvider,
+    });
+
+    new RemoteBackend(this, {
+      organization: "cdktf-team",
+      workspaces: {
+        name: "custom-constructs",
+      },
+    });
+    const slackWebhook = new TerraformVariable(this, "slack-webhook", {
+      type: "string",
+    });
+    slackWebhook.overrideLogicalId("slack-webhook");
+
+    const secrets = new PublishingSecretSet(this, "secret-set");
+
+    constructRepos.forEach(({ name: repoName, languages }) => {
+      const repo = new GithubRepositoryFromExistingRepository(
+        this,
+        `cdktf-construct-${repoName}`,
+        {
+          repositoryName: repoName,
+          team: githubTeam,
+          webhookUrl: slackWebhook.stringValue,
+          provider: githubProvider,
+        }
+      );
+
+      secrets.forGitHub(repo.resource, githubProvider);
+      if (languages.includes("typescript")) {
+        secrets.forTypescript(repo.resource, githubProvider);
+      }
+      if (languages.includes("python")) {
+        secrets.forPython(repo.resource, githubProvider);
+      }
+      if (languages.includes("csharp")) {
+        secrets.forCsharp(repo.resource, githubProvider);
+      }
+      if (languages.includes("java")) {
+        secrets.forJava(repo.resource, githubProvider);
+      }
+      if (languages.includes("go")) {
+        secrets.forGo(repo.resource, githubProvider);
+      }
+    });
+  }
+}
+
 const app = new App();
 
 const primaryStackName = shardedStacks.primaryStack;
@@ -296,5 +346,24 @@ stackNames.forEach((stackName) => {
   // Override until https://github.com/integrations/terraform-provider-github/issues/910 is fixed
   stack.addOverride("terraform.required_providers.github.version", "4.14.0");
 });
+
+new CustomConstructsStack(app, "custom-constructs", [
+  {
+    name: "cdktf-tf-module-stack",
+    languages: ["typescript", "python"],
+  },
+  {
+    name: "cdktf-cdk8s",
+    languages: ["typescript", "python"],
+  },
+  {
+    name: "cdktf-local-exec",
+    languages: ["typescript", "python"],
+  },
+  {
+    name: "cdktf-multi-stack-tfe",
+    languages: ["typescript", "python"],
+  },
+]);
 
 app.synth();

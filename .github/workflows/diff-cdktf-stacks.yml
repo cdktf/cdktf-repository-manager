@@ -1,0 +1,63 @@
+name: "Diff CDKTF Stack"
+
+on:
+  workflow_call:
+    inputs:
+      stacks:
+        required: true
+        description: JSON-stringified list of stacks to deploy, e.g. # [{ "stack": "my-stack" }]
+        type: string
+
+jobs:
+  terraform:
+    name: "Terraform CDK Diff"
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix: ${{fromJSON(inputs.stacks)}}
+      max-parallel: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: 1.0.7
+          cli_config_credentials_token: ${{ secrets.TF_CLOUD_TOKEN }}
+
+      - uses: actions/setup-node@v1
+        with:
+          node-version: "14"
+
+      - run: yarn install
+      - name: Synth
+        run: "$(yarn bin)/cdktf synth"
+      - name: Plan
+        id: plan
+        run: |
+          set -o pipefail
+          cd cdktf.out/stacks/${{ matrix.stack }}
+          rm -rf .terraform 
+          terraform init 
+          terraform plan -no-color | tee ../../../plan_stdout_${{ matrix.stack }}.txt; echo $?
+          set +o pipefail
+        continue-on-error: true
+      - uses: actions/github-script@0.9.0
+        if: github.event_name == 'pull_request'
+        with:
+          github-token: ${{ secrets.GH_COMMENT_TOKEN }}
+          script: |
+            const {resolve} = require('path')
+            const scriptPath = resolve("./.github/lib/comment-plan-output")
+            require(scriptPath)({
+              context, 
+              github,
+              planOutcome: "${{steps.plan.outcome}}",
+              pusher: "${{github.actor}}",
+              actionName: "${{github.event_name}}",
+              workingDirectory: "${{env.tf_actions_working_dir}}",
+              workflowName: "${{github.workflow}}",
+              stackName: "${{matrix.stack}}" 
+            })
