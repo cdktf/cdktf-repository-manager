@@ -66,35 +66,26 @@ jobs:
       - name: Check for changes
         id: git_diff
         run: |
-          git diff --exit-code || echo "::set-output name=has_changes::true"
+          git diff --exit-code || echo "has_changes=true" >> $GITHUB_OUTPUT
         working-directory: ./provider
 
       - if: steps.git_diff.outputs.has_changes
         name: Detect breaking version changes
-        id: diff_breaking
+        id: diff_changes
         uses: actions/github-script@v4
         with:
           script: |
             const {resolve} = require('path')
-            const scriptPath = resolve("./main/.github/lib/detect-breaking-changes")
+            const scriptPath = resolve("./main/.github/lib/collect-changes")
             const script = require(scriptPath)
             await script({core, exec})
 
-      - if: steps.git_diff.outputs.has_changes && !steps.diff_breaking.outputs.has_breaking_changes
-        name: Commit (non breaking) and push changes (if changed)
+      - if: steps.git_diff.outputs.has_changes && !steps.diff_changes.outputs.has_breaking_changes
+        name: Commit ({{steps.diff_changes.outputs.has_breaking_changes && 'breaking' || 'unbreaking'}}) and push changes (if changed)
         run: |
           git checkout -b upgrade-provider-project-${{ github.run_number }}-${{ github.run_attempt }}
           git add .
-          git commit -m "chore(deps): upgrade provider project"
-          git push --set-upstream origin upgrade-provider-project-${{ github.run_number }}-${{ github.run_attempt }}
-        working-directory: ./provider
-
-      - if: steps.git_diff.outputs.has_changes && steps.diff_breaking.outputs.has_breaking_changes
-        name: Commit (breaking) and push changes (if changed)
-        run: |
-          git checkout -b upgrade-provider-project-${{ github.run_number }}-${{ github.run_attempt }}
-          git add .
-          git commit -m "chore(deps)!: upgrade provider project"
+          git commit -m "{{ steps.diff_changes.outputs.commit_message }}"
           git push --set-upstream origin upgrade-provider-project-${{ github.run_number }}-${{ github.run_attempt }}
         working-directory: ./provider
 
