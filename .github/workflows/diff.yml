@@ -13,7 +13,7 @@ jobs:
       - id: set-matrix
         run: |
           stack=$(jq -rcM ".stacks | { stack: keys }" sharded-stacks.json)
-          echo "::set-output name=matrix::$stack"
+          echo "matrix=$stack" >> $GITHUB_OUTPUT
 
   diff:
     uses: ./.github/workflows/diff-cdktf-stacks.yml

@@ -15,7 +15,7 @@ jobs:
       - id: set-matrix
         run: |
           provider=$(jq -rcM "{ provider: keys }" provider.json)
-          echo "::set-output name=matrix::$provider"
+          echo "matrix=$provider" >> $GITHUB_OUTPUT
 
   upgrade-provider:
     needs: build-provider-matrix

@@ -17,7 +17,7 @@ jobs:
       - id: set-matrix
         run: |
           stack=$(jq -rcM ".stacks | { stack: keys }" sharded-stacks.json)
-          echo "::set-output name=matrix::$stack"
+          echo "matrix=$stack" >> $GITHUB_OUTPUT
 
   deploy:
     uses: ./.github/workflows/deploy-cdktf-stacks.yml
