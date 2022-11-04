@@ -1,4 +1,4 @@
-module.exports = async ({ github, branchName, providerName }) => {
+module.exports = async ({ github, branchName, providerName, prTitle }) => {
   const { GITHUB_SERVER_URL, GITHUB_REPOSITORY, GITHUB_RUN_ID } = process.env;
   const url = `${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}`;
   const repo = `cdktf-provider-${providerName}`;
@@ -9,7 +9,7 @@ module.exports = async ({ github, branchName, providerName }) => {
     repo,
     head: branchName,
     base: "main",
-    title: "chore(deps): upgrade provider project",
+    title: prTitle || "chore(deps): upgrade provider project",
     maintainer_can_modify: true,
     body: `Triggered by ${url}`,
   });
