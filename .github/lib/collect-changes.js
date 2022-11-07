@@ -1,3 +1,6 @@
+const path = require("path");
+const fs = require("fs");
+
 const v = (key, input) =>
   new RegExp(`${key}:[\\D]*(\\d+(\\.\\d+)*)`).exec(input)[1];
 
@@ -23,7 +26,6 @@ const isBreaking = (key, before, after) => {
 };
 
 async function getBeforeAndAfterFiles(dir, fileName, isJson) {
-  const fs = require("fs");
   const after = fs.readFileSync(path.join(dir, fileName), "utf8");
 
   let before;
