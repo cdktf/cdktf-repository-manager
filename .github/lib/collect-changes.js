@@ -23,6 +23,7 @@ const isBreaking = (key, before, after) => {
 };
 
 async function getBeforeAndAfterFiles(dir, fileName, isJson) {
+  const fs = require("fs");
   const after = fs.readFileSync(path.join(dir, fileName), "utf8");
 
   let before;
@@ -49,7 +50,6 @@ async function getBeforeAndAfterFiles(dir, fileName, isJson) {
 
 module.exports = async ({ core, exec }) => {
   const path = require("path");
-  const fs = require("fs");
   const providerDirectory = path.join(process.env.GITHUB_WORKSPACE, "provider");
 
   const { before, after } = await getBeforeAndAfterFiles(
