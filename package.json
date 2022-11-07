@@ -31,12 +31,18 @@
   },
   "devDependencies": {
     "@types/node": "^14.0.27",
+    "@typescript-eslint/eslint-plugin": "^5.42.0",
+    "@typescript-eslint/parser": "^5.42.0",
+    "eslint": "^8.27.0",
     "husky": ">=6",
     "lint-staged": ">=10",
     "prettier": "^2.7.1",
     "typescript": "^3.9.7"
   },
   "lint-staged": {
-    "*.{ts,js,md,yml}": "prettier --write"
+    "*.{ts,js,md,yml}": [
+      "prettier --write",
+      "eslint"
+    ]
   }
 }
