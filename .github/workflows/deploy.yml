@@ -21,6 +21,7 @@ jobs:
 
   deploy:
     uses: ./.github/workflows/deploy-cdktf-stacks.yml
+    needs: build-shard-matrix
     with:
       stacks: ${{ needs.build-shard-matrix.outputs.matrix }}
       upgrade-repositories: true
