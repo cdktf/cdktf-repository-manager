@@ -45,9 +45,6 @@
     "**/*.{ts,js}": [
       "eslint",
       "prettier --write"
-    ],
-    ".github/lib/**": [
-      "eslint"
     ]
   }
 }
