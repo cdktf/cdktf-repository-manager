@@ -350,7 +350,7 @@ stackNames.forEach((stackName) => {
 new CustomConstructsStack(app, "custom-constructs", [
   {
     name: "cdktf-tf-module-stack",
-    languages: ["typescript", "python"],
+    languages: ["typescript", "python", "csharp", "java", "go"],
   },
   {
     name: "cdktf-cdk8s",
