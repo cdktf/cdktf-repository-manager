@@ -13,6 +13,7 @@
     "compile": "tsc --pretty",
     "watch": "tsc -w",
     "test": "echo ok",
+    "lint": "eslint **/*.{ts,js}",
     "upgrade": "npm i cdktf@latest cdktf-cli@latest",
     "upgrade:next": "npm i cdktf@next cdktf-cli@next",
     "output": "cd cdktf.out && terraform output -json -state ../terraform.tfstate",
@@ -40,8 +41,12 @@
     "typescript": "^3.9.7"
   },
   "lint-staged": {
-    "*.{ts,js,md,yml}": [
-      "prettier --write",
+    "*.{md,yml}": "prettier --write",
+    "**/*.{ts,js}": [
+      "eslint",
+      "prettier --write"
+    ],
+    ".github/lib/**": [
       "eslint"
     ]
   }
