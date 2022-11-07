@@ -25,7 +25,7 @@ const isBreaking = (key, before, after) => {
   return majorIncreased || (isDev && minorIncreased);
 };
 
-async function getBeforeAndAfterFiles(dir, fileName, isJson) {
+async function getBeforeAndAfterFiles(exec, dir, fileName, isJson) {
   const after = fs.readFileSync(path.join(dir, fileName), "utf8");
 
   let before;
@@ -51,15 +51,16 @@ async function getBeforeAndAfterFiles(dir, fileName, isJson) {
 }
 
 module.exports = async ({ core, exec }) => {
-  const path = require("path");
   const providerDirectory = path.join(process.env.GITHUB_WORKSPACE, "provider");
 
   const { before, after } = await getBeforeAndAfterFiles(
+    exec,
     providerDirectory,
     ".projenrc.js"
   );
   const { before: beforeVersion, after: afterVersion } =
     await getBeforeAndAfterFiles(
+      exec,
       providerDirectory,
       path.join("src", "version.json"),
       true
