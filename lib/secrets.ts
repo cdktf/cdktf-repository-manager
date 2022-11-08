@@ -141,7 +141,9 @@ export class PublishingSecretSet extends Construct {
   }
 
   public forGo(
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     _repository: Repository | DataGithubRepository,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     _ghProvider: GithubProvider
   ) {
     // No additional go secrets required, this method exists for consistency
