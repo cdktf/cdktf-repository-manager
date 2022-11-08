@@ -233,6 +233,7 @@ class CustomConstructsStack extends TerraformStack {
     constructRepos: {
       name: string;
       languages: ("typescript" | "python" | "csharp" | "java" | "go")[];
+      topics?: string[];
     }[]
   ) {
     super(scope, name);
@@ -259,7 +260,7 @@ class CustomConstructsStack extends TerraformStack {
 
     const secrets = new PublishingSecretSet(this, "secret-set");
 
-    constructRepos.forEach(({ name: repoName, languages }) => {
+    constructRepos.forEach(({ name: repoName, languages, topics }) => {
       const repo = new GithubRepositoryFromExistingRepository(
         this,
         `cdktf-construct-${repoName}`,
@@ -286,6 +287,16 @@ class CustomConstructsStack extends TerraformStack {
       }
       if (languages.includes("go")) {
         secrets.forGo(repo.resource, githubProvider);
+
+        // repo to publish go packages to
+        new GithubRepository(this, `${repoName}-go`, {
+          description: `CDK for Terraform Go bindings for ${repoName}.`,
+          topics,
+          team: githubTeam,
+          protectMain: false,
+          webhookUrl: slackWebhook.stringValue,
+          provider: githubProvider,
+        });
       }
     });
   }
@@ -351,6 +362,7 @@ new CustomConstructsStack(app, "custom-constructs", [
   {
     name: "cdktf-tf-module-stack",
     languages: ["typescript", "python", "csharp", "java", "go"],
+    topics: ["terraform", "cdktf", "terraform-module"],
   },
   {
     name: "cdktf-cdk8s",
