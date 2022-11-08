@@ -94,12 +94,20 @@ export class RepositorySetup extends Construct {
 
 export class GithubRepository extends Construct {
   public readonly resource: Repository;
+  public static defaultTopics = [
+    "cdktf",
+    "terraform",
+    "terraform-cdk",
+    "cdk",
+    "provider",
+    "pre-built-provider",
+  ];
 
   constructor(scope: Construct, name: string, config: RepositoryConfig) {
     super(scope, name);
 
     const {
-      topics = [],
+      topics = GithubRepository.defaultTopics,
       description = "Repository management for prebuilt cdktf providers via cdktf",
       provider,
     } = config;
@@ -114,15 +122,7 @@ export class GithubRepository extends Construct {
       autoInit: true,
       hasProjects: false,
       deleteBranchOnMerge: true,
-      topics: [
-        "cdktf",
-        "terraform",
-        "terraform-cdk",
-        "cdk",
-        "provider",
-        "pre-built-provider",
-        ...topics,
-      ],
+      topics,
       provider,
     });
 
