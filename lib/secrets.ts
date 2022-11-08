@@ -140,7 +140,10 @@ export class PublishingSecretSet extends Construct {
     this.forPrefixedSecrets(repository, ghProvider, "maven-");
   }
 
-  public forGo() {
+  public forGo(
+    _repository: Repository | DataGithubRepository,
+    _ghProvider: GithubProvider
+  ) {
     // No additional go secrets required, this method exists for consistency
   }
 }
