@@ -107,7 +107,7 @@ class TerraformCdkProviderStack extends TerraformStack {
     const providerRepos: GitUrls[] = Object.keys(providers).map((provider) => {
       const repo = new GithubRepository(this, `cdktf-provider-${provider}`, {
         description: `Prebuilt Terraform CDK (cdktf) provider for ${provider}.`,
-        topics: [provider],
+        topics: [...GithubRepository.defaultTopics, provider],
         team: githubTeam,
         protectMain: true,
         protectMainChecks: [
@@ -125,7 +125,7 @@ class TerraformCdkProviderStack extends TerraformStack {
       // repo to publish go packages to
       new GithubRepository(this, `cdktf-provider-${provider}-go`, {
         description: `CDK for Terraform Go provider bindings for ${provider}.`,
-        topics: [provider],
+        topics: [...GithubRepository.defaultTopics, provider],
         team: githubTeam,
         protectMain: false,
         webhookUrl: slackWebhook.stringValue,
