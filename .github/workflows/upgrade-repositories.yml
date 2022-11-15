@@ -80,8 +80,8 @@ jobs:
             const script = require(scriptPath)
             await script({core, exec})
 
-      - if: steps.git_diff.outputs.has_changes && !steps.diff_changes.outputs.has_breaking_changes
-        name: Commit ({{steps.diff_changes.outputs.has_breaking_changes && 'breaking' || 'unbreaking'}}) and push changes (if changed)
+      - if: steps.git_diff.outputs.has_changes
+        name: Commit ({{steps.diff_changes.outputs.has_breaking_changes && 'breaking' || 'unbreaking'}}) changes and push changes (if changed)
         run: |
           git checkout -b upgrade-provider-project-${{ github.run_number }}-${{ github.run_attempt }}
           git add .
