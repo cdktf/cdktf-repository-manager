@@ -85,7 +85,7 @@ jobs:
         run: |
           git checkout -b upgrade-provider-project-${{ github.run_number }}-${{ github.run_attempt }}
           git add .
-          git commit -m "{{ steps.diff_changes.outputs.commit_message }}"
+          git commit -m "${{ steps.diff_changes.outputs.commit_message }}"
           git push --set-upstream origin upgrade-provider-project-${{ github.run_number }}-${{ github.run_attempt }}
         working-directory: ./provider
 
@@ -101,7 +101,7 @@ jobs:
             await script({
               github,
               branchName: "upgrade-provider-project-${{ github.run_number }}-${{ github.run_attempt }}",
-              prTitle: "{{ steps.diff_changes.outputs.commit_message }}",
+              prTitle: "${{ steps.diff_changes.outputs.commit_message }}",
               providerName: "${{matrix.provider}}"
             })
 
