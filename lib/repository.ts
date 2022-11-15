@@ -38,7 +38,7 @@ export class RepositorySetup extends Construct {
 
     const {
       protectMain = false,
-      protectMainChecks = ["build"],
+      protectMainChecks = ["build", "pull-request-lint"],
       provider,
       repository,
       team,
