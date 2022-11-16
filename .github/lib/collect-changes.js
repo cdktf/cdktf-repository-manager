@@ -130,10 +130,15 @@ module.exports = async ({ core, exec }) => {
         break;
       case "jsiiVersion":
         name = "JSII version";
+        break;
     }
 
     commitMessageParts.push(`${name} to \`${res.after}\``);
   });
+
+  if (allChanges.length === 0) {
+    commitMessageParts.push("dependencies");
+  }
 
   if (providerNameChanged.before !== providerNameChanged.after) {
     commitMessageParts.push(
