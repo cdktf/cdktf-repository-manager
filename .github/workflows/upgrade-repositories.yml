@@ -62,6 +62,8 @@ jobs:
           yarn build-provider
           npx projen
         working-directory: ./provider
+        env:
+          NODE_OPTIONS: "--max-old-space-size=7168"
 
       - name: Check for changes
         id: git_diff
