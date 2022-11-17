@@ -117,7 +117,7 @@ class TerraformCdkProviderStack extends TerraformStack {
           "package-python",
           "package-dotnet",
           "package-go",
-          "pull-request-lint",
+          "validate",
         ],
         webhookUrl: slackWebhook.stringValue,
         provider: githubProvider,
