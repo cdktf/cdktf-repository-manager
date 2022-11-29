@@ -17,7 +17,7 @@
   "dns": "dns@~> 3.2",
   "dnsimple": "dnsimple/dnsimple@~> 0.13",
   "external": "external@~> 2.1",
-  "github": "integrations/github@~> 4.0",
+  "github": "integrations/github@~> 5.0",
   "gitlab": "gitlabhq/gitlab@~> 3.14",
   "google": "google@~> 4.0",
   "googlebeta": "google-beta@~> 4.17",
