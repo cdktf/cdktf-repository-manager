@@ -95,6 +95,7 @@ export class RepositorySetup extends Construct {
 
 export class GithubRepository extends Construct {
   public readonly resource: Repository;
+  private readonly provider: GithubProvider;
   public static defaultTopics = [
     "cdktf",
     "terraform",
@@ -112,6 +113,7 @@ export class GithubRepository extends Construct {
       description = "Repository management for prebuilt cdktf providers via cdktf",
       provider,
     } = config;
+    this.provider = provider;
 
     this.resource = new Repository(this, "repo", {
       name,
@@ -134,7 +136,8 @@ export class GithubRepository extends Construct {
   }
 
   addSecret(name: string) {
-    new SecretFromVariable(this, name);
+    const variable = new SecretFromVariable(this, name);
+    variable.for(this.resource, this.provider);
   }
 }
 
