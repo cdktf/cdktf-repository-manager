@@ -8,6 +8,7 @@ import {
   GithubProvider,
   DataGithubRepository,
 } from "@cdktf/provider-github";
+import { SecretFromVariable } from "./secrets";
 
 export interface ITeam {
   id: string;
@@ -130,6 +131,10 @@ export class GithubRepository extends Construct {
       ...config,
       repository: this.resource,
     });
+  }
+
+  addSecret(name: string) {
+    new SecretFromVariable(this, name);
   }
 }
 

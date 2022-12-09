@@ -134,6 +134,7 @@ class TerraformCdkProviderStack extends TerraformStack {
       });
 
       secrets.forAllLanguages(repo.resource, githubProvider);
+      repo.addSecret("alert-prs-slack-webhook-url");
 
       return {
         html: repo.resource.htmlUrl,
