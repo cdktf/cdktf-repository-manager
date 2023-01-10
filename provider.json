@@ -30,6 +30,7 @@
   "ionoscloud": "ionos-cloud/ionoscloud@~> 6.2",
   "kubernetes": "kubernetes@~> 2.0",
   "local": "hashicorp/local@~> 2.1",
+  "mongodbatlas": "mongodb/mongodbatlas@~> 1.6.1",
   "newrelic": "newrelic/newrelic@~> 3.7",
   "nomad": "nomad@~> 1.4",
   "null": "null@~> 3.0",
