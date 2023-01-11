@@ -1,0 +1,68 @@
+---
+name: New Pre-built Provider Request
+title: "New Pre-built Provider Request: PROVIDER_NAME"
+description: "You want to request a pre-built package for a provider from the Terraform Registry."
+labels: new provider request
+
+body:
+  - type: markdown
+    attributes:
+      value: >
+        If you're encountering performance challenges generating bindings for
+        an existing Terraform provider, we may be able to create a pre-built
+        package for that provider.
+
+  - type: checkboxes
+    attributes:
+      label: Update issue title
+      description: >
+        The title of this issue should be updated to mention the provider name.
+      options:
+        - label: I have updated the title.
+          required: true
+
+  - type: input
+    attributes:
+      label: Provider URL
+      placeholder: "https://registry.terraform.io/providers/<NAMESPACE>/<PROVIDER_NAME>"
+      description: |
+        Provide a link to the Terraform Registry page for the provider in question.
+    validations:
+      required: true
+
+  - type: dropdown
+    attributes:
+      label: What type of provider is this?
+      description: >-
+        You should be able to look this up in the Registry. "Official" providers have a
+        yellow badge that says "Official", and "Partner" providers have a blue badge that
+        says "Partner".
+      multiple: false
+      options:
+        - Official
+        - Partner
+        - Community
+    validations:
+      required: true
+
+  # About the request
+  - type: textarea
+    attributes:
+      label: Why do you need a pre-built package for this provider?
+      description: |
+        What is your use case?
+
+        Have you run into performance challenges that seem like they would be resolved with a pre-built provider? If so, what kind of stats are you seeing?
+    validations:
+      required: true
+
+  - type: checkboxes
+    attributes:
+      label: Are you sure you need a pre-built provider?
+      description: |
+        CDKTF already works out-of-the-box with any provider available on the Terraform Registry. [See our documentation][Docs] for details.
+
+        [Docs]: https://developer.hashicorp.com/terraform/cdktf/concepts/providers#add-provider-to-cdktf-json
+      options:
+        - label: I am aware that I can already use this provider with CDKTF today by generating the bindings locally.
+          required: true
