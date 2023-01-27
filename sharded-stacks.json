@@ -65,6 +65,12 @@
         "salesforce",
         "vsphere"
       ]
+    },
+    "repos-partners": {
+      "backend": {
+        "workspaceName": "prebuilt-providers-partners"
+      },
+      "providers": ["mongodbatlas"]
     }
   }
 }
