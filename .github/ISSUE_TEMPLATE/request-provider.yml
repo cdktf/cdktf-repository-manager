@@ -2,14 +2,15 @@
 name: New Pre-built Provider Request
 title: "New Pre-built Provider Request: PROVIDER_NAME"
 description: "You want to request a pre-built package for a provider from the Terraform Registry."
-labels: new provider request
+labels: "new provider request"
 
 body:
   - type: markdown
     attributes:
       value: >
         If you're encountering performance challenges generating bindings for
-        an existing Terraform provider, we may be able to create a pre-built
+        an existing Terraform provider or have another use case where `cdktf get`
+        does not work well for you, we may be able to create a pre-built
         package for that provider.
 
   - type: checkboxes
@@ -39,9 +40,9 @@ body:
         says "Partner".
       multiple: false
       options:
-        - Official
-        - Partner
         - Community
+        - Partner
+        - Official
     validations:
       required: true
 
@@ -66,3 +67,15 @@ body:
       options:
         - label: I am aware that I can already use this provider with CDKTF today by generating the bindings locally.
           required: true
+
+  - type: textarea
+    id: community
+    attributes:
+      label: Community Note
+      description: Please do not remove, edit, or change the following note for our community. Just leave everything in this textbox as-is.
+      value: |
+        - Please vote on this issue by adding a 👍 [reaction](https://blog.github.com/2016-03-10-add-reactions-to-pull-requests-issues-and-comments/) to the original issue to help maintainers prioritize this request
+        - Please do not leave "+1" or other comments that do not add relevant new information or questions, they generate extra noise for issue followers and do not help prioritize the request
+        - Note that we cannot accept community/external PRs to create new prebuilt providers; these require a maintainer to submit the PR
+    validations:
+      required: true
