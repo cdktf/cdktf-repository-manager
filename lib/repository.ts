@@ -93,19 +93,18 @@ export class RepositorySetup extends Construct {
     });
 
     // Only for go provider repositories
-    if (repository.name.endsWith("-go")) {
-      new RepositoryFile(this, "codeowners", {
-        repository: repository.name,
-        file: ".github/CODEOWNERS",
-        content: [
-          "# These owners will be the default owners for everything in ",
-          "# the repo. Unless a later match takes precedence, ",
-          "# they will be requested for review when someone opens a ",
-          "# pull request.",
-          "*       @cdktf/tf-cdk-team",
-        ].join("\n"),
-      });
-    }
+    new RepositoryFile(this, "codeowners", {
+      repository: repository.name,
+      count: `\${regex("-go", ${repository.name}) == "-go" ? 1 : 0}` as any,
+      file: ".github/CODEOWNERS",
+      content: [
+        "# These owners will be the default owners for everything in ",
+        "# the repo. Unless a later match takes precedence, ",
+        "# they will be requested for review when someone opens a ",
+        "# pull request.",
+        "*       @cdktf/tf-cdk-team",
+      ].join("\n"),
+    });
   }
 }
 
