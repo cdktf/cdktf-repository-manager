@@ -7,6 +7,7 @@ import {
   RepositoryWebhook,
   GithubProvider,
   DataGithubRepository,
+  RepositoryFile,
 } from "@cdktf/provider-github";
 import { SecretFromVariable } from "./secrets";
 
@@ -90,6 +91,21 @@ export class RepositorySetup extends Construct {
       events: ["issues"],
       provider,
     });
+
+    // Only for go provider repositories
+    if (repository.name.endsWith("-go")) {
+      new RepositoryFile(this, "codeowners", {
+        repository: repository.name,
+        file: ".github/CODEOWNERS",
+        content: [
+          "# These owners will be the default owners for everything in ",
+          "# the repo. Unless a later match takes precedence, ",
+          "# they will be requested for review when someone opens a ",
+          "# pull request.",
+          "*       @cdktf/tf-cdk-team",
+        ].join("\n"),
+      });
+    }
   }
 }
 
