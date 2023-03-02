@@ -34,6 +34,7 @@ export class RepositorySetup extends Construct {
       "team" | "webhookUrl" | "provider" | "protectMain" | "protectMainChecks"
     > & {
       repository: Repository | DataGithubRepository;
+      repositoryName: string;
     }
   ) {
     super(scope, name);
@@ -93,18 +94,19 @@ export class RepositorySetup extends Construct {
     });
 
     // Only for go provider repositories
-    new RepositoryFile(this, "codeowners", {
-      repository: repository.name,
-      count: `\${regex("-go", ${repository.name}) == "-go" ? 1 : 0}` as any,
-      file: ".github/CODEOWNERS",
-      content: [
-        "# These owners will be the default owners for everything in ",
-        "# the repo. Unless a later match takes precedence, ",
-        "# they will be requested for review when someone opens a ",
-        "# pull request.",
-        "*       @cdktf/tf-cdk-team",
-      ].join("\n"),
-    });
+    if (config.repositoryName.endsWith("-go")) {
+      new RepositoryFile(this, "codeowners", {
+        repository: repository.name,
+        file: ".github/CODEOWNERS",
+        content: [
+          "# These owners will be the default owners for everything in ",
+          "# the repo. Unless a later match takes precedence, ",
+          "# they will be requested for review when someone opens a ",
+          "# pull request.",
+          "*       @cdktf/tf-cdk-team",
+        ].join("\n"),
+      });
+    }
   }
 }
 
@@ -146,6 +148,7 @@ export class GithubRepository extends Construct {
 
     new RepositorySetup(this, "repository-setup", {
       ...config,
+      repositoryName: name,
       repository: this.resource,
     });
   }
