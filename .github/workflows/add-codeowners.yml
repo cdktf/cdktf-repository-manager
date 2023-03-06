@@ -1,0 +1,78 @@
+name: "Add Codeowners file to Go Repositories"
+
+on:
+  workflow_dispatch: {}
+  workflow_call: {}
+
+jobs:
+  build-provider-matrix:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - id: set-matrix
+        run: |
+          provider=$(jq -rcM "{ provider: keys }" provider.json)
+          echo "matrix=$provider" >> $GITHUB_OUTPUT
+
+  add-codeowners-file:
+    needs: build-provider-matrix
+    name: "Add Codeowners File"
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix: ${{fromJSON(needs.build-provider-matrix.outputs.matrix)}}
+      max-parallel: 10
+    steps:
+      - name: Checkout this repository
+        uses: actions/checkout@v2
+        with:
+          path: main
+      - name: Checkout cdktf-provider-${{ matrix.provider }}-go Repository
+        uses: actions/checkout@v2
+        with:
+          repository: cdktf/cdktf-provider-${{ matrix.provider }}-go
+          token: ${{ secrets.GH_COMMENT_TOKEN }}
+          path: provider
+
+      - uses: actions/github-script@v4
+        name: Create projen run commands file
+        with:
+          script: |
+            const {resolve} = require('path')
+            const scriptPath = resolve("./main/.github/lib/copy-codeowners-file")
+            const script = require(scriptPath)
+            script()
+
+      - name: Check for changes
+        id: git_diff
+        run: |
+          git diff --exit-code || echo "has_changes=true" >> $GITHUB_OUTPUT
+        working-directory: ./provider
+
+      - if: steps.git_diff.outputs.has_changes
+        name: Commit codeowners file and push changes
+        run: |
+          git checkout -b add-update-codeowners-file-${{ github.run_number }}-${{ github.run_attempt }}
+          git add .
+          git commit -m "Add / Update CODEOWNERS file"
+          git push --set-upstream origin add-update-codeowners-file-${{ github.run_number }}-${{ github.run_attempt }}
+        working-directory: ./provider
+
+      - if: steps.git_diff.outputs.has_changes
+        name: "Create PR"
+        uses: actions/github-script@v4
+        with:
+          github-token: ${{ secrets.GH_COMMENT_TOKEN }}
+          script: |
+            const {resolve} = require('path')
+            const scriptPath = resolve("./main/.github/lib/create-pr")
+            const script = require(scriptPath)
+            await script({
+              github,
+              branchName: "add-update-codeowners-file-${{ github.run_number }}-${{ github.run_attempt }}",
+              prTitle: "Add / Update CODEOWNERS file",
+              fullRepoName: "cdktf-provider-${{matrix.provider}}-go"
+            })
