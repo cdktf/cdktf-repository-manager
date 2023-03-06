@@ -12,11 +12,8 @@ import {
   RepositoryWebhook,
   GithubProvider,
   DataGithubRepository,
-  RepositoryFile,
 } from "@cdktf/provider-github";
 import { SecretFromVariable } from "./secrets";
-import { TerraformAsset } from "cdktf";
-import path = require("path");
 
 export interface ITeam {
   id: string;
