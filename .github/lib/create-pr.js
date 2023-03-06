@@ -3,10 +3,16 @@
  * SPDX-License-Identifier: MPL-2.0
  */
 
-module.exports = async ({ github, branchName, providerName, prTitle }) => {
+module.exports = async ({
+  github,
+  branchName,
+  providerName,
+  prTitle,
+  fullRepoName,
+}) => {
   const { GITHUB_SERVER_URL, GITHUB_REPOSITORY, GITHUB_RUN_ID } = process.env;
   const url = `${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}`;
-  const repo = `cdktf-provider-${providerName}`;
+  const repo = fullRepoName || `cdktf-provider-${providerName}`;
   const owner = "cdktf";
 
   const { data } = await github.pulls.create({
