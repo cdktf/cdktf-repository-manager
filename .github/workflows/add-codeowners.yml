@@ -39,7 +39,7 @@ jobs:
           path: provider
 
       - uses: actions/github-script@v4
-        name: Create projen run commands file
+        name: Copy codeowners file to provider repo
         with:
           script: |
             const {resolve} = require('path')
