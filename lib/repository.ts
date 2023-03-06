@@ -41,7 +41,6 @@ export class RepositorySetup extends Construct {
       "team" | "webhookUrl" | "provider" | "protectMain" | "protectMainChecks"
     > & {
       repository: Repository | DataGithubRepository;
-      repositoryName: string;
     }
   ) {
     super(scope, name);
@@ -99,23 +98,6 @@ export class RepositorySetup extends Construct {
       events: ["issues"],
       provider,
     });
-
-    // Only for go provider repositories
-    if (config.repositoryName.endsWith("-go")) {
-      const asset = new TerraformAsset(this, "codeowners-asset", {
-        path: path.resolve(__dirname, "..", "assets", "codeowners"),
-      });
-      new RepositoryFile(this, "codeowners", {
-        repository: repository.fullName,
-        file: "CODEOWNERS",
-        commitAuthor: "team-tf-cdk",
-        commitEmail: "github-team-tf-cdk@hashicorp.com",
-        branch: "main",
-        commitMessage: "Managed by Terraform",
-        overwriteOnCreate: false,
-        content: `\${file("${asset.path}")}`,
-      });
-    }
   }
 }
 
@@ -157,7 +139,6 @@ export class GithubRepository extends Construct {
 
     new RepositorySetup(this, "repository-setup", {
       ...config,
-      repositoryName: name,
       repository: this.resource,
     });
   }
