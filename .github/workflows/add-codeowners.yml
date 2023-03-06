@@ -3,6 +3,9 @@ name: "Add Codeowners file to Go Repositories"
 on:
   workflow_dispatch: {}
   workflow_call: {}
+  push:
+    branches:
+      - main
 
 jobs:
   build-provider-matrix:
