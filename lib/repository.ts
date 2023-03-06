@@ -15,6 +15,8 @@ import {
   RepositoryFile,
 } from "@cdktf/provider-github";
 import { SecretFromVariable } from "./secrets";
+import { TerraformAsset } from "cdktf";
+import path = require("path");
 
 export interface ITeam {
   id: string;
@@ -100,16 +102,18 @@ export class RepositorySetup extends Construct {
 
     // Only for go provider repositories
     if (config.repositoryName.endsWith("-go")) {
+      const asset = new TerraformAsset(this, "codeowners-asset", {
+        path: path.resolve(__dirname, "..", "assets", "codeowners"),
+      });
       new RepositoryFile(this, "codeowners", {
-        repository: repository.name,
-        file: ".github/CODEOWNERS",
-        content: [
-          "# These owners will be the default owners for everything in ",
-          "# the repo. Unless a later match takes precedence, ",
-          "# they will be requested for review when someone opens a ",
-          "# pull request.",
-          "*       @cdktf/tf-cdk-team",
-        ].join("\n"),
+        repository: repository.fullName,
+        file: "CODEOWNERS",
+        commitAuthor: "team-tf-cdk",
+        commitEmail: "github-team-tf-cdk@hashicorp.com",
+        branch: "main",
+        commitMessage: "Managed by Terraform",
+        overwriteOnCreate: false,
+        content: `\${file("${asset.path}")}`,
       });
     }
   }
