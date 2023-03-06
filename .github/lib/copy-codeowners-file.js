@@ -12,6 +12,10 @@ module.exports = () => {
     "utf-8"
   );
 
+  fs.mkdirSync(path.join(process.env.GITHUB_WORKSPACE, "provider", ".github"), {
+    recursive: true,
+  });
+
   fs.writeFileSync(
     path.join(
       process.env.GITHUB_WORKSPACE,
