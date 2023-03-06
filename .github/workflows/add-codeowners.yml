@@ -14,7 +14,9 @@ jobs:
         uses: actions/checkout@v2
       - id: set-matrix
         run: |
-          provider=$(jq -rcM "{ provider: keys }" provider.json)
+          # TODO: TESTING ONLY
+          # provider=$(jq -rcM "{ provider: keys }" provider.json)
+          provider='{"provider":["hashicups"]}'
           echo "matrix=$provider" >> $GITHUB_OUTPUT
 
   add-codeowners-file:
