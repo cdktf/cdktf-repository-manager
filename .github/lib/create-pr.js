@@ -9,6 +9,7 @@ module.exports = async ({
   providerName,
   prTitle,
   fullRepoName,
+  mergePullRequest,
 }) => {
   const { GITHUB_SERVER_URL, GITHUB_REPOSITORY, GITHUB_RUN_ID } = process.env;
   const url = `${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}`;
@@ -33,4 +34,14 @@ module.exports = async ({
     issue_number: data.number,
     labels: ["automerge"],
   });
+
+  if (mergePullRequest) {
+    await github.pulls.merge({
+      owner,
+      repo,
+      pull_number: data.number,
+    });
+
+    console.log(`Merged PR: ${data.html_url}`);
+  }
 };

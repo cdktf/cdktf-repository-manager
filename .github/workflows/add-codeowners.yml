@@ -81,5 +81,6 @@ jobs:
               github,
               branchName: "add-update-codeowners-file-${{ github.run_number }}-${{ github.run_attempt }}",
               prTitle: "Add / Update CODEOWNERS file",
-              fullRepoName: "cdktf-provider-${{matrix.provider}}-go"
+              fullRepoName: "cdktf-provider-${{matrix.provider}}-go",
+              mergePullRequest: true
             })
