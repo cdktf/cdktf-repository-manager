@@ -47,6 +47,11 @@ jobs:
             const script = require(scriptPath)
             script()
 
+      - name: Set git identity
+        run: |-
+          git config user.name "team-tf-cdk"
+          git config user.email "github-team-tf-cdk@hashicorp.com"
+
       - name: Check for changes
         id: git_diff
         run: |
