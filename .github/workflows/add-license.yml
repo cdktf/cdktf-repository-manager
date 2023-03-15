@@ -1,0 +1,83 @@
+name: "Add LICENSE file to Go Repositories"
+
+on:
+  workflow_dispatch: {}
+
+jobs:
+  build-provider-matrix:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - id: set-matrix
+        run: |
+          provider=$(jq -rcM "{ provider: keys }" provider.json)
+          echo "matrix=$provider" >> $GITHUB_OUTPUT
+
+  add-license-file:
+    needs: build-provider-matrix
+    name: "Add LICENSE File"
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix: ${{fromJSON(needs.build-provider-matrix.outputs.matrix)}}
+      max-parallel: 10
+    steps:
+      - name: Checkout this repository
+        uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v3.3.0
+        with:
+          path: main
+
+      - name: Checkout cdktf-provider-${{ matrix.provider }}-go Repository
+        uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v3.3.0
+        with:
+          repository: cdktf/cdktf-provider-${{ matrix.provider }}-go
+          token: ${{ secrets.GH_COMMENT_TOKEN }}
+          path: provider
+
+      - name: Setup Copywrite
+        uses: hashicorp/setup-copywrite@3ace06ad72e6ec679ea8572457b17dbc3960b8ce # v1.0.0
+
+      - name: Set git identity
+        run: |-
+          git config user.name "team-tf-cdk"
+          git config user.email "github-team-tf-cdk@hashicorp.com"
+        working-directory: ./provider
+
+      - name: Add Mozilla Public License
+        run: copywrite license --spdx "MPL-2.0"
+        working-directory: ./provider
+
+      - name: Check for changes
+        id: git_diff
+        run: |
+          if (( $(git status -s | wc -l) > 0 )); then echo "has_changes=true" >> $GITHUB_OUTPUT; fi
+        working-directory: ./provider
+
+      - if: steps.git_diff.outputs.has_changes
+        name: Commit license file and push changes
+        run: |
+          git checkout -b add-update-license-file-${{ github.run_number }}-${{ github.run_attempt }}
+          git add .
+          git commit -m "Add / Update LICENSE file"
+          git push --set-upstream origin add-update-license-file-${{ github.run_number }}-${{ github.run_attempt }}
+        working-directory: ./provider
+
+      - if: steps.git_diff.outputs.has_changes
+        name: "Create PR"
+        uses: actions/github-script@v4
+        with:
+          github-token: ${{ secrets.GH_COMMENT_TOKEN }}
+          script: |
+            const {resolve} = require('path')
+            const scriptPath = resolve("./main/.github/lib/create-pr")
+            const script = require(scriptPath)
+            await script({
+              github,
+              branchName: "add-update-license-file-${{ github.run_number }}-${{ github.run_attempt }}",
+              prTitle: "Add / Update LICENSE file",
+              fullRepoName: "cdktf-provider-${{matrix.provider}}-go",
+              mergePullRequest: true
+            })
