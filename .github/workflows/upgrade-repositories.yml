@@ -11,7 +11,7 @@ jobs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@8f4b7f84864484a7bf31766abe9204da3cbe65b3
       - id: set-matrix
         run: |
           provider=$(jq -rcM "{ provider: keys }" provider.json)
@@ -29,17 +29,17 @@ jobs:
       max-parallel: 10
     steps:
       - name: Checkout this repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@8f4b7f84864484a7bf31766abe9204da3cbe65b3
         with:
           path: main
       - name: Checkout cdktf-provider-${{ matrix.provider }} Repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@8f4b7f84864484a7bf31766abe9204da3cbe65b3
         with:
           repository: cdktf/cdktf-provider-${{ matrix.provider }}
           token: ${{ secrets.GH_COMMENT_TOKEN }}
           path: provider
 
-      - uses: actions/github-script@v4
+      - uses: actions/github-script@98814c53be79b1d30f795b907e553d8679345975
         name: Create projen run commands file
         with:
           script: |
@@ -74,7 +74,7 @@ jobs:
       - if: steps.git_diff.outputs.has_changes
         name: Detect breaking version changes
         id: diff_changes
-        uses: actions/github-script@v4
+        uses: actions/github-script@98814c53be79b1d30f795b907e553d8679345975
         with:
           script: |
             const {resolve} = require('path')
@@ -93,7 +93,7 @@ jobs:
 
       - if: steps.git_diff.outputs.has_changes
         name: "Create PR"
-        uses: actions/github-script@v4
+        uses: actions/github-script@98814c53be79b1d30f795b907e553d8679345975
         with:
           github-token: ${{ secrets.GH_COMMENT_TOKEN }}
           script: |
@@ -109,7 +109,7 @@ jobs:
 
       - name: Send failures to Slack
         if: ${{ failure() && !cancelled() }}
-        uses: slackapi/slack-github-action@v1.21.0
+        uses: slackapi/slack-github-action@007b2c3c751a190b6f0f040e47ed024deaa72844
         with:
           payload: |
             {
