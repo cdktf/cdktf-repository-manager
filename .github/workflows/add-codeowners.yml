@@ -10,7 +10,7 @@ jobs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab
       - id: set-matrix
         run: |
           provider=$(jq -rcM "{ provider: keys }" provider.json)
@@ -26,17 +26,17 @@ jobs:
       max-parallel: 10
     steps:
       - name: Checkout this repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab
         with:
           path: main
       - name: Checkout cdktf-provider-${{ matrix.provider }}-go Repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab
         with:
           repository: cdktf/cdktf-provider-${{ matrix.provider }}-go
           token: ${{ secrets.GH_COMMENT_TOKEN }}
           path: provider
 
-      - uses: actions/github-script@v4
+      - uses: actions/github-script@d7906e4ad0b1822421a7e6a35d5ca353c962f410
         name: Copy codeowners file to provider repo
         with:
           script: |
@@ -68,7 +68,7 @@ jobs:
 
       - if: steps.git_diff.outputs.has_changes
         name: "Create PR"
-        uses: actions/github-script@v4
+        uses: actions/github-script@d7906e4ad0b1822421a7e6a35d5ca353c962f410
         with:
           github-token: ${{ secrets.GH_COMMENT_TOKEN }}
           script: |
