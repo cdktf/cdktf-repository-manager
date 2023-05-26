@@ -16,7 +16,7 @@ module.exports = async ({
   const repo = fullRepoName || `cdktf-provider-${providerName}`;
   const owner = "cdktf";
 
-  const { data } = await github.pulls.create({
+  const { data } = await github.rest.pulls.create({
     owner,
     repo,
     head: branchName,
