@@ -125,7 +125,7 @@ export class GithubRepository extends Construct {
       description,
       visibility: "public",
       homepageUrl: "https://cdk.tf",
-      hasIssues: true,
+      hasIssues: !name.endsWith("-go"),
       hasWiki: false,
       autoInit: true,
       hasProjects: false,
