@@ -21,7 +21,7 @@
     "prepare": "husky install"
   },
   "engines": {
-    "node": ">=10.12"
+    "node": ">=16.14"
   },
   "eslintConfig": {
     "parser": "@typescript-eslint/parser",
