@@ -4,16 +4,14 @@
  */
 
 import { Construct } from "constructs";
-import {
-  Repository,
-  TeamRepository,
-  BranchProtection,
-  IssueLabel,
-  RepositoryWebhook,
-  GithubProvider,
-  DataGithubRepository,
-} from "@cdktf/provider-github";
 import { SecretFromVariable } from "./secrets";
+import { GithubProvider } from "@cdktf/provider-github/lib/provider";
+import { Repository } from "@cdktf/provider-github/lib/repository";
+import { DataGithubRepository } from "@cdktf/provider-github/lib/data-github-repository";
+import { IssueLabel } from "@cdktf/provider-github/lib/issue-label";
+import { BranchProtection } from "@cdktf/provider-github/lib/branch-protection";
+import { TeamRepository } from "@cdktf/provider-github/lib/team-repository";
+import { RepositoryWebhook } from "@cdktf/provider-github/lib/repository-webhook";
 
 export interface ITeam {
   id: string;

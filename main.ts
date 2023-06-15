@@ -11,7 +11,6 @@ import {
   RemoteBackend,
   Annotations,
 } from "cdktf";
-import { GithubProvider, DataGithubTeam } from "@cdktf/provider-github";
 import {
   GithubRepository,
   GithubRepositoryFromExistingRepository,
@@ -21,6 +20,8 @@ import {
 import * as fs from "fs";
 import * as path from "path";
 import { TerraformVariable } from "cdktf";
+import { GithubProvider } from "@cdktf/provider-github/lib/provider";
+import { DataGithubTeam } from "@cdktf/provider-github/lib/data-github-team";
 
 type StackShards = {
   primaryStack: string;

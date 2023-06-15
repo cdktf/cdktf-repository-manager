@@ -1,5 +1,5 @@
 {
   "language": "typescript",
-  "app": "npm run --silent compile && node main.js",
+  "app": "npx tsx main.ts",
   "projectId": "46fb4da5-e0c7-486d-aba8-24e91527e550"
 }
