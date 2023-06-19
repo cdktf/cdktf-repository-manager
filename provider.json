@@ -50,5 +50,5 @@
   "upcloud": "UpCloudLtd/upcloud@~> 2.4",
   "vault": "hashicorp/vault@~> 3.7",
   "vsphere": "vsphere@~> 2.2",
-  "mongodbatlas": "mongodb/mongodbatlas@~> 1.8"
+  "mongodbatlas": "mongodb/mongodbatlas@~> 1.10"
 }
