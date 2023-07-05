@@ -7,10 +7,10 @@ const { CdktfProviderProject } = require("@cdktf/provider-project");
 const project = new CdktfProviderProject({
   useCustomGithubRunner: __CUSTOM_RUNNER__,
   terraformProvider: "__PROVIDER__",
-  cdktfVersion: "^0.16.0",
+  cdktfVersion: "^0.17.0",
   constructsVersion: "^10.0.0",
   minNodeVersion: "16.14.0",
-  jsiiVersion: "^1.53.0",
+  jsiiVersion: "^5.0.1",
   devDeps: ["@cdktf/provider-project@^0.2.95"],
 });
 

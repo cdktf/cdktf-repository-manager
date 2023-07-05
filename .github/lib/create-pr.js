@@ -16,7 +16,7 @@ module.exports = async ({
   const repo = fullRepoName || `cdktf-provider-${providerName}`;
   const owner = "cdktf";
 
-  const { data } = await github.pulls.create({
+  const { data } = await github.rest.pulls.create({
     owner,
     repo,
     head: branchName,
@@ -28,7 +28,7 @@ module.exports = async ({
 
   console.log(`Created a PR: ${data.html_url}`);
 
-  await github.issues.addLabels({
+  await github.rest.issues.addLabels({
     owner,
     repo,
     issue_number: data.number,
@@ -36,7 +36,7 @@ module.exports = async ({
   });
 
   if (mergePullRequest) {
-    await github.pulls.merge({
+    await github.rest.pulls.merge({
       owner,
       repo,
       pull_number: data.number,
