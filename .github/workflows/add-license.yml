@@ -35,6 +35,7 @@ jobs:
         with:
           repository: cdktf/cdktf-provider-${{ matrix.provider }}-go
           token: ${{ secrets.GH_COMMENT_TOKEN }}
+          fetch-depth: 0
           path: provider
 
       - name: Setup Copywrite
@@ -48,7 +49,7 @@ jobs:
 
       - name: Delete old branches from previous runs
         run: |
-          git branch -r | egrep -o "add-update-license-file.*"  | xargs -n 1 git push --delete origin
+          git branch -r | egrep -o "add-update-license-file.*" | xargs -n 1 git push origin --delete
         working-directory: ./provider
 
       - name: Add Mozilla Public License
