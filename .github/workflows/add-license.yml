@@ -46,6 +46,11 @@ jobs:
           git config user.email "github-team-tf-cdk@hashicorp.com"
         working-directory: ./provider
 
+      - name: Delete old branches from previous runs
+        run: |
+          git branch -r | egrep -o "add-update-license-file.*"  | xargs -n 1 git push --delete origin
+        working-directory: ./provider
+
       - name: Add Mozilla Public License
         run: copywrite license --spdx "MPL-2.0"
         working-directory: ./provider
@@ -78,6 +83,7 @@ jobs:
         with:
           github-token: ${{ secrets.GH_COMMENT_TOKEN }}
           retries: 5
+          retry-exempt-status-codes: 400,401,404
           script: |
             const {resolve} = require('path')
             const scriptPath = resolve("./main/.github/lib/create-pr")
