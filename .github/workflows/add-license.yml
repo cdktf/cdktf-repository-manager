@@ -49,6 +49,8 @@ jobs:
       - name: Add Mozilla Public License
         run: copywrite license --spdx "MPL-2.0"
         working-directory: ./provider
+        env:
+          GH_REPO: cdktf/cdktf-provider-${{ matrix.provider }}-go
 
       - name: Check for changes
         id: git_diff
