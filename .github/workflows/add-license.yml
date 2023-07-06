@@ -51,6 +51,7 @@ jobs:
         run: |
           git branch -r | egrep -o "add-update-license-file.*" | xargs -n 1 git push origin --delete
         working-directory: ./provider
+        continue-on-error: true
 
       - name: Add Mozilla Public License
         run: copywrite license --spdx "MPL-2.0"
