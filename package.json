@@ -1,6 +1,6 @@
 {
-  "name": "repos",
-  "version": "1.0.0",
+  "name": "cdktf-repository-manager",
+  "version": "3.0.0",
   "main": "main.js",
   "types": "main.ts",
   "license": "MPL-2.0",
@@ -18,7 +18,8 @@
     "upgrade:next": "npm i cdktf@next cdktf-cli@next",
     "output": "cd cdktf.out && terraform output -json -state ../terraform.tfstate",
     "repos": "yarn -s output | jq  'with_entries(select(.key|match(\"providerRepos\";\"i\")))[] | .value'",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "release": "standard-version --no-verify"
   },
   "engines": {
     "node": ">=10.12"
@@ -38,6 +39,7 @@
     "husky": ">=6",
     "lint-staged": ">=10",
     "prettier": "^2.7.1",
+    "standard-version": "^9.5.0",
     "typescript": "^3.9.7"
   },
   "lint-staged": {
@@ -45,6 +47,42 @@
     "**/*.{ts,js}": [
       "eslint",
       "prettier --write"
+    ]
+  },
+  "standard-version": {
+    "types": [
+      {
+        "type": "feat",
+        "section": "Notable Updates"
+      },
+      {
+        "type": "fix",
+        "section": "Other"
+      },
+      {
+        "type": "chore",
+        "hidden": true
+      },
+      {
+        "type": "docs",
+        "hidden": true
+      },
+      {
+        "type": "style",
+        "hidden": true
+      },
+      {
+        "type": "refactor",
+        "hidden": true
+      },
+      {
+        "type": "perf",
+        "hidden": true
+      },
+      {
+        "type": "test",
+        "hidden": true
+      }
     ]
   }
 }

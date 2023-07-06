@@ -7,6 +7,22 @@ on:
       - main
 
 jobs:
+  release:
+    name: Create GitHub Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout this repository
+        uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
+      - name: Run standard-version
+        run: npm run release
+      - name: Push up git tags
+        run: git push --follow-tags origin main
+      - name: Publish GitHub Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: gh release create $(git describe --tags) -R $GITHUB_REPOSITORY -F CHANGELOG.md
+
   build-shard-matrix:
     runs-on: ubuntu-latest
     outputs:
