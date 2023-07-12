@@ -30,6 +30,7 @@
   "ionoscloud": "ionos-cloud/ionoscloud@~> 6.2",
   "kubernetes": "kubernetes@~> 2.0",
   "local": "hashicorp/local@~> 2.1",
+  "mongodbatlas": "mongodb/mongodbatlas@~> 1.8",
   "newrelic": "newrelic/newrelic@~> 3.7",
   "nomad": "nomad@~> 1.4",
   "null": "null@~> 3.0",
@@ -50,5 +51,5 @@
   "upcloud": "UpCloudLtd/upcloud@~> 2.4",
   "vault": "hashicorp/vault@~> 3.7",
   "vsphere": "vsphere@~> 2.2",
-  "mongodbatlas": "mongodb/mongodbatlas@~> 1.8"
+  "waypoint": "hashicorp/waypoint@~> 0.1"
 }
