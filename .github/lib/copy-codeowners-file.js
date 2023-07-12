@@ -8,7 +8,7 @@ module.exports = () => {
   const fs = require("fs");
   const mainFolder = path.join(process.env.GITHUB_WORKSPACE, "main");
   const codeownersFile = fs.readFileSync(
-    path.join(mainFolder, "assets", "codeowners"),
+    path.join(mainFolder, ".github", "CODEOWNERS"),
     "utf-8"
   );
 

@@ -8,22 +8,22 @@ on:
 
 env:
   GH_TOKEN: ${{ secrets.GH_TOKEN_ACTIONS_UPDATER }}
-  PR_TITLE: "chore: update github workflow actions"
+  PR_TITLE: "chore(deps): update github workflow actions"
 
 jobs:
   update:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab
+      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
         with:
           token: ${{ secrets.GH_TOKEN_ACTIONS_UPDATER }}
       - name: Find and close older versions of this same PR
         run: |
           prlist=$(gh search prs --repo ${{ github.repository }} --state open --match title "$PR_TITLE" --json number --jq '.[].number')
           [ -n "$prlist" ] && gh pr close -d --comment "Closing this because I'm about to open a newer PR." ${prlist}
+        continue-on-error: true
       - name: Run GitHub Actions Version Updater
-        if: success() || failure()
-        uses: saadmk11/github-actions-version-updater@a7fd643bb3e9c1ef8f5c70bb5b645f5a2a9f395c
+        uses: saadmk11/github-actions-version-updater@a7fd643bb3e9c1ef8f5c70bb5b645f5a2a9f395c # TSCCR: no entry for repository "saadmk11/github-actions-version-updater"
         with:
           token: ${{ secrets.GH_TOKEN_ACTIONS_UPDATER }}
           committer_username: "team-tf-cdk"
@@ -36,12 +36,13 @@ jobs:
 
   pin:
     runs-on: ubuntu-latest
-    if: success() || failure()
     needs: [update]
     steps:
       - name: Find and checkout the PR just created
+        id: find_pr
         run: |
           prnumber=$(gh search prs --repo ${{ github.repository }} --state open --match title "$PR_TITLE" --json number --jq '.[].number')
+          echo "pr=$prnumber" >> $GITHUB_OUTPUT
           gh pr checkout ${prnumber}
       - name: Setup TSCCR helper
         uses: hashicorp/setup-tsccr@v1
@@ -58,5 +59,8 @@ jobs:
         if: steps.get_changes.outputs.changed != 0
         run: |-
           git add .
-          git commit -s -m "chore: pin all workflows based on HashiCorp TSCCR"
+          git commit -s -m "chore(deps): pin all workflows based on HashiCorp TSCCR"
           git push
+      - name: Add automerge label
+        run: |
+          gh pr edit ${{ steps.find_pr.outputs.pr }} --add-label "automerge"
