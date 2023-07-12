@@ -63,7 +63,8 @@
         "opc",
         "oraclepaas",
         "salesforce",
-        "vsphere"
+        "vsphere",
+        "waypoint"
       ]
     },
     "repos-partners": {
