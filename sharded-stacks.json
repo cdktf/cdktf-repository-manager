@@ -71,7 +71,10 @@
       "backend": {
         "workspaceName": "prebuilt-providers-partners"
       },
-      "providers": ["mongodbatlas"]
+      "providers": [
+        "launchdarkly",
+        "mongodbatlas"
+      ]
     }
   }
 }
