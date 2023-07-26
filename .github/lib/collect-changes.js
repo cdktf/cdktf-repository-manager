@@ -157,12 +157,29 @@ module.exports = async ({ core, exec }) => {
     );
   }
 
+  if (commitMessageParts.length === 0) {
+    const repo = 'cdktf/cdktf-repository-manager'; // we could make this dynamic
+    let commitHash;
+    try {
+      commitHash = (
+        await exec.getExecOutput("git", ["rev-parse", "--short", "HEAD"], {
+          cwd: path.join(process.env.GITHUB_WORKSPACE, "main"),
+        })
+      ).stdout;
+    } catch (e) {
+      console.log(e);
+    }
+    if (commitHash) {
+      commitMessageParts.push(`by ${repo}@${commitHash}`);
+    }
+  }
+
   if (hasBreakingChanges) {
     core.setOutput("has_breaking_changes", true);
   }
 
   core.setOutput(
     "commit_message",
-    `${prefix} ${commitMessageParts.join(", ")}`
+    `${prefix} ${commitMessageParts.join(", ")}`.trim()
   );
 };
