@@ -160,7 +160,7 @@ module.exports = async ({ core, exec }) => {
   }
 
   if (commitMessageParts.length === 0) {
-    const repo = 'cdktf/cdktf-repository-manager'; // we could make this dynamic
+    const repo = "cdktf/cdktf-repository-manager"; // we could make this dynamic
     let commitHash;
     try {
       commitHash = (

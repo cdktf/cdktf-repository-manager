@@ -43,7 +43,7 @@ export class RepositorySetup extends Construct {
 
     const {
       protectMain = false,
-      protectMainChecks = ["build"],
+      protectMainChecks = ["build", "license/cla"],
       provider,
       repository,
       team,
@@ -59,6 +59,13 @@ export class RepositorySetup extends Construct {
       })
     );
 
+    new IssueLabel(this, `auto-approve-label`, {
+      color: "8BF8BD",
+      name: "auto-approve",
+      repository: repository.name,
+      provider,
+    });
+
     if (protectMain) {
       setOldId(
         new BranchProtection(this, "main-protection", {
@@ -67,6 +74,14 @@ export class RepositorySetup extends Construct {
           enforceAdmins: true,
           allowsDeletions: false,
           allowsForcePushes: false,
+          requiredPullRequestReviews: [
+            {
+              requiredApprovingReviewCount: 1,
+              requireCodeOwnerReviews: false, // NOTE: In the future, Security wants to enforce this, so be warned...
+              dismissStaleReviews: false,
+            },
+          ],
+          requireConversationResolution: true,
           requiredStatusChecks: [
             {
               strict: true,
@@ -137,6 +152,7 @@ export class GithubRepository extends Construct {
       autoInit: true,
       hasProjects: false,
       deleteBranchOnMerge: true,
+      allowAutoMerge: true,
       topics,
       provider,
     });
@@ -160,7 +176,7 @@ export class GithubRepositoryFromExistingRepository extends Construct {
   constructor(
     scope: Construct,
     name: string,
-    config: Pick<RepositoryConfig, "team" | "webhookUrl" | "provider"> & {
+    config: RepositoryConfig & {
       repositoryName: string;
     }
   ) {
