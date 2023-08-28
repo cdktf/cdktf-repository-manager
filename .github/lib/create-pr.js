@@ -32,7 +32,7 @@ module.exports = async ({
     owner,
     repo,
     issue_number: data.number,
-    labels: ["automerge"],
+    labels: ["automerge", "auto-approve"],
   });
 
   if (mergePullRequest) {
