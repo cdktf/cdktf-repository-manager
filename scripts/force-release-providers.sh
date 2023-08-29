@@ -1,17 +1,23 @@
 #!/usr/bin/env bash
 
 if [[ $# -eq 0 ]] ; then
-    echo 'Usage: scripts/force-release-providers.sh <filter> <workflow-name>'
+    echo 'Usage: scripts/force-release-providers.sh <filter>'
+    echo
+    echo 'This script runs the workflow "force-release" on every provider listed in provider.json'
+    echo 'Please note that the tool is quite naive and will generate a release for every provider you agree with'
+    echo 'It DOES NOT see if the previous release is there or not, so please exercise caution while using it'
+    echo
+    echo 'It does ask before forcing the release for every provider individually, so it can be used for a subset of providers'
     echo
     echo 'Example usage:'
-    echo '  scripts/force-release-providers.sh 0.18.0 force-release'
+    echo '  scripts/force-release-providers.sh 0.18.0'
     exit 0
 fi
 
 providers=$(jq -rcM "keys | .[]" provider.json)
 org="cdktf"
 filter=$1
-workflow_name=$2
+workflow_name=force-release
 
 for provider in $providers; do
   read -p "Creating workflow for provider $provider. Continue? [y/n] " -n 1 -r
