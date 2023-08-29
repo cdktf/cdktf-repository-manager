@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 
 if [[ $# -eq 0 ]] ; then
     echo 'Usage: scripts/force-release-providers.sh <filter>'
