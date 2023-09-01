@@ -1,3 +1,8 @@
+/**
+ * Copyright (c) HashiCorp, Inc.
+ * SPDX-License-Identifier: MPL-2.0
+ */
+
 import { TerraformElement, TerraformStack } from "cdktf";
 import { makeUniqueId } from "cdktf/lib/private/unique";
 import { Node } from "constructs";
