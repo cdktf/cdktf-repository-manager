@@ -4,8 +4,8 @@
  */
 
 import { TerraformElement } from "cdktf";
-import { makeUniqueId } from "cdktf/lib/private/unique";
 import { Node } from "constructs";
+import { makeUniqueId } from "./unique-id-override";
 
 function allocateLogicalId(tfElement: TerraformElement | Node): string {
   const node = TerraformElement.isTerraformElement(tfElement)
@@ -16,7 +16,7 @@ function allocateLogicalId(tfElement: TerraformElement | Node): string {
   const stackIndex = 0;
 
   const components = node.scopes.slice(stackIndex + 1).map((c) => c.node.id);
-  return components.length > 0 ? makeUniqueId(components) : "";
+  return components.length > 0 ? makeUniqueId(components, false) : "";
 }
 
 export function setOldId(tfElement: TerraformElement): void {
