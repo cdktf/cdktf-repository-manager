@@ -12,6 +12,7 @@ import { IssueLabel } from "@cdktf/provider-github/lib/issue-label";
 import { BranchProtection } from "@cdktf/provider-github/lib/branch-protection";
 import { TeamRepository } from "@cdktf/provider-github/lib/team-repository";
 import { RepositoryWebhook } from "@cdktf/provider-github/lib/repository-webhook";
+import { setOldId } from "./logical-id-override";
 
 export interface ITeam {
   id: string;
@@ -49,50 +50,58 @@ export class RepositorySetup extends Construct {
       webhookUrl,
     } = config;
 
-    new IssueLabel(this, `automerge-label`, {
-      color: "5DC8DB",
-      name: "automerge",
-      repository: repository.name,
-      provider,
-    });
+    setOldId(
+      new IssueLabel(this, `automerge-label`, {
+        color: "5DC8DB",
+        name: "automerge",
+        repository: repository.name,
+        provider,
+      })
+    );
 
     if (protectMain) {
-      new BranchProtection(this, "main-protection", {
-        pattern: "main",
-        repositoryId: repository.name,
-        enforceAdmins: true,
-        allowsDeletions: false,
-        allowsForcePushes: false,
-        requiredStatusChecks: [
-          {
-            strict: true,
-            contexts: protectMainChecks,
-          },
-        ],
-        provider,
-      });
+      setOldId(
+        new BranchProtection(this, "main-protection", {
+          pattern: "main",
+          repositoryId: repository.name,
+          enforceAdmins: true,
+          allowsDeletions: false,
+          allowsForcePushes: false,
+          requiredStatusChecks: [
+            {
+              strict: true,
+              contexts: protectMainChecks,
+            },
+          ],
+          provider,
+        })
+      );
     }
 
-    new TeamRepository(this, "managing-team", {
-      repository: repository.name,
-      teamId: team.id,
-      permission: "admin",
-      provider,
-    });
+    setOldId(
+      new TeamRepository(this, "managing-team", {
+        repository: repository.name,
+        teamId: team.id,
+        permission: "admin",
+        provider,
+      })
+    );
 
     // Slack integration so we can be notified about new PRs and Issues
-    new RepositoryWebhook(this, "slack-webhook", {
-      repository: repository.name,
+    setOldId(
+      new RepositoryWebhook(this, "slack-webhook", {
+        repository: repository.name,
 
-      configuration: {
-        url: webhookUrl,
-        contentType: "json",
-      },
+        configuration: {
+          url: webhookUrl,
+          contentType: "json",
+        },
 
-      // We don't need to notify about PRs since they are auto-created
-      events: ["issues"],
-      provider,
-    });
+        // We don't need to notify about PRs since they are auto-created
+        events: ["issues"],
+        provider,
+      })
+    );
   }
 }
 
@@ -131,6 +140,7 @@ export class GithubRepository extends Construct {
       topics,
       provider,
     });
+    setOldId(this.resource);
 
     new RepositorySetup(this, "repository-setup", {
       ...config,
