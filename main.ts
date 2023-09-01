@@ -357,13 +357,7 @@ if (!stackNames.includes(primaryStackName)) {
 }
 
 stackNames.forEach((stackName) => {
-  const stack = new TerraformCdkProviderStack(
-    app,
-    stackName,
-    primaryStackName === stackName
-  );
-  // Override until https://github.com/integrations/terraform-provider-github/issues/910 is fixed
-  stack.addOverride("terraform.required_providers.github.version", "4.14.0");
+  new TerraformCdkProviderStack(app, stackName, primaryStackName === stackName);
 });
 
 new CustomConstructsStack(app, "custom-constructs", [
