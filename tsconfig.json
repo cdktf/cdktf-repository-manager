@@ -1,14 +1,11 @@
 {
   "compilerOptions": {
     "alwaysStrict": true,
-    "charset": "utf8",
     "declaration": true,
     "experimentalDecorators": true,
     "inlineSourceMap": true,
     "inlineSources": true,
-    "lib": [
-      "es2019"
-    ],
+    "lib": ["es2019"],
     "module": "CommonJS",
     "noEmitOnError": true,
     "noFallthroughCasesInSwitch": true,
@@ -24,10 +21,6 @@
     "stripInternal": true,
     "target": "ES2018"
   },
-  "include": [
-    "**/*.ts"
-  ],
-  "exclude": [
-    "node_modules"
-  ]
+  "include": ["**/*.ts"],
+  "exclude": ["node_modules"]
 }

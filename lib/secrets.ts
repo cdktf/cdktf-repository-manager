@@ -4,16 +4,15 @@
  */
 
 import { Construct } from "constructs";
-import { Resource, TerraformVariable } from "cdktf";
-import {
-  ActionsSecret,
-  DataGithubRepository,
-  GithubProvider,
-  Repository,
-} from "@cdktf/provider-github";
+import { TerraformVariable } from "cdktf";
 import { constantCase } from "change-case";
+import { Repository } from "@cdktf/provider-github/lib/repository";
+import { DataGithubRepository } from "@cdktf/provider-github/lib/data-github-repository";
+import { GithubProvider } from "@cdktf/provider-github/lib/provider";
+import { ActionsSecret } from "@cdktf/provider-github/lib/actions-secret";
+import { setOldId } from "./logical-id-override";
 
-export class SecretFromVariable extends Resource {
+export class SecretFromVariable extends Construct {
   public readonly name: string;
   public readonly variable: TerraformVariable;
   public secretNames: string[] = [];
@@ -39,20 +38,24 @@ export class SecretFromVariable extends Resource {
     repository: Repository | DataGithubRepository,
     ghProvider: GithubProvider
   ) {
-    const secret = new ActionsSecret(repository, `secret-${this.name}`, {
-      plaintextValue: this.variable.value,
-      secretName: constantCase(this.name),
-      repository: repository.name,
-      provider: ghProvider,
-    });
-
-    this.secretNames.forEach((name) => {
-      new ActionsSecret(repository, `secret-${this.name}-alias-${name}`, {
+    const secret = setOldId(
+      new ActionsSecret(repository, `secret-${this.name}`, {
         plaintextValue: this.variable.value,
-        secretName: constantCase(name),
+        secretName: constantCase(this.name),
         repository: repository.name,
         provider: ghProvider,
-      });
+      })
+    );
+
+    this.secretNames.forEach((name) => {
+      setOldId(
+        new ActionsSecret(repository, `secret-${this.name}-alias-${name}`, {
+          plaintextValue: this.variable.value,
+          secretName: constantCase(name),
+          repository: repository.name,
+          provider: ghProvider,
+        })
+      );
     });
 
     return secret;
