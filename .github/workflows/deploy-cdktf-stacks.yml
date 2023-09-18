@@ -13,7 +13,7 @@ on:
 
 jobs:
   terraform:
-    name: "Terraform CDK Diff"
+    name: "Terraform CDK Deploy"
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -48,6 +48,7 @@ jobs:
         with:
           payload: |
             {
+              "provider_name": "stack depoy ${{ matrix.stack }}",
               "run_url": "https://github.com/cdktf/cdktf-repository-manager/actions/runs/${{ github.run_id }}"
             }
         env:
