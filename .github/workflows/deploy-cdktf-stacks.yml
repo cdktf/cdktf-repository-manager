@@ -49,7 +49,7 @@ jobs:
         with:
           payload: |
             {
-              "provider_name": "stack depoy ${{ matrix.stack }}",
+              "provider_name": "stack deploy ${{ matrix.stack }}",
               "run_url": "https://github.com/cdktf/cdktf-repository-manager/actions/runs/${{ github.run_id }}"
             }
         env:
