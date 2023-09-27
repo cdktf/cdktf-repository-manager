@@ -1,0 +1,49 @@
+name: upgrade-terraform
+on:
+  schedule:
+    - cron: 32 23 * * 0
+  workflow_dispatch: {}
+concurrency: ${{ github.workflow }}-${{ github.ref }}
+jobs:
+  upgrade:
+    name: Upgrade Terraform
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
+      - name: Install
+        run: yarn install
+      - name: Get latest Terraform version
+        uses: actions/github-script@d7906e4ad0b1822421a7e6a35d5ca353c962f410 # v6.4.1
+        with:
+          script: |-
+            const script = require('./scripts/check-terraform-version.js')
+            await script({github, context, core})
+      - name: Parse latest Terraform version into variables
+        id: latest_version
+        run: |-
+          TERRAFORM_VERSION_MINOR=$(cut -d "." -f 2 <<< "$NEW_TERRAFORM_VERSION")
+          echo "NEW_TERRAFORM_VERSION_MINOR=$TERRAFORM_VERSION_MINOR" >> $GITHUB_ENV
+          echo "value=$NEW_TERRAFORM_VERSION" >> $GITHUB_OUTPUT
+          echo "minor=$TERRAFORM_VERSION_MINOR" >> $GITHUB_OUTPUT
+      - name: Update the Terraform version used in GitHub Actions workflows
+        run: |-
+          find ./.github/workflows -type f -name "*.yml" -print0 | xargs -0 sed -i "s/terraform_version: \".*\"/terraform_version: \"$NEW_TERRAFORM_VERSION\"/g"
+      - name: Create pull request
+        uses: peter-evans/create-pull-request@284f54f989303d2699d373481a0cfa13ad5a6666
+        with:
+          base: main
+          branch: auto/upgrade-terraform-1-${{ steps.latest_version.outputs.minor }}
+          commit-message: "chore: upgrade Terraform to ${{ steps.latest_version.outputs.value }}"
+          title: "chore: upgrade Terraform to ${{ steps.latest_version.outputs.value }}"
+          body: |-
+            This PR increases the version of Terraform used by this project's `diff` and `deploy` workflows to version `${{ steps.latest_version.outputs.value }}`.
+            Please carefully inspect the diff output resulting from the checks below before merging this PR.
+          labels: automated,dependencies
+          token: ${{ secrets.GH_TOKEN_ACTIONS_UPDATER }}
+          author: team-tf-cdk <github-team-tf-cdk@hashicorp.com>
+          committer: team-tf-cdk <github-team-tf-cdk@hashicorp.com>
+          signoff: true
+          delete-branch: true
