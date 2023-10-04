@@ -39,7 +39,7 @@
   "oraclepaas": "oraclepaas@~> 1.5",
   "okta": "okta/okta@~> 4.0",
   "opentelekomcloud": "opentelekomcloud/opentelekomcloud@~> 1.26",
-  "pagerduty": "PagerDuty/pagerduty@~> 2.5",
+  "pagerduty": "PagerDuty/pagerduty@~> 3.0",
   "postgresql": "cyrilgdn/postgresql@~> 1.14",
   "random": "hashicorp/random@~> 3.1",
   "salesforce": "salesforce@~> 0.1",
