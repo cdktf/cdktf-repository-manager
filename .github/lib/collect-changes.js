@@ -103,7 +103,7 @@ module.exports = async ({ core, exec }) => {
     hasBreakingChanges ? "Found breaking changes!" : "No breaking changes."
   );
 
-  let prefix = `chore(deps)${hasBreakingChanges ? "!" : ""}: Updated `;
+  let prefix = `chore(deps)${hasBreakingChanges ? "!" : ""}: update `;
 
   let commitMessageParts = [];
 
@@ -123,9 +123,11 @@ module.exports = async ({ core, exec }) => {
     switch (res.key) {
       case "terraformProvider":
         name = `provider version`;
+        prefix = `${hasBreakingChanges ? "feat!" : "fix"}: update `;
         break;
       case "cdktfVersion":
         name = `CDKTF version`;
+        prefix = `${hasBreakingChanges ? "feat!" : "fix"}: update `;
         break;
       case "constructsVersion":
         name = `Constructs version`;
