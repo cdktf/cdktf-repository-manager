@@ -54,10 +54,10 @@ jobs:
         id: cpr
         uses: peter-evans/create-pull-request@284f54f989303d2699d373481a0cfa13ad5a6666 # v5.0.1
         with:
-          commit-message: "feat!: upgrade providers to cdktf ${{ needs.check_versions.outputs.latest_version }}"
           branch: auto/upgrade-cdktf-${{ needs.check_versions.outputs.latest_version_short }}
           base: main
-          title: "feat!: upgrade providers to cdktf ${{ needs.check_versions.outputs.latest_version }}"
+          commit-message: "feat!: upgrade providers to CDKTF version ${{ needs.check_versions.outputs.latest_version }}"
+          title: "feat!: upgrade providers to CDKTF version ${{ needs.check_versions.outputs.latest_version }}"
           body: This PR upgrades CDKTF from version `${{ needs.check_versions.outputs.current_version }}` to version `${{ needs.check_versions.outputs.latest_version }}` in the prebuilt providers managed by this project.
           labels: automated
           token: ${{ secrets.GH_TOKEN_ACTIONS_UPDATER }}
@@ -88,9 +88,9 @@ jobs:
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@284f54f989303d2699d373481a0cfa13ad5a6666 # v5.0.1
         with:
-          commit-message: "chore: upgrade self to cdktf ${{ needs.check_versions.outputs.latest_version }}"
           branch: auto/upgrade-cdktf-${{ needs.check_versions.outputs.latest_version_short }}
           base: main
+          commit-message: "chore: upgrade self to cdktf ${{ needs.check_versions.outputs.latest_version }}"
           title: "chore: upgrade self to cdktf ${{ needs.check_versions.outputs.latest_version }}"
           body: |
             This PR upgrades CDKTF to version `${{ needs.check_versions.outputs.latest_version }}` in `cdktf-repository-manager` (this repo).
