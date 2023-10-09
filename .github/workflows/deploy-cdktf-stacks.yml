@@ -13,7 +13,7 @@ on:
 
 jobs:
   terraform:
-    name: "Terraform CDK Diff"
+    name: "Terraform CDK Deploy"
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -27,12 +27,13 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@633666f66e0061ca3b725c73b2ec20cd13a8fdd1
         with:
-          terraform_version: 1.0.7
+          terraform_version: 1.5.7
           cli_config_credentials_token: ${{ secrets.TF_CLOUD_TOKEN }}
+          terraform_wrapper: false
 
       - uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3.6.0
         with:
-          node-version: "14"
+          node-version: "18"
 
       - name: Install
         run: yarn install
@@ -41,6 +42,7 @@ jobs:
         run: "$(yarn bin)/cdktf deploy --auto-approve '${{ matrix.stack }}'"
         env:
           TERRAFORM_CLOUD_TOKEN: ${{ secrets.TF_CLOUD_TOKEN }}
+          CDKTF_LOG_LEVEL: all
 
       - name: Send failures to Slack
         if: ${{ failure() && !cancelled() }}
@@ -48,6 +50,7 @@ jobs:
         with:
           payload: |
             {
+              "provider_name": "stack deploy ${{ matrix.stack }}",
               "run_url": "https://github.com/cdktf/cdktf-repository-manager/actions/runs/${{ github.run_id }}"
             }
         env:
