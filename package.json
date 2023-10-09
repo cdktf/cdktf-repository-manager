@@ -34,7 +34,8 @@
       "plugin:@typescript-eslint/recommended"
     ],
     "ignorePatterns": [
-      "node_modules"
+      "node_modules",
+      "scripts"
     ]
   },
   "dependencies": {
