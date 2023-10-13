@@ -30,7 +30,7 @@ jobs:
           echo "minor=$TERRAFORM_VERSION_MINOR" >> $GITHUB_OUTPUT
       - name: Update the Terraform version used in GitHub Actions workflows
         run: |-
-          find ./.github/workflows -type f -name "*.yml" -print0 | xargs -0 sed -i "s/terraform_version: \".*\"/terraform_version: \"$NEW_TERRAFORM_VERSION\"/g"
+          find ./.github/workflows -type f -name "*.yml" ! -path "./.github/workflows/upgrade-terraform.yml" -print0 | xargs -0 sed -i "s/terraform_version: .*/terraform_version: $NEW_TERRAFORM_VERSION/g"
       - name: Create pull request
         uses: peter-evans/create-pull-request@284f54f989303d2699d373481a0cfa13ad5a6666
         with:
