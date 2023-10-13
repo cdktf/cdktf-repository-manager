@@ -20,26 +20,26 @@ jobs:
         # NOTE: This uses the version in projenrc.template.js as the source of truth (and not the version of cdktf in the repo-manager's package.json)
         run: |-
           OLD_VERSION=$(sed -nE 's/cdktfVersion: "\^(.*)",/\1/p' projenrc.template.js | xargs)
-          OLD_VERSION_SHORT=$(cut -d "." -f 2 <<< "$OLD_VERSION")
+          OLD_VERSION_MINOR=$(cut -d "." -f 2 <<< "$OLD_VERSION")
           echo "value=$OLD_VERSION" >> $GITHUB_OUTPUT
-          echo "short=$OLD_VERSION_SHORT" >> $GITHUB_OUTPUT
+          echo "short=$OLD_VERSION_MINOR" >> $GITHUB_OUTPUT
       - name: Get latest CDKTF version
         id: latest_version
         run: |-
           CDKTF_VERSION=$(yarn info cdktf --json | jq -r '.data.version')
-          CDKTF_VERSION_SHORT=$(cut -d "." -f 2 <<< "$CDKTF_VERSION")
+          CDKTF_VERSION_MINOR=$(cut -d "." -f 2 <<< "$CDKTF_VERSION")
           echo "value=$CDKTF_VERSION" >> $GITHUB_OUTPUT
-          echo "short=$CDKTF_VERSION_SHORT" >> $GITHUB_OUTPUT
+          echo "short=$CDKTF_VERSION_MINOR" >> $GITHUB_OUTPUT
     outputs:
       current_version: ${{ steps.current_version.outputs.value }}
-      current_version_short: ${{ steps.current_version.outputs.short }}
+      current_version_minor: ${{ steps.current_version.outputs.short }}
       latest_version: ${{ steps.latest_version.outputs.value }}
-      latest_version_short: ${{ steps.latest_version.outputs.short }}
+      latest_version_minor: ${{ steps.latest_version.outputs.short }}
   upgrade_repos:
     name: Upgrade CDKTF in prebuilt provider repos
     runs-on: ubuntu-latest
     needs: [check_versions]
-    if: needs.check_versions.outputs.current_version_short != needs.check_versions.outputs.latest_version_short
+    if: needs.check_versions.outputs.current_version_minor != needs.check_versions.outputs.latest_version_minor
     permissions:
       contents: read
     steps:
@@ -54,7 +54,7 @@ jobs:
         id: cpr
         uses: peter-evans/create-pull-request@284f54f989303d2699d373481a0cfa13ad5a6666 # v5.0.1
         with:
-          branch: auto/upgrade-cdktf-${{ needs.check_versions.outputs.latest_version_short }}
+          branch: auto/upgrade-cdktf-${{ needs.check_versions.outputs.latest_version_minor }}
           base: main
           commit-message: "feat!: upgrade providers to CDKTF version ${{ needs.check_versions.outputs.latest_version }}"
           title: "feat!: upgrade providers to CDKTF version ${{ needs.check_versions.outputs.latest_version }}"
@@ -71,7 +71,7 @@ jobs:
     name: Upgrade CDKTF in repository-manager
     runs-on: ubuntu-latest
     needs: [check_versions, upgrade_repos]
-    if: needs.check_versions.outputs.current_version_short != needs.check_versions.outputs.latest_version_short
+    if: needs.check_versions.outputs.current_version_minor != needs.check_versions.outputs.latest_version_minor
     permissions:
       contents: read
     steps:
@@ -88,7 +88,7 @@ jobs:
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@284f54f989303d2699d373481a0cfa13ad5a6666 # v5.0.1
         with:
-          branch: auto/upgrade-cdktf-${{ needs.check_versions.outputs.latest_version_short }}
+          branch: auto/upgrade-cdktf-${{ needs.check_versions.outputs.latest_version_minor }}
           base: main
           commit-message: "chore: upgrade self to cdktf ${{ needs.check_versions.outputs.latest_version }}"
           title: "chore: upgrade self to cdktf ${{ needs.check_versions.outputs.latest_version }}"
