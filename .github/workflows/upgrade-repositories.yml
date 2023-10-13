@@ -26,7 +26,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix: ${{fromJSON(needs.build-provider-matrix.outputs.matrix)}}
-      max-parallel: 10
+      max-parallel: 5
     steps:
       - name: Checkout this repository
         uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
