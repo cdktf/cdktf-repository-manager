@@ -40,8 +40,8 @@
   },
   "dependencies": {
     "@cdktf/provider-github": "^11.0.0",
-    "cdktf": "^0.18.0",
-    "cdktf-cli": "^0.18.0",
+    "cdktf": "^0.19.0",
+    "cdktf-cli": "^0.19.0",
     "change-case": "^4.1.2",
     "constructs": "^10.0"
   },
