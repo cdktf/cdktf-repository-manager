@@ -183,10 +183,10 @@
     fs-extra "^8.1.0"
     jsii-srcmak "^0.1.951"
 
-"@cdktf/provider-github@^11.0.0":
-  version "11.0.1"
-  resolved "https://registry.yarnpkg.com/@cdktf/provider-github/-/provider-github-11.0.1.tgz#f8c33102aa4aa98c332aac4077694d13bffc0ccf"
-  integrity sha512-y7IBvvvOGTMYEzvSSvIydMawsdAb/GaQXJxaXfdcFZCTV1+2zCQMh3vqUr1EunKRf2ExiNWWfjifNLj/018nyg==
+"@cdktf/provider-github@^12.0.0":
+  version "12.0.0"
+  resolved "https://registry.yarnpkg.com/@cdktf/provider-github/-/provider-github-12.0.0.tgz#6bb3a2469a868cf3fd5c67dd870a920dea6ee696"
+  integrity sha512-iu00m1cvzof7ZjGdkboX1yRy4GiNjW9/zuKgxzpXnJiiLgdTsLGQaJXXA7Em02k4NOrcjy8Q0LGdLEGScnKN6Q==
 
 "@cdktf/provider-schema@0.19.0":
   version "0.19.0"
