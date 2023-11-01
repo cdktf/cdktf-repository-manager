@@ -38,24 +38,49 @@ export class SecretFromVariable extends Construct {
     repository: Repository | DataGithubRepository,
     ghProvider: GithubProvider
   ) {
-    const secret = setOldId(
-      new ActionsSecret(repository, `secret-${this.name}`, {
+    const moveLabel = (label: string) =>
+      `${this.node.path}-${repository.node.path}-${label}`;
+    const oldActionSecret = new ActionsSecret(
+      repository,
+      `secret-${this.name}-old`,
+      {
         plaintextValue: this.variable.value,
         secretName: constantCase(this.name),
         repository: repository.name,
         provider: ghProvider,
-      })
+      }
     );
+    setOldId(oldActionSecret);
+    oldActionSecret.moveTo(moveLabel("secret"));
+
+    const secret = new ActionsSecret(repository, `secret-${this.name}`, {
+      plaintextValue: this.variable.value,
+      secretName: constantCase(this.name),
+      repository: repository.name,
+      provider: ghProvider,
+    });
+    secret.addMoveTarget(moveLabel("secret"));
 
     this.secretNames.forEach((name) => {
-      setOldId(
-        new ActionsSecret(repository, `secret-${this.name}-alias-${name}`, {
+      const oldActionSecretAlias = new ActionsSecret(
+        repository,
+        `secret-${this.name}-alias-${name}-old`,
+        {
           plaintextValue: this.variable.value,
           secretName: constantCase(name),
           repository: repository.name,
           provider: ghProvider,
-        })
+        }
       );
+      setOldId(oldActionSecretAlias);
+      oldActionSecretAlias.moveTo(moveLabel("secret-alias-" + name));
+
+      new ActionsSecret(repository, `secret-${this.name}-alias-${name}`, {
+        plaintextValue: this.variable.value,
+        secretName: constantCase(name),
+        repository: repository.name,
+        provider: ghProvider,
+      }).addMoveTarget(moveLabel("secret-alias-" + name));
     });
 
     return secret;
