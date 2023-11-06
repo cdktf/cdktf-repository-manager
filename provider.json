@@ -50,7 +50,7 @@
   "tfe": "hashicorp/tfe@~> 0.33",
   "time": "hashicorp/time@~> 0.7",
   "tls": "hashicorp/tls@~> 4.0",
-  "upcloud": "UpCloudLtd/upcloud@~> 2.4",
+  "upcloud": "UpCloudLtd/upcloud@~> 3.0",
   "vault": "hashicorp/vault@~> 3.7",
   "vsphere": "vsphere@~> 2.2",
   "waypoint": "hashicorp/waypoint@~> 0.1"
