@@ -24,7 +24,7 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@633666f66e0061ca3b725c73b2ec20cd13a8fdd1
         with:
-          terraform_version: 1.4.6
+          terraform_version: 1.6.3
           cli_config_credentials_token: ${{ secrets.TF_CLOUD_TOKEN }}
           terraform_wrapper: false
 
