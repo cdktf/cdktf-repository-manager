@@ -39,8 +39,15 @@ jobs:
           commit-message: "chore: upgrade Terraform to ${{ steps.latest_version.outputs.value }}"
           title: "chore: upgrade Terraform to ${{ steps.latest_version.outputs.value }}"
           body: |-
-            This PR increases the version of Terraform used by this project's `diff` and `deploy` workflows to version `${{ steps.latest_version.outputs.value }}`.
-            Please carefully inspect the diff output resulting from the checks below before merging this PR.
+            This PR initiates the upgrade of the version of Terraform used by this project's `diff` and `deploy` workflows to version `${{ steps.latest_version.outputs.value }}`.
+            Unfortunately, not everything can be automated, and the following steps need to be completed manually:
+             
+            - Update the _Terraform Version_ in the TFC web UI in the following workspaces:
+              - [ ] [custom-constructs](https://app.terraform.io/app/cdktf-team/workspaces/custom-constructs/settings/general)
+              - [ ] [prebuilt-providers](https://app.terraform.io/app/cdktf-team/workspaces/prebuilt-providers/settings/general)
+              - [ ] [prebuilt-providers-official-new](https://app.terraform.io/app/cdktf-team/workspaces/prebuilt-providers-official-new/settings/general)
+              - [ ] [prebuilt-providers-partners](https://app.terraform.io/app/cdktf-team/workspaces/prebuilt-providers-partners/settings/general)
+            - Rerun the checks and carefully inspect the diff output before merging this PR.
           labels: automated,dependencies
           token: ${{ secrets.GH_TOKEN_ACTIONS_UPDATER }}
           author: team-tf-cdk <github-team-tf-cdk@hashicorp.com>
