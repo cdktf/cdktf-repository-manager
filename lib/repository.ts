@@ -4,7 +4,6 @@
  */
 
 import { Construct } from "constructs";
-import { Aspects, MigrateIds } from "cdktf";
 import { SecretFromVariable } from "./secrets";
 import { GithubProvider } from "@cdktf/provider-github/lib/provider";
 import { Repository } from "@cdktf/provider-github/lib/repository";
@@ -141,8 +140,6 @@ export class GithubRepository extends Construct {
       provider,
     } = config;
     this.provider = provider;
-
-    Aspects.of(this).add(new MigrateIds());
 
     this.resource = new Repository(this, "repo", {
       name,
