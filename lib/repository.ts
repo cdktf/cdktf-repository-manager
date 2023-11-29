@@ -4,6 +4,7 @@
  */
 
 import { Construct } from "constructs";
+import { Aspects, MigrateIds } from "cdktf";
 import { SecretFromVariable } from "./secrets";
 import { GithubProvider } from "@cdktf/provider-github/lib/provider";
 import { Repository } from "@cdktf/provider-github/lib/repository";
@@ -12,7 +13,6 @@ import { IssueLabel } from "@cdktf/provider-github/lib/issue-label";
 import { BranchProtection } from "@cdktf/provider-github/lib/branch-protection";
 import { TeamRepository } from "@cdktf/provider-github/lib/team-repository";
 import { RepositoryWebhook } from "@cdktf/provider-github/lib/repository-webhook";
-import { setOldId } from "./logical-id-override";
 
 export interface ITeam {
   id: string;
@@ -50,23 +50,19 @@ export class RepositorySetup extends Construct {
       webhookUrl,
     } = config;
 
-    setOldId(
-      new IssueLabel(this, `automerge-label`, {
-        color: "5DC8DB",
-        name: "automerge",
-        repository: repository.name,
-        provider,
-      }),
-    );
+    new IssueLabel(this, `automerge-label`, {
+      color: "5DC8DB",
+      name: "automerge",
+      repository: repository.name,
+      provider,
+    });
 
-    setOldId(
-      new IssueLabel(this, `no-auto-close-label`, {
-        color: "EE2222",
-        name: "no-auto-close",
-        repository: repository.name,
-        provider,
-      }),
-    );
+    new IssueLabel(this, `no-auto-close-label`, {
+      color: "EE2222",
+      name: "no-auto-close",
+      repository: repository.name,
+      provider,
+    }),
 
     new IssueLabel(this, `auto-approve-label`, {
       color: "8BF8BD",
@@ -76,56 +72,51 @@ export class RepositorySetup extends Construct {
     });
 
     if (protectMain) {
-      setOldId(
-        new BranchProtection(this, "main-protection", {
-          pattern: "main",
-          repositoryId: repository.name,
-          enforceAdmins: true,
-          allowsDeletions: false,
-          allowsForcePushes: false,
-          requiredPullRequestReviews: [
-            {
-              requiredApprovingReviewCount: 1,
-              requireCodeOwnerReviews: false, // NOTE: In the future, Security wants to enforce this, so be warned...
-              dismissStaleReviews: false,
-            },
-          ],
-          requireConversationResolution: true,
-          requiredStatusChecks: [
-            {
-              strict: true,
-              contexts: protectMainChecks,
-            },
-          ],
-          provider,
-        }),
-      );
+      new BranchProtection(this, "main-protection", {
+        pattern: "main",
+        repositoryId: repository.name,
+        enforceAdmins: true,
+        allowsDeletions: false,
+        allowsForcePushes: false,
+        requiredPullRequestReviews: [
+          {
+            requiredApprovingReviewCount: 1,
+            requireCodeOwnerReviews: false, // NOTE: In the future, Security wants to enforce this, so be warned...
+            dismissStaleReviews: false,
+          },
+        ],
+        requireConversationResolution: true,
+        requiredStatusChecks: [
+          {
+            strict: true,
+            contexts: protectMainChecks,
+          },
+        ],
+        provider,
+      })
     }
 
-    setOldId(
-      new TeamRepository(this, "managing-team", {
-        repository: repository.name,
-        teamId: team.id,
-        permission: "admin",
-        provider,
-      }),
-    );
+    new TeamRepository(this, "managing-team", {
+      repository: repository.name,
+      teamId: team.id,
+      permission: "admin",
+      provider,
+    });
 
     // Slack integration so we can be notified about new PRs and Issues
-    setOldId(
-      new RepositoryWebhook(this, "slack-webhook", {
-        repository: repository.name,
+    new RepositoryWebhook(this, "slack-webhook", {
+      repository: repository.name,
 
-        configuration: {
-          url: webhookUrl,
-          contentType: "json",
-        },
+      configuration: {
+        url: webhookUrl,
+        contentType: "json",
+      },
 
         // We don't need to notify about PRs since they are auto-created
         events: ["issues"],
         provider,
-      }),
-    );
+      });
+    
   }
 }
 
@@ -151,6 +142,8 @@ export class GithubRepository extends Construct {
     } = config;
     this.provider = provider;
 
+    Aspects.of(this).add(new MigrateIds());
+
     this.resource = new Repository(this, "repo", {
       name,
       description,
@@ -169,7 +162,6 @@ export class GithubRepository extends Construct {
       topics,
       provider,
     });
-    setOldId(this.resource);
 
     new RepositorySetup(this, "repository-setup", {
       ...config,

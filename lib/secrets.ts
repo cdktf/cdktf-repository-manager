@@ -10,7 +10,6 @@ import { Repository } from "@cdktf/provider-github/lib/repository";
 import { DataGithubRepository } from "@cdktf/provider-github/lib/data-github-repository";
 import { GithubProvider } from "@cdktf/provider-github/lib/provider";
 import { ActionsSecret } from "@cdktf/provider-github/lib/actions-secret";
-import { setOldId } from "./logical-id-override";
 
 export class SecretFromVariable extends Construct {
   public readonly name: string;
@@ -38,24 +37,20 @@ export class SecretFromVariable extends Construct {
     repository: Repository | DataGithubRepository,
     ghProvider: GithubProvider,
   ) {
-    const secret = setOldId(
-      new ActionsSecret(repository, `secret-${this.name}`, {
-        plaintextValue: this.variable.value,
-        secretName: constantCase(this.name),
-        repository: repository.name,
-        provider: ghProvider,
-      }),
-    );
+    const secret = new ActionsSecret(repository, `secret-${this.name}`, {
+      plaintextValue: this.variable.value,
+      secretName: constantCase(this.name),
+      repository: repository.name,
+      provider: ghProvider,
+    });
 
     this.secretNames.forEach((name) => {
-      setOldId(
-        new ActionsSecret(repository, `secret-${this.name}-alias-${name}`, {
-          plaintextValue: this.variable.value,
-          secretName: constantCase(name),
-          repository: repository.name,
-          provider: ghProvider,
-        }),
-      );
+      new ActionsSecret(repository, `secret-${this.name}-alias-${name}`, {
+        plaintextValue: this.variable.value,
+        secretName: constantCase(name),
+        repository: repository.name,
+        provider: ghProvider,
+      });
     });
 
     return secret;
