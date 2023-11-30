@@ -153,6 +153,9 @@ export class GithubRepository extends Construct {
       hasProjects: false,
       deleteBranchOnMerge: true,
       allowAutoMerge: true,
+      allowUpdateBranch: true,
+      squashMergeCommitMessage: "PR_BODY",
+      squashMergeCommitTitle: "PR_TITLE",
       topics,
       provider,
     });
