@@ -6,6 +6,8 @@ on:
     branches:
       - main
 
+concurrency: ${{ github.workflow }}-${{ github.ref }}
+
 jobs:
   build-shard-matrix:
     runs-on: ubuntu-latest
