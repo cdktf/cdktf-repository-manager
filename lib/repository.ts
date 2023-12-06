@@ -59,6 +59,15 @@ export class RepositorySetup extends Construct {
       })
     );
 
+    setOldId(
+      new IssueLabel(this, `no-auto-close-label`, {
+        color: "EE2222",
+        name: "no-auto-close",
+        repository: repository.name,
+        provider,
+      })
+    );
+
     if (protectMain) {
       setOldId(
         new BranchProtection(this, "main-protection", {
