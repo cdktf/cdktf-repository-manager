@@ -19,12 +19,12 @@ jobs:
           days-before-issue-stale: 30
           days-before-issue-close: 30
           stale-issue-label: stale
-          exempt-issue-labels: backlog
+          exempt-issue-labels: backlog,no-auto-close
 
           # For PRs: post a "warning" message after 60 days, then close if another 30 days pass without a response. In another workflow, PRs closed for 30 days will be locked.
           stale-pr-message: "Hi there! 👋 We haven't heard from you in 60 days and would like to know if you're still working on this or need help. If we don't hear from you before then, I'll auto-close this PR in 30 days."
           close-pr-message: "I'm closing this pull request because we haven't heard back in 90 days. ⌛️ If you're still working on this, feel free to reopen the PR or create a new one!"
           days-before-pr-stale: 60
           days-before-pr-close: 30
-          exempt-pr-labels: backlog
+          exempt-pr-labels: backlog,no-auto-close
           exempt-draft-pr: true
