@@ -154,6 +154,7 @@ export class GithubRepository extends Construct {
     this.resource = new Repository(this, "repo", {
       name,
       description,
+      archiveOnDestroy: true,
       visibility: "public",
       homepageUrl: "https://cdk.tf",
       hasIssues: !name.endsWith("-go"),
