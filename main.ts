@@ -269,6 +269,18 @@ class CustomConstructsStack extends TerraformStack {
     const secrets = new PublishingSecretSet(this, "secret-set");
 
     constructRepos.forEach(({ name: repoName, languages, topics }) => {
+      const protectMainChecks = ["build", "license/cla"].concat(
+        languages.map((language) => {
+          return `package-${
+            language === "typescript"
+              ? "js"
+              : language === "csharp"
+              ? "dotnet"
+              : language
+          }`;
+        })
+      );
+
       const repo = new GithubRepositoryFromExistingRepository(
         this,
         `cdktf-construct-${repoName}`,
@@ -277,6 +289,8 @@ class CustomConstructsStack extends TerraformStack {
           team: githubTeam,
           webhookUrl: slackWebhook.stringValue,
           provider: githubProvider,
+          protectMain: true,
+          protectMainChecks,
         }
       );
 
