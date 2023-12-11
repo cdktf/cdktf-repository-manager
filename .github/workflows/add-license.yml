@@ -2,6 +2,7 @@ name: "Add LICENSE file to Go Repositories"
 
 on:
   workflow_dispatch: {}
+concurrency: ${{ github.workflow }}-${{ github.ref }}
 
 jobs:
   build-provider-matrix:
