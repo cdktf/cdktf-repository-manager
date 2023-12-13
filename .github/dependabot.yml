@@ -1,0 +1,25 @@
+version: 2
+updates:
+  - package-ecosystem: npm
+    versioning-strategy: lockfile-only
+    directory: /
+    schedule:
+      interval: daily
+    labels:
+      - auto-approve
+      - automerge
+      - dependencies
+      - security
+    # Disable version updates for npm dependencies, only use Dependabot for security updates
+    open-pull-requests-limit: 0
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: daily
+    labels:
+      - auto-approve
+      - automerge
+      - dependencies
+    # only update hashicorp actions, external actions managed by tsccr
+    allow:
+      - dependency-name: hashicorp/*
