@@ -37,7 +37,7 @@ export class RepositorySetup extends Construct {
       "team" | "webhookUrl" | "provider" | "protectMain" | "protectMainChecks"
     > & {
       repository: Repository | DataGithubRepository;
-    }
+    },
   ) {
     super(scope, name);
 
@@ -56,7 +56,7 @@ export class RepositorySetup extends Construct {
         name: "automerge",
         repository: repository.name,
         provider,
-      })
+      }),
     );
 
     setOldId(
@@ -65,7 +65,7 @@ export class RepositorySetup extends Construct {
         name: "no-auto-close",
         repository: repository.name,
         provider,
-      })
+      }),
     );
 
     new IssueLabel(this, `auto-approve-label`, {
@@ -98,7 +98,7 @@ export class RepositorySetup extends Construct {
             },
           ],
           provider,
-        })
+        }),
       );
     }
 
@@ -108,7 +108,7 @@ export class RepositorySetup extends Construct {
         teamId: team.id,
         permission: "admin",
         provider,
-      })
+      }),
     );
 
     // Slack integration so we can be notified about new PRs and Issues
@@ -124,7 +124,7 @@ export class RepositorySetup extends Construct {
         // We don't need to notify about PRs since they are auto-created
         events: ["issues"],
         provider,
-      })
+      }),
     );
   }
 }
@@ -154,6 +154,7 @@ export class GithubRepository extends Construct {
     this.resource = new Repository(this, "repo", {
       name,
       description,
+      archiveOnDestroy: true,
       visibility: "public",
       homepageUrl: "https://cdk.tf",
       hasIssues: !name.endsWith("-go"),
@@ -190,7 +191,7 @@ export class GithubRepositoryFromExistingRepository extends Construct {
     name: string,
     config: RepositoryConfig & {
       repositoryName: string;
-    }
+    },
   ) {
     super(scope, name);
 
