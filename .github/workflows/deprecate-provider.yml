@@ -34,8 +34,8 @@ jobs:
         with:
           branch: auto/deprecate-${{ inputs.provider }}
           base: main
-          commit-message: "fix: mark this prebuilt provider package as deprecated"
-          title: "fix: mark this prebuilt provider package as deprecated"
+          commit-message: "chore: mark this prebuilt provider package as deprecated"
+          title: "chore: mark this prebuilt provider package as deprecated"
           body: |
             HashiCorp has made the decision to stop publishing new versions of prebuilt Terraform `${{ inputs.provider }}` provider
             bindings for [CDK for Terraform](https://cdk.tf). Once this PR is merged, this repository will be archived and will no longer
