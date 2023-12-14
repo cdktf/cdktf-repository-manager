@@ -53,9 +53,16 @@ jobs:
           committer: team-tf-cdk <github-team-tf-cdk@hashicorp.com>
           signoff: true
           delete-branch: true
+      - name: Get NuGet package name
+        id: nuget
+        run: |-
+          NUGET_PACKAGE=$(npm pkg get jsii.targets.dotnet.packageId | tr -d '"')
+          echo "package=$NUGET_PACKAGE"
+          echo "package=$NUGET_PACKAGE" >> $GITHUB_OUTPUT
     outputs:
       pr_id: ${{ steps.cpr.outputs.pull-request-number }}
       provider_repo: ${{ env.PROVIDER_REPO }}
+      nuget_package: ${{ steps.nuget.outputs.package }}
   update_self:
     name: Create a PR in this repo to archive the provider repo
     runs-on: ubuntu-latest
@@ -87,12 +94,13 @@ jobs:
 
             Please complete the following steps in this exact order to complete the deprecation process:
 
-            - [ ] Double-check [`provider.json`](./provider.json) and [`sharded-stacks.json`](./sharded-stacks.json) for any syntax errors caused by extraneous commas
+            - [ ] Double-check [`provider.json`](./provider.json) and [`sharded-stacks.json`](./sharded-stacks.json) in this PR for any syntax errors caused by extraneous commas
             - [ ] Check to see if this provider is present in [`providersWithCustomRunners.json`](./providersWithCustomRunners.json) and remove it if so _(optional but recommended)_
             - [ ] Mark this PR as ready for review and examine the plan output from the checks to confirm the correct repos will be archived but not destroyed
             - [ ] Approve and merge ${{ needs.update_provider.outputs.provider_repo }}#${{ needs.update_provider.outputs.pr_id }} and ensure that the release is published to all package managers
                 - N.B. New published versions take 6~8 hours to show up in Maven, but you do not need to wait for that, just ensure that the `release_maven` job completed successfully
-            - [ ] [Manually deprecate](https://learn.microsoft.com/en-us/nuget/nuget-org/deprecate-packages) the `${{ inputs.provider }}` provider in NuGet gallery _(optional but recommended)_
+            - [ ] [Manually deprecate](https://learn.microsoft.com/en-us/nuget/nuget-org/deprecate-packages) the `${{ needs.update_provider.outputs.nuget_package }}` package in NuGet Gallery _(optional but recommended)_
+                - Provide the following custom message: _HashiCorp is no longer publishing new versions of the prebuilt provider for ${{ inputs.provider }}. Previously-published versions of this prebuilt provider will still continue to be available as installable packages on NuGet, but these will not be compatible with newer versions of CDK for Terraform and are not eligible for commercial support. You can continue to use the ${{ inputs.provider }} provider in your CDK for Terraform projects with newer versions of CDKTF, but you will need to generate the bindings locally. See https://cdk.tf/imports for details._
             - [ ] Remove the "do-not-merge" label and merge this PR
 
             Please also ensure that not too much time passes in between each of these steps. Notably, if the PR in the provider repo is
