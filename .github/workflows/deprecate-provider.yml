@@ -78,6 +78,7 @@ jobs:
         run: |
           sed -i "/$PROVIDER/d" provider.json
           sed -i "/$PROVIDER/d" sharded-stacks.json
+          sed -i "/$PROVIDER/d" providersWithCustomRunners.json
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@153407881ec5c347639a548ade7d8ad1d6740e38 # v5.0.2
         with:
@@ -86,17 +87,16 @@ jobs:
           commit-message: "feat: deprecate and archive prebuilt bindings for ${{ inputs.provider }} provider"
           title: "feat: deprecate and archive prebuilt bindings for ${{ inputs.provider }} provider"
           body: |
-            HashiCorp has made the decision to stop publishing new versions of prebuilt Terraform `${{ inputs.provider }}` provider
-            bindings for [CDK for Terraform](https://cdk.tf). Once this PR is merged, the ${{ needs.update_provider.outputs.provider_repo }}
-            repository will be archived and will no longer be supported in any way by HashiCorp. Previously-published versions of the
-            prebuilt `${{ inputs.provider }}` provider will still continue to be available on their respective package managers (e.g. npm, PyPi,
-            Maven, NuGet), but these will not be compatible with new releases of `cdktf` and are no longer eligible for commercial support.
+            HashiCorp has made the decision to stop publishing new versions of prebuilt Terraform `${{ inputs.provider }}` provider bindings for 
+            [CDK for Terraform](https://cdk.tf). Once this PR is merged, the [${{ needs.update_provider.outputs.provider_repo }}](https://github.com/${{ needs.update_provider.outputs.provider_repo }}) repository will be archived and will no longer 
+            be supported in any way by HashiCorp. Previously-published versions of the prebuilt `${{ inputs.provider }}` provider will still continue 
+            to be available on their respective package managers (e.g. npm, PyPi, Maven, NuGet), but these will not be compatible with 
+            new releases of `cdktf` and are no longer eligible for commercial support.
 
             Please complete the following steps in this exact order to complete the deprecation process:
 
-            - [ ] Double-check [`provider.json`](./provider.json) and [`sharded-stacks.json`](./sharded-stacks.json) in this PR for any syntax errors caused by extraneous commas
-            - [ ] Check to see if this provider is present in [`providersWithCustomRunners.json`](./providersWithCustomRunners.json) and remove it if so _(optional but recommended)_
-            - [ ] Mark this PR as ready for review and examine the plan output from the checks to confirm the correct repos will be archived but not destroyed
+            - [ ] Double-check `provider.json`, `sharded-stacks.json`, and `providersWithCustomRunners.json` in this PR for any syntax errors caused by extraneous commas
+            - [ ] Mark this PR as ready for review and examine the plan output from the checks to confirm the correct resources are destroyed
             - [ ] Approve and merge ${{ needs.update_provider.outputs.provider_repo }}#${{ needs.update_provider.outputs.pr_id }} and ensure that the release is published to all package managers
                 - N.B. New published versions take 6~8 hours to show up in Maven, but you do not need to wait for that, just ensure that the `release_maven` job completed successfully
             - [ ] [Manually deprecate](https://learn.microsoft.com/en-us/nuget/nuget-org/deprecate-packages) the `${{ needs.update_provider.outputs.nuget_package }}` package in NuGet Gallery _(optional but recommended)_
