@@ -1,0 +1,115 @@
+name: Deprecate a prebuilt provider
+on:
+  workflow_dispatch:
+    inputs:
+      provider:
+        description: "Provider name (key from provider.json file)"
+        required: true
+        type: string
+env:
+  PROVIDER: ${{ inputs.provider }}
+  PROVIDER_REPO: ${{ format('cdktf/cdktf-provider-{0}', inputs.provider) }}
+jobs:
+  update_provider:
+    name: Create a PR in the provider repo to mark it as deprecated
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+        with:
+          repository: ${{ env.PROVIDER_REPO }}
+          token: ${{ secrets.GH_TOKEN_ACTIONS_UPDATER }}
+      - name: Install
+        run: yarn install
+      - name: Kick off the deprecation
+        run: |
+          sed -i "s/isDeprecated: false,/isDeprecated: true,/" ./projenrc.js
+      - name: Do a build
+        run: yarn && yarn build
+      - name: Create Pull Request
+        id: cpr
+        uses: peter-evans/create-pull-request@153407881ec5c347639a548ade7d8ad1d6740e38 # v5.0.2
+        with:
+          branch: auto/deprecate-${{ inputs.provider }}
+          base: main
+          commit-message: "chore: mark this prebuilt provider package as deprecated"
+          title: "chore: mark this prebuilt provider package as deprecated"
+          body: |
+            HashiCorp has made the decision to stop publishing new versions of prebuilt Terraform `${{ inputs.provider }}` provider
+            bindings for [CDK for Terraform](https://cdk.tf). Once this PR is merged, this repository will be archived and will no longer
+            be supported in any way by HashiCorp. Previously-published versions of this prebuilt provider will still continue to be
+            available on their respective package managers (e.g. npm, PyPi, Maven, NuGet), but these will not be compatible with
+            new releases of `cdktf` and are no longer eligible for commercial support.
+             
+            As a reminder, you can continue to use the `${{ inputs.provider }}` provider in your CDK for Terraform (CDKTF) projects,
+            even with newer versions of CDKTF, but you will need to generate the bindings locally. The easiest way to do so is to use
+            the [`provider add` command](https://developer.hashicorp.com/terraform/cdktf/cli-reference/commands#provider-add) with the 
+            `--force-local` flag enabled. For more information, check out our documentation on [generating provider bindings manually](https://cdk.tf/imports).
+          labels: automated
+          token: ${{ secrets.GH_TOKEN_ACTIONS_UPDATER }}
+          author: team-tf-cdk <github-team-tf-cdk@hashicorp.com>
+          committer: team-tf-cdk <github-team-tf-cdk@hashicorp.com>
+          signoff: true
+          delete-branch: true
+      - name: Get NuGet package name
+        id: nuget
+        run: |-
+          NUGET_PACKAGE=$(npm pkg get jsii.targets.dotnet.packageId | tr -d '"')
+          echo "package=$NUGET_PACKAGE"
+          echo "package=$NUGET_PACKAGE" >> $GITHUB_OUTPUT
+    outputs:
+      pr_id: ${{ steps.cpr.outputs.pull-request-number }}
+      provider_repo: ${{ env.PROVIDER_REPO }}
+      nuget_package: ${{ steps.nuget.outputs.package }}
+  update_self:
+    name: Create a PR in this repo to archive the provider repo
+    runs-on: ubuntu-latest
+    needs: [update_provider]
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+      - name: Install
+        run: yarn install
+      - name: Remove the provider from our configuration
+        run: |
+          sed -i "/$PROVIDER/d" provider.json
+          sed -i "/$PROVIDER/d" sharded-stacks.json
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@153407881ec5c347639a548ade7d8ad1d6740e38 # v5.0.2
+        with:
+          branch: auto/deprecate-${{ inputs.provider }}
+          base: main
+          commit-message: "feat: deprecate and archive prebuilt bindings for ${{ inputs.provider }} provider"
+          title: "feat: deprecate and archive prebuilt bindings for ${{ inputs.provider }} provider"
+          body: |
+            HashiCorp has made the decision to stop publishing new versions of prebuilt Terraform `${{ inputs.provider }}` provider
+            bindings for [CDK for Terraform](https://cdk.tf). Once this PR is merged, the ${{ needs.update_provider.outputs.provider_repo }}
+            repository will be archived and will no longer be supported in any way by HashiCorp. Previously-published versions of the
+            prebuilt `${{ inputs.provider }}` provider will still continue to be available on their respective package managers (e.g. npm, PyPi,
+            Maven, NuGet), but these will not be compatible with new releases of `cdktf` and are no longer eligible for commercial support.
+
+            Please complete the following steps in this exact order to complete the deprecation process:
+
+            - [ ] Double-check [`provider.json`](./provider.json) and [`sharded-stacks.json`](./sharded-stacks.json) in this PR for any syntax errors caused by extraneous commas
+            - [ ] Check to see if this provider is present in [`providersWithCustomRunners.json`](./providersWithCustomRunners.json) and remove it if so _(optional but recommended)_
+            - [ ] Mark this PR as ready for review and examine the plan output from the checks to confirm the correct repos will be archived but not destroyed
+            - [ ] Approve and merge ${{ needs.update_provider.outputs.provider_repo }}#${{ needs.update_provider.outputs.pr_id }} and ensure that the release is published to all package managers
+                - N.B. New published versions take 6~8 hours to show up in Maven, but you do not need to wait for that, just ensure that the `release_maven` job completed successfully
+            - [ ] [Manually deprecate](https://learn.microsoft.com/en-us/nuget/nuget-org/deprecate-packages) the `${{ needs.update_provider.outputs.nuget_package }}` package in NuGet Gallery _(optional but recommended)_
+                - Provide the following custom message: _HashiCorp is no longer publishing new versions of the prebuilt provider for ${{ inputs.provider }}. Previously-published versions of this prebuilt provider will still continue to be available as installable packages on NuGet, but these will not be compatible with newer versions of CDK for Terraform and are not eligible for commercial support. You can continue to use the ${{ inputs.provider }} provider in your CDK for Terraform projects with newer versions of CDKTF, but you will need to generate the bindings locally. See https://cdk.tf/imports for details._
+            - [ ] Remove the "do-not-merge" label and merge this PR
+
+            Please also ensure that not too much time passes in between each of these steps. Notably, if the PR in the provider repo is
+            merged but other changes are deployed before that repo is properly archived, there could be unintended behavior. So, it is 
+            highly recommended that you complete the above steps in short succession.
+          labels: automated,do-not-merge
+          token: ${{ secrets.GH_TOKEN_ACTIONS_UPDATER }}
+          author: team-tf-cdk <github-team-tf-cdk@hashicorp.com>
+          committer: team-tf-cdk <github-team-tf-cdk@hashicorp.com>
+          signoff: true
+          delete-branch: true
+          draft: true
