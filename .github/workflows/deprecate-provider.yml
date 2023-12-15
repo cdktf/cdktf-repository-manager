@@ -25,7 +25,7 @@ jobs:
         run: yarn install
       - name: Kick off the deprecation
         run: |
-          sed -i "s/isDeprecated: false,/isDeprecated: true,/" ./projenrc.js
+          sed -i "s/isDeprecated: false,/isDeprecated: true,/" .projenrc.js
       - name: Do a build
         run: yarn && yarn build
       - name: Create Pull Request
