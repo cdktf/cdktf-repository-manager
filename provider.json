@@ -22,7 +22,6 @@
   "google": "google@~> 5.0",
   "googlebeta": "google-beta@~> 5.0",
   "googleworkspace": "googleworkspace@~> 0.7",
-  "hashicups": "hashicorp/hashicups@~> 0.3",
   "hcp": "hcp@~> 0.45",
   "hcs": "hcs@~> 0.5",
   "helm": "helm@~> 2.3",
