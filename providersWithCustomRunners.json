@@ -4,6 +4,5 @@
   "datadog",
   "google",
   "googlebeta",
-  "kubernetes",
-  "hashicups"
+  "kubernetes"
 ]
