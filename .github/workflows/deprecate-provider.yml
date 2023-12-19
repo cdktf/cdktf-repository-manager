@@ -26,8 +26,10 @@ jobs:
       - name: Kick off the deprecation
         run: |
           sed -i "s/isDeprecated: false,/isDeprecated: true,/" .projenrc.js
-      - name: npx projen
-        run: yarn
+      - name: Do a build
+        run: yarn && yarn build
+      - name: Reset the version in package.json
+        run: npm pkg set version="0.0.0"
       - name: Create Pull Request
         id: cpr
         uses: peter-evans/create-pull-request@153407881ec5c347639a548ade7d8ad1d6740e38 # v5.0.2
