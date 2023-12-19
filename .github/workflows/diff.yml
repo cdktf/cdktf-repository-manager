@@ -1,7 +1,7 @@
 name: "Plan"
 
-on: [pull_request]
-concurrency: ${{ github.workflow }}-${{ github.ref }}
+on: [pull_request_target]
+concurrency: ${{ github.workflow }}-${{ github.head_ref }}
 
 jobs:
   build-shard-matrix:
