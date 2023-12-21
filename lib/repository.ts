@@ -205,4 +205,9 @@ export class GithubRepositoryFromExistingRepository extends Construct {
       repository: this.resource,
     });
   }
+
+  addSecret(name: string) {
+    const variable = new SecretFromVariable(this, name);
+    variable.for(this.resource, this.provider);
+  }
 }
