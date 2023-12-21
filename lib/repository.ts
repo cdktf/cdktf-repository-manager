@@ -24,7 +24,7 @@ export interface RepositoryConfig {
   team: ITeam;
   protectMain?: boolean;
   protectMainChecks?: string[];
-  webhookUrl: string;
+  webhookUrl?: string;
   provider: GithubProvider;
 }
 
@@ -112,20 +112,22 @@ export class RepositorySetup extends Construct {
     );
 
     // Slack integration so we can be notified about new PRs and Issues
-    setOldId(
-      new RepositoryWebhook(this, "slack-webhook", {
-        repository: repository.name,
+    if (webhookUrl) {
+      setOldId(
+        new RepositoryWebhook(this, "slack-webhook", {
+          repository: repository.name,
 
-        configuration: {
-          url: webhookUrl,
-          contentType: "json",
-        },
+          configuration: {
+            url: webhookUrl,
+            contentType: "json",
+          },
 
-        // We don't need to notify about PRs since they are auto-created
-        events: ["issues"],
-        provider,
-      }),
-    );
+          // We don't need to notify about PRs since they are auto-created
+          events: ["issues"],
+          provider,
+        }),
+      );
+    }
   }
 }
 
