@@ -31,6 +31,7 @@
   "launchdarkly": "launchdarkly/launchdarkly@~> 2.13",
   "local": "hashicorp/local@~> 2.1",
   "mongodbatlas": "mongodb/mongodbatlas@~> 1.8",
+  "multipass": "larstobi/multipass@~> 1.4.2",
   "newrelic": "newrelic/newrelic@~> 3.7",
   "nomad": "nomad@~> 2.0",
   "null": "null@~> 3.0",
