@@ -9,7 +9,7 @@ module.exports = () => {
   const mainFolder = path.join(process.env.GITHUB_WORKSPACE, "main");
   const codeownersFile = fs.readFileSync(
     path.join(mainFolder, ".github", "CODEOWNERS"),
-    "utf-8"
+    "utf-8",
   );
 
   fs.mkdirSync(path.join(process.env.GITHUB_WORKSPACE, "provider", ".github"), {
@@ -21,8 +21,8 @@ module.exports = () => {
       process.env.GITHUB_WORKSPACE,
       "provider",
       ".github",
-      "CODEOWNERS"
+      "CODEOWNERS",
     ),
-    codeownersFile
+    codeownersFile,
   );
 };

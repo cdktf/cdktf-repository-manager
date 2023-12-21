@@ -36,7 +36,7 @@ export class SecretFromVariable extends Construct {
 
   public for(
     repository: Repository | DataGithubRepository,
-    ghProvider: GithubProvider
+    ghProvider: GithubProvider,
   ) {
     const secret = setOldId(
       new ActionsSecret(repository, `secret-${this.name}`, {
@@ -44,7 +44,7 @@ export class SecretFromVariable extends Construct {
         secretName: constantCase(this.name),
         repository: repository.name,
         provider: ghProvider,
-      })
+      }),
     );
 
     this.secretNames.forEach((name) => {
@@ -54,7 +54,7 @@ export class SecretFromVariable extends Construct {
           secretName: constantCase(name),
           repository: repository.name,
           provider: ghProvider,
-        })
+        }),
       );
     });
 
@@ -98,7 +98,7 @@ export class PublishingSecretSet extends Construct {
 
   public forAllLanguages(
     repository: Repository | DataGithubRepository,
-    ghProvider: GithubProvider
+    ghProvider: GithubProvider,
   ) {
     this.secrets.forEach((secret) => secret.for(repository, ghProvider));
   }
@@ -106,7 +106,7 @@ export class PublishingSecretSet extends Construct {
   private forPrefixedSecrets(
     repository: Repository | DataGithubRepository,
     ghProvider: GithubProvider,
-    prefix: string
+    prefix: string,
   ) {
     this.secrets
       .filter((secret) => secret.name.startsWith(prefix))
@@ -115,35 +115,35 @@ export class PublishingSecretSet extends Construct {
 
   public forGitHub(
     repository: Repository | DataGithubRepository,
-    ghProvider: GithubProvider
+    ghProvider: GithubProvider,
   ) {
     this.forPrefixedSecrets(repository, ghProvider, "gh-");
   }
 
   public forTypescript(
     repository: Repository | DataGithubRepository,
-    ghProvider: GithubProvider
+    ghProvider: GithubProvider,
   ) {
     this.forPrefixedSecrets(repository, ghProvider, "npm-");
   }
 
   public forPython(
     repository: Repository | DataGithubRepository,
-    ghProvider: GithubProvider
+    ghProvider: GithubProvider,
   ) {
     this.forPrefixedSecrets(repository, ghProvider, "twine-");
   }
 
   public forCsharp(
     repository: Repository | DataGithubRepository,
-    ghProvider: GithubProvider
+    ghProvider: GithubProvider,
   ) {
     this.forPrefixedSecrets(repository, ghProvider, "nuget-");
   }
 
   public forJava(
     repository: Repository | DataGithubRepository,
-    ghProvider: GithubProvider
+    ghProvider: GithubProvider,
   ) {
     this.forPrefixedSecrets(repository, ghProvider, "maven-");
   }
@@ -152,7 +152,7 @@ export class PublishingSecretSet extends Construct {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     _repository: Repository | DataGithubRepository,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    _ghProvider: GithubProvider
+    _ghProvider: GithubProvider,
   ) {
     // No additional go secrets required, this method exists for consistency
   }
