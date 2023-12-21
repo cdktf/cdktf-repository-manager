@@ -36,11 +36,11 @@ type StackShards = {
 };
 
 const allProviders: Record<string, string> = JSON.parse(
-  fs.readFileSync(path.join(__dirname, "provider.json"), "utf8"),
+  fs.readFileSync(path.join(__dirname, "provider.json"), "utf8")
 );
 
 const shardedStacks: StackShards = JSON.parse(
-  fs.readFileSync(path.join(__dirname, "sharded-stacks.json"), "utf8"),
+  fs.readFileSync(path.join(__dirname, "sharded-stacks.json"), "utf8")
 );
 
 interface GitUrls {
@@ -60,8 +60,8 @@ function getShardedStackProviders(name: string): Record<string, string> {
 
   return Object.fromEntries(
     Object.entries(allProviders).filter(([key]) =>
-      stackProvidersList.includes(key),
-    ),
+      stackProvidersList.includes(key)
+    )
   );
 }
 
@@ -100,13 +100,13 @@ class TerraformCdkProviderStack extends TerraformStack {
       this.createRepositoryManagerRepo(
         slackWebhook,
         githubProvider,
-        githubTeam,
+        githubTeam
       );
       this.createProviderProjectRepo(
         slackWebhook,
         secrets.npmSecret,
         githubProvider,
-        githubTeam,
+        githubTeam
       );
     }
 
@@ -157,7 +157,7 @@ class TerraformCdkProviderStack extends TerraformStack {
     slackWebhook: TerraformVariable,
     npmSecret: SecretFromVariable,
     githubProvider: GithubProvider,
-    githubTeam: DataGithubTeam,
+    githubTeam: DataGithubTeam
   ) {
     const templateRepository = new GithubRepository(
       this,
@@ -166,7 +166,7 @@ class TerraformCdkProviderStack extends TerraformStack {
         team: githubTeam,
         webhookUrl: slackWebhook.stringValue,
         provider: githubProvider,
-      },
+      }
     );
 
     npmSecret.for(templateRepository.resource, githubProvider);
@@ -179,7 +179,7 @@ class TerraformCdkProviderStack extends TerraformStack {
   private createRepositoryManagerRepo(
     slackWebhook: TerraformVariable,
     githubProvider: GithubProvider,
-    githubTeam: DataGithubTeam,
+    githubTeam: DataGithubTeam
   ) {
     const selfTokens = [
       new SecretFromVariable(this, "tf-cloud-token"),
@@ -202,13 +202,13 @@ class TerraformCdkProviderStack extends TerraformStack {
   private validateProviderNames(providers: Record<string, string>) {
     // validate that providers contain only valid names (-go suffix is forbidden)
     const goSuffixProviders = Object.keys(providers).filter((key) =>
-      key.endsWith("-go"),
+      key.endsWith("-go")
     );
     if (goSuffixProviders.length > 0) {
       Annotations.of(this).addError(
         `Providers contain a provider key with a suffix -go which is not allowed due to conflicts with go package repositories. Please remove the -go suffix from these provider keys ${goSuffixProviders.join(
-          ", ",
-        )}`,
+          ", "
+        )}`
       );
     }
 
@@ -222,13 +222,13 @@ class TerraformCdkProviderStack extends TerraformStack {
 
         const sanitizedProviderName = providerName.replace(/-/g, "");
         return key !== sanitizedProviderName;
-      },
+      }
     );
     if (notMatchingProviders.length > 0) {
       Annotations.of(this).addError(
         `Provider name and provider key do not match for ${notMatchingProviders.join(
-          ", ",
-        )}. This leads to issues when deploying go packages. Please rename the provider key to match the provider name.`,
+          ", "
+        )}. This leads to issues when deploying go packages. Please rename the provider key to match the provider name.`
       );
     }
   }
@@ -242,7 +242,7 @@ class CustomConstructsStack extends TerraformStack {
       name: string;
       languages: ("typescript" | "python" | "csharp" | "java" | "go")[];
       topics?: string[];
-    }[],
+    }[]
   ) {
     super(scope, name);
     const githubProvider = new GithubProvider(this, "github-provider-cdktf", {
@@ -261,6 +261,10 @@ class CustomConstructsStack extends TerraformStack {
         name: "custom-constructs",
       },
     });
+    const slackWebhook = new TerraformVariable(this, "slack-webhook", {
+      type: "string",
+    });
+    slackWebhook.overrideLogicalId("slack-webhook");
 
     const secrets = new PublishingSecretSet(this, "secret-set");
 
@@ -271,10 +275,10 @@ class CustomConstructsStack extends TerraformStack {
             language === "typescript"
               ? "js"
               : language === "csharp"
-                ? "dotnet"
-                : language
+              ? "dotnet"
+              : language
           }`;
-        }),
+        })
       );
 
       const repo = new GithubRepositoryFromExistingRepository(
@@ -283,10 +287,11 @@ class CustomConstructsStack extends TerraformStack {
         {
           repositoryName: repoName,
           team: githubTeam,
+          webhookUrl: slackWebhook.stringValue,
           provider: githubProvider,
           protectMain: true,
           protectMainChecks,
-        },
+        }
       );
 
       secrets.forGitHub(repo.resource, githubProvider);
@@ -311,6 +316,7 @@ class CustomConstructsStack extends TerraformStack {
           topics,
           team: githubTeam,
           protectMain: false,
+          webhookUrl: slackWebhook.stringValue,
           provider: githubProvider,
         });
       }
@@ -331,10 +337,10 @@ const allProviderNames = Object.keys(allProviders);
 const shardProviderSet = new Set(allProvidersInShards);
 const allProviderSet = new Set(allProviderNames);
 const missingProvidersInShards = new Set(
-  [...allProviderSet].filter((provider) => !shardProviderSet.has(provider)),
+  [...allProviderSet].filter((provider) => !shardProviderSet.has(provider))
 );
 const missingProvidersInAllProviders = new Set(
-  [...shardProviderSet].filter((provider) => !allProviderSet.has(provider)),
+  [...shardProviderSet].filter((provider) => !allProviderSet.has(provider))
 );
 
 if (shardProviderSet.size < allProvidersInShards.length) {
@@ -345,7 +351,7 @@ if (missingProvidersInShards.size > 0) {
   throw new Error(
     `One or more providers present in provider.json are missing in sharded-stacks.json: ${[
       ...missingProvidersInShards,
-    ]}`,
+    ]}`
   );
 }
 
@@ -353,7 +359,7 @@ if (missingProvidersInAllProviders.size > 0) {
   throw new Error(
     `One or more providers present in sharded-stacks.json are missing in provider.json: ${[
       ...missingProvidersInAllProviders,
-    ]}`,
+    ]}`
   );
 }
 
