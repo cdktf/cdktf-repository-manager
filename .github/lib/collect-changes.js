@@ -61,14 +61,14 @@ module.exports = async ({ core, exec }) => {
   const { before, after } = await getBeforeAndAfterFiles(
     exec,
     providerDirectory,
-    ".projenrc.js"
+    ".projenrc.js",
   );
   const { before: beforeVersion, after: afterVersion } =
     await getBeforeAndAfterFiles(
       exec,
       providerDirectory,
       path.join("src", "version.json"),
-      true
+      true,
     );
   const providerVersions = {
     before: before[Object.keys(beforeVersion)[0]],
@@ -96,11 +96,11 @@ module.exports = async ({ core, exec }) => {
   }));
 
   const hasBreakingChanges = [...results, ...providerNameChanged].some(
-    (res) => res.breaking
+    (res) => res.breaking,
   );
 
   console.log(
-    hasBreakingChanges ? "Found breaking changes!" : "No breaking changes."
+    hasBreakingChanges ? "Found breaking changes!" : "No breaking changes.",
   );
 
   let prefix = `chore(deps)${hasBreakingChanges ? "!" : ""}: update `;
@@ -112,7 +112,7 @@ module.exports = async ({ core, exec }) => {
     console.log(
       `${res.key}: ${res.before} => ${res.after} (${
         res.breaking ? "breaking" : "non-breaking"
-      })`
+      })`,
     );
 
     if (res.before === res.after) {
@@ -149,13 +149,13 @@ module.exports = async ({ core, exec }) => {
 
   if (providerNameChanged.before !== providerNameChanged.after) {
     commitMessageParts.push(
-      `provider name to \`${providerNameChanged.after}\``
+      `provider name to \`${providerNameChanged.after}\``,
     );
   }
 
   if (providerVersions.before !== providerVersions.after) {
     commitMessageParts.push(
-      `provider version to \`${providerVersions.after}\``
+      `provider version to \`${providerVersions.after}\``,
     );
   }
 
@@ -182,6 +182,6 @@ module.exports = async ({ core, exec }) => {
 
   core.setOutput(
     "commit_message",
-    `${prefix} ${commitMessageParts.join(", ")}`.trim()
+    `${prefix} ${commitMessageParts.join(", ")}`.trim(),
   );
 };

@@ -43,7 +43,7 @@ export function makeUniqueId(components: string[], allowSepChars: boolean) {
 
   if (components.length === 0) {
     throw new Error(
-      "Unable to calculate a unique id for an empty set of components"
+      "Unable to calculate a unique id for an empty set of components",
     );
   }
 
