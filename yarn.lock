@@ -205,10 +205,10 @@
     glob "10.3.10"
     jsii-srcmak "0.1.999"
 
-"@cdktf/provider-github@^12.0.0":
-  version "12.1.0"
-  resolved "https://registry.yarnpkg.com/@cdktf/provider-github/-/provider-github-12.1.0.tgz#e5056c5ca07ddcb8a4cb00d137cd4845460b20d4"
-  integrity sha512-/Tm/Q14BPL3HP9l4Y+vp4hOlqAc8kqbp9DeMGD3/RDjCvkH7YFmgWu0B9yxX80yTRQHlnx3d02HGWo6+YFRSmg==
+"@cdktf/provider-github@^13.0.0":
+  version "13.0.0"
+  resolved "https://registry.yarnpkg.com/@cdktf/provider-github/-/provider-github-13.0.0.tgz#615c20e4320f36651421633b7abe2723f11c7887"
+  integrity sha512-jdI7seuG4vrwar752tvVgpe42EU2IxSIA93IeEgwYiFGpmAFcn3oM4Lc64MMvVUjqMeMhb7YBZto64q4WexQTw==
 
 "@cdktf/provider-schema@0.20.0":
   version "0.20.0"
