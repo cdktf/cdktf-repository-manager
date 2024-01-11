@@ -44,7 +44,6 @@
   "salesforce": "salesforce@~> 0.1",
   "snowflake": "Snowflake-Labs/snowflake@ ~> 0.40",
   "spotinst": "spotinst/spotinst@~> 1.0",
-  "template": "hashicorp/template@~> 2.2",
   "tfe": "hashicorp/tfe@~> 0.33",
   "time": "hashicorp/time@~> 0.7",
   "tls": "hashicorp/tls@~> 4.0",
