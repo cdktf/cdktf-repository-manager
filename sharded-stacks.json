@@ -72,7 +72,8 @@
       },
       "providers": [
         "launchdarkly",
-        "mongodbatlas"
+        "mongodbatlas",
+        "oci"
       ]
     }
   }
