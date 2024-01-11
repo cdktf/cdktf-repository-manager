@@ -7,6 +7,14 @@ on:
         required: true
         description: JSON-stringified list of stacks to deploy, e.g. # [{ "stack": "my-stack" }]
         type: string
+      ref:
+        required: true
+        description: The SHA ref of the commit to check out
+        type: string
+      repository:
+        required: true
+        description: The fully qualified name of the repository to check out the commit from
+        type: string
 
 jobs:
   terraform:
@@ -20,6 +28,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+        with:
+          ref: ${{ inputs.ref }}
+          repository: ${{ inputs.repository }}
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@a1502cd9e758c50496cc9ac5308c4843bcd56d36
