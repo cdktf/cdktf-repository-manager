@@ -21,10 +21,14 @@ jobs:
     needs: build-shard-matrix
     with:
       stacks: ${{ needs.build-shard-matrix.outputs.matrix }}
+      ref: ${{ github.event.pull_request.head.ref }}
+      repository: ${{ github.event.pull_request.head.repo.full_name }}
     secrets: inherit
 
   diff_constructs:
     uses: ./.github/workflows/diff-cdktf-stacks.yml
     with:
       stacks: '{"stack":["custom-constructs"]}'
+      ref: ${{ github.event.pull_request.head.ref }}
+      repository: ${{ github.event.pull_request.head.repo.full_name }}
     secrets: inherit
