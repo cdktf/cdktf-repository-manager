@@ -41,7 +41,6 @@
   "pagerduty": "PagerDuty/pagerduty@~> 3.0",
   "postgresql": "cyrilgdn/postgresql@~> 1.14",
   "random": "hashicorp/random@~> 3.1",
-  "salesforce": "salesforce@~> 0.1",
   "snowflake": "Snowflake-Labs/snowflake@ ~> 0.40",
   "spotinst": "spotinst/spotinst@~> 1.0",
   "tfe": "hashicorp/tfe@~> 0.33",
