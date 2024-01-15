@@ -35,7 +35,6 @@
   "nomad": "nomad@~> 2.0",
   "null": "null@~> 3.0",
   "opc": "opc@~> 1.4",
-  "oraclepaas": "oraclepaas@~> 1.5",
   "okta": "okta/okta@~> 4.0",
   "opentelekomcloud": "opentelekomcloud/opentelekomcloud@~> 1.26",
   "pagerduty": "PagerDuty/pagerduty@~> 3.0",

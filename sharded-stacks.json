@@ -59,7 +59,6 @@
         "http",
         "nomad",
         "opc",
-        "oraclepaas",
         "vsphere",
         "waypoint"
       ]
