@@ -34,7 +34,6 @@
   "newrelic": "newrelic/newrelic@~> 3.7",
   "nomad": "nomad@~> 2.0",
   "null": "null@~> 3.0",
-  "opc": "opc@~> 1.4",
   "okta": "okta/okta@~> 4.0",
   "opentelekomcloud": "opentelekomcloud/opentelekomcloud@~> 1.26",
   "pagerduty": "PagerDuty/pagerduty@~> 3.0",
