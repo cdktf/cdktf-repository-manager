@@ -58,7 +58,6 @@
         "hcs",
         "http",
         "nomad",
-        "opc",
         "vsphere",
         "waypoint"
       ]
