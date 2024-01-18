@@ -9,12 +9,10 @@
         "acme",
         "archive",
         "aws",
-        "azuread",
         "azurerm",
         "cloudflare",
         "cloudinit",
         "databricks",
-        "datadog",
         "digitalocean",
         "dnsimple",
         "docker",
@@ -48,7 +46,6 @@
         "workspaceName": "prebuilt-providers-official-new"
       },
       "providers": [
-        "ad",
         "azurestack",
         "boundary",
         "consul",
@@ -56,7 +53,6 @@
         "googleworkspace",
         "hcp",
         "http",
-        "nomad",
         "vsphere",
         "waypoint"
       ]
