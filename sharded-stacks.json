@@ -52,7 +52,6 @@
         "boundary",
         "consul",
         "dns",
-        "googleworkspace",
         "hcp",
         "http",
         "nomad",

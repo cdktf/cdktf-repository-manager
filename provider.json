@@ -20,7 +20,6 @@
   "gitlab": "gitlabhq/gitlab@~> 16.0",
   "google": "google@~> 5.0",
   "googlebeta": "google-beta@~> 5.0",
-  "googleworkspace": "googleworkspace@~> 0.7",
   "hcp": "hcp@~> 0.45",
   "helm": "helm@~> 2.3",
   "http": "http@~> 3.1",
