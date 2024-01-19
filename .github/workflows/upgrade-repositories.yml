@@ -56,7 +56,7 @@ jobs:
           git config user.name github-team-tf-cdk
           git config user.email github-team-tf-cdk@hashicorp.com
           git checkout -b foo-bar-${{ github.run_number }}
-          yarn add --dev @cdktf/provider-project@latest projen
+          yarn add --dev @cdktf/provider-project@latest
           npx projen
           yarn install --check-files
           yarn build-provider
