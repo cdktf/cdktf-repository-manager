@@ -10,6 +10,8 @@ import {
   TerraformOutput,
   RemoteBackend,
   Annotations,
+  Aspects,
+  MigrateIds,
 } from "cdktf";
 import {
   GithubRepository,
@@ -371,10 +373,15 @@ if (!stackNames.includes(primaryStackName)) {
 }
 
 stackNames.forEach((stackName) => {
-  new TerraformCdkProviderStack(app, stackName, primaryStackName === stackName);
+  const providerStack = new TerraformCdkProviderStack(
+    app,
+    stackName,
+    primaryStackName === stackName
+  );
+  Aspects.of(providerStack).add(new MigrateIds());
 });
 
-new CustomConstructsStack(app, "custom-constructs", [
+const customConstructs = new CustomConstructsStack(app, "custom-constructs", [
   {
     name: "cdktf-tf-module-stack",
     languages: ["typescript", "python", "csharp", "java", "go"],
@@ -393,5 +400,6 @@ new CustomConstructsStack(app, "custom-constructs", [
     languages: ["typescript", "python"],
   },
 ]);
+Aspects.of(customConstructs).add(new MigrateIds());
 
 app.synth();
