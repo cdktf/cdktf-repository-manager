@@ -55,8 +55,7 @@
         "hcp",
         "http",
         "nomad",
-        "vsphere",
-        "waypoint"
+        "vsphere"
       ]
     },
     "repos-partners": {
