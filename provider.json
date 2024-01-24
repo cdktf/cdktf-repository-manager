@@ -43,5 +43,5 @@
   "tls": "hashicorp/tls@~> 4.0",
   "upcloud": "UpCloudLtd/upcloud@~> 3.0",
   "vault": "hashicorp/vault@~> 3.7",
-  "vsphere": "vsphere@~> 2.2",
+  "vsphere": "vsphere@~> 2.2"
 }

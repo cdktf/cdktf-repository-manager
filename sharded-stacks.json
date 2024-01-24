@@ -55,7 +55,7 @@
         "hcp",
         "http",
         "nomad",
-        "vsphere",
+        "vsphere"
       ]
     },
     "repos-partners": {
