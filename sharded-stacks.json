@@ -56,7 +56,6 @@
         "http",
         "nomad",
         "vsphere",
-        "waypoint"
       ]
     },
     "repos-partners": {
