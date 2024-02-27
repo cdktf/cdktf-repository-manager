@@ -1,0 +1,31 @@
+name: upgrade-actions
+on:
+  schedule:
+    - cron: 37 1 * * 1
+  workflow_dispatch: {}
+jobs:
+  pin:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+      - name: Setup TSCCR helper
+        uses: hashicorp/setup-tsccr@v1
+      - name: Pin all workflows based on TSCCR
+        run: tsccr-helper gha update -latest .
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN_ACTIONS_UPDATER }}
+      - name: Create Pull Request
+        id: cpr
+        uses: peter-evans/create-pull-request@b1ddad2c994a25fbc81a28b3ec0e368bb2021c50 # v6.0.0
+        with:
+          branch: auto/upgrade-actions
+          base: main
+          commit-message: "chore(deps): pin trusted workflows based on HashiCorp TSCCR"
+          title: "chore(deps): pin trusted workflows based on HashiCorp TSCCR"
+          body: "This PR upgrades all GitHub Actions to newer versions so long as they have been verified by HashiCorp's security team."
+          labels: dependencies,automated,automerge
+          token: ${{ secrets.GH_TOKEN_ACTIONS_UPDATER }}
+          author: hashicorp-tsccr[bot] <hashicorp-tsccr[bot]@users.noreply.github.com>
+          committer: hashicorp-tsccr[bot] <hashicorp-tsccr[bot]@users.noreply.github.com>
+          signoff: true
+          delete-branch: true
