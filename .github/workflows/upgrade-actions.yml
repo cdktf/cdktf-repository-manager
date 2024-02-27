@@ -3,13 +3,18 @@ on:
   schedule:
     - cron: 37 1 * * 1
   workflow_dispatch: {}
+concurrency: ${{ github.workflow }}-${{ github.ref }}
 jobs:
   pin:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
       - name: Setup TSCCR helper
-        uses: hashicorp/setup-tsccr@v1
+        uses: hashicorp/setup-tsccr-helper@v1
+        with:
+          token: ${{ secrets.GH_TOKEN_ACTIONS_UPDATER }}
       - name: Pin all workflows based on TSCCR
         run: tsccr-helper gha update -latest .
         env:
