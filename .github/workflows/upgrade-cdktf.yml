@@ -52,7 +52,7 @@ jobs:
           NEW_CDKTF_VERSION: ${{ needs.check_versions.outputs.latest_version }}
       - name: Create Pull Request
         id: cpr
-        uses: peter-evans/create-pull-request@b1ddad2c994a25fbc81a28b3ec0e368bb2021c50 # v6.0.0
+        uses: peter-evans/create-pull-request@a4f52f8033a6168103c2538976c07b467e8163bc # v6.0.1
         with:
           branch: auto/upgrade-providers-cdktf-${{ needs.check_versions.outputs.latest_version_minor }}
           base: main
@@ -86,7 +86,7 @@ jobs:
         env:
           NEW_CDKTF_VERSION: ${{ needs.check_versions.outputs.latest_version }}
       - name: Create Pull Request
-        uses: peter-evans/create-pull-request@b1ddad2c994a25fbc81a28b3ec0e368bb2021c50 # v6.0.0
+        uses: peter-evans/create-pull-request@a4f52f8033a6168103c2538976c07b467e8163bc # v6.0.1
         with:
           branch: auto/upgrade-self-cdktf-${{ needs.check_versions.outputs.latest_version_minor }}
           base: main
