@@ -1,0 +1,39 @@
+name: "Delete stale branches in provider repos"
+on:
+  workflow_dispatch: {}
+concurrency: ${{ github.workflow }}-${{ github.ref }}
+jobs:
+  build-provider-matrix:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+      - id: set-matrix
+        run: |
+          provider=$(jq -rcM "{ provider: keys }" provider.json)
+          echo "matrix=$provider" >> $GITHUB_OUTPUT
+  cleanup-branches:
+    needs: build-provider-matrix
+    name: "Clean up branches"
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix: ${{fromJSON(needs.build-provider-matrix.outputs.matrix)}}
+      max-parallel: 10
+    steps:
+      - name: Checkout cdktf-provider-${{ matrix.provider }} Repository
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+        with:
+          repository: cdktf/cdktf-provider-${{ matrix.provider }}
+          token: ${{ secrets.GH_COMMENT_TOKEN }}
+          fetch-depth: 0
+      - name: Set git identity
+        run: |-
+          git config user.name "team-tf-cdk"
+          git config user.email "github-team-tf-cdk@hashicorp.com"
+      - name: Delete old branches from previous runs
+        run: |
+          git branch -r | egrep -o "upgrade-provider-project.*" | xargs -n 1 git push origin --delete
+          git branch -r | egrep -o "cdktf-next-pr.*" | xargs -n 1 git push origin --delete
