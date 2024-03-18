@@ -42,6 +42,6 @@
   "time": "hashicorp/time@~> 0.7",
   "tls": "hashicorp/tls@~> 4.0",
   "upcloud": "UpCloudLtd/upcloud@~> 5.0",
-  "vault": "hashicorp/vault@~> 3.7",
+  "vault": "hashicorp/vault@~> 4.0",
   "vsphere": "vsphere@~> 2.2"
 }
