@@ -42,7 +42,9 @@ export class RepositorySetup extends Construct {
 
     const {
       protectMain = false,
-      protectMainChecks = ["build", "license/cla"],
+      // @TODO: uncomment the below line if we want to require CLA checks again (and remove the line below it)
+      // protectMainChecks = ["build", "license/cla"],
+      protectMainChecks = ["build"],
       provider,
       repository,
       team,
@@ -61,7 +63,7 @@ export class RepositorySetup extends Construct {
       name: "no-auto-close",
       repository: repository.name,
       provider,
-    }),
+    });
 
     new IssueLabel(this, `auto-approve-label`, {
       color: "8BF8BD",
@@ -85,14 +87,15 @@ export class RepositorySetup extends Construct {
           },
         ],
         requireConversationResolution: true,
+        requiredLinearHistory: true,
         requiredStatusChecks: [
           {
-            strict: true,
+            strict: false,
             contexts: protectMainChecks,
           },
         ],
         provider,
-      })
+      });
     }
 
     new TeamRepository(this, "managing-team", {
@@ -111,11 +114,10 @@ export class RepositorySetup extends Construct {
         contentType: "json",
       },
 
-        // We don't need to notify about PRs since they are auto-created
-        events: ["issues"],
-        provider,
-      });
-    
+      // We don't need to notify about PRs since they are auto-created
+      events: ["issues"],
+      provider,
+    });
   }
 }
 
