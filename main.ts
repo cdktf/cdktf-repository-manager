@@ -271,7 +271,9 @@ class CustomConstructsStack extends TerraformStack {
     const secrets = new PublishingSecretSet(this, "secret-set");
 
     constructRepos.forEach(({ name: repoName, languages, topics }) => {
-      const protectMainChecks = ["build", "license/cla"].concat(
+      // @TODO: uncomment the below line if we want to require CLA checks again (and remove the line below it)
+      // const protectMainChecks = ["build", "license/cla"].concat(
+      const protectMainChecks = ["build"].concat(
         languages.map((language) => {
           return `package-${
             language === "typescript"
@@ -376,7 +378,7 @@ stackNames.forEach((stackName) => {
   const providerStack = new TerraformCdkProviderStack(
     app,
     stackName,
-    primaryStackName === stackName
+    primaryStackName === stackName,
   );
   Aspects.of(providerStack).add(new MigrateIds());
 });
