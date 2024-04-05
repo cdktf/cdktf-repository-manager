@@ -35,7 +35,7 @@ jobs:
         if: env.CURRENT_NODEJS_VERSION_SHORT != env.NEW_NODEJS_VERSION_SHORT
         run: |-
           npm pkg set engines.node=">= $NEW_NODEJS_VERSION"
-          yarn add -D @types/node@^$NEW_NODEJS_VERSION_SHORT
+          yarn add -D @types/node@~$NEW_NODEJS_VERSION_SHORT
       - name: Set the new minNodeVersion in the Projen template
         if: env.CURRENT_NODEJS_VERSION_SHORT != env.NEW_NODEJS_VERSION_SHORT
         run: 'sed -i "s/minNodeVersion: \".*\",/minNodeVersion: \"$NEW_NODEJS_VERSION\",/" ./projenrc.template.js'
