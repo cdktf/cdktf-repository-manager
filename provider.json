@@ -17,7 +17,7 @@
   "dnsimple": "dnsimple/dnsimple@~> 1.0",
   "external": "external@~> 2.1",
   "github": "integrations/github@~> 6.0",
-  "gitlab": "gitlabhq/gitlab@~> 16.0",
+  "gitlab": "gitlabhq/gitlab@~> 17.0",
   "google": "google@~> 5.0",
   "googlebeta": "google-beta@~> 5.0",
   "hcp": "hcp@~> 0.45",
