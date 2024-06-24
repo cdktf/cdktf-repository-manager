@@ -71,8 +71,8 @@ export class PublishingSecretSet extends Construct {
       "nuget-api-key",
       "twine-username",
       "twine-password",
-      "maven-username",
-      "maven-password",
+      "maven-username", // Use the user token from https://hashicorp.oss.sonatype.org/#profile;User%20Token (saved in 1Password)
+      "maven-password", // Use the user token password (same as above)
       "maven-gpg-private-key",
       "maven-gpg-private-key-passphrase",
       "maven-staging-profile-id",
