@@ -271,9 +271,7 @@ class CustomConstructsStack extends TerraformStack {
     const secrets = new PublishingSecretSet(this, "secret-set");
 
     constructRepos.forEach(({ name: repoName, languages, topics }) => {
-      // @TODO: uncomment the below line if we want to require CLA checks again (and remove the line below it)
-      // const protectMainChecks = ["build", "license/cla"].concat(
-      const protectMainChecks = ["build"].concat(
+      const protectMainChecks = ["build", "license/cla"].concat(
         languages.map((language) => {
           return `package-${
             language === "typescript"
