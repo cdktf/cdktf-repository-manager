@@ -167,6 +167,8 @@ class TerraformCdkProviderStack extends TerraformStack {
       {
         team: githubTeam,
         webhookUrl: slackWebhook.stringValue,
+        protectMain: true,
+        protectMainChecks: ["build", "package-js", "license/cla"],
         provider: githubProvider,
       },
     );
