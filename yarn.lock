@@ -191,10 +191,10 @@
     fs-extra "8.1.0"
     glob "10.4.1"
 
-"@cdktf/provider-github@^13.0.0":
-  version "13.2.0"
-  resolved "https://registry.yarnpkg.com/@cdktf/provider-github/-/provider-github-13.2.0.tgz#ae59769b5064ee364ca06619bbb926791c94d717"
-  integrity sha512-Jm9x8zyu1kxSUrqU07FFOvDVp4uKB0tee+oIPqG8uySE2nPsVFJyFNd3nVufaodaBhEw7K5T1stenCz/sNhiIQ==
+"@cdktf/provider-github@^14.2.2":
+  version "14.2.2"
+  resolved "https://registry.yarnpkg.com/@cdktf/provider-github/-/provider-github-14.2.2.tgz#2ae0083a104469a8d9c0eb0ca1741be5678be7e1"
+  integrity sha512-RFkT/p1XmMcNZrPHINX0ZFAjSn8hZ5I5xIGIYfIEKkDg7jJadf/UQ6LSy7dEGhgKBhRh+h60Za1EgAjNbS3ECA==
 
 "@cdktf/provider-schema@0.20.8":
   version "0.20.8"
