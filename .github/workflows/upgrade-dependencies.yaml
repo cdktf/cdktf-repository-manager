@@ -18,8 +18,11 @@ jobs:
       - name: Get the output from yarn outdated and save it in a variable to reference in the PR body
         id: yarn
         run: |-
-          YARN_OUTDATED=$(yarn outdated)
-          echo "outdated=YARN_OUTDATED" >> $GITHUB_OUTPUT
+          {
+            echo 'outdated<<EOF'
+            yarn outdated
+            echo EOF
+          } >> "$GITHUB_OUTPUT"
       - name: Do the upgrade
         run: yarn upgrade
       - name: Create Pull Request
