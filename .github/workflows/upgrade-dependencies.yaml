@@ -17,6 +17,9 @@ jobs:
         run: yarn install
       - name: Run yarn outdated
         run: yarn outdated > outdated.txt
+        continue-on-error: true
+        # Took me way too much debugging to figure out: `yarn outdated` uses exit code 1 if outdated packages are present
+        # See also: https://github.com/yarnpkg/yarn/issues/7573
       - name: Save the output from yarn outdated in a variable to reference in the PR body
         id: yarn
         # See: https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#multiline-strings
