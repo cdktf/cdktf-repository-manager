@@ -42,9 +42,7 @@ export class RepositorySetup extends Construct {
 
     const {
       protectMain = false,
-      // @TODO: uncomment the below line if we want to require CLA checks again (and remove the line below it)
-      // protectMainChecks = ["build", "license/cla"],
-      protectMainChecks = ["build"],
+      protectMainChecks = ["build", "license/cla"],
       provider,
       repository,
       team,
