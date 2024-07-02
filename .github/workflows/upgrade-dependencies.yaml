@@ -15,18 +15,20 @@ jobs:
         uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # v4.1.6
       - name: Install
         run: yarn install
-      - name: Get the output from yarn outdated and save it in a variable to reference in the PR body
+      - name: Run yarn outdated
+        run: yarn outdated > outdated.txt
+      - name: Save the output from yarn outdated in a variable to reference in the PR body
         id: yarn
         # See: https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#multiline-strings
         # See also https://github.com/github/docs/issues/21529 for more info on why this is not quite so simple
         run: |
-          yarn outdated > outdated.txt
           YARN_OUTDATED=$(cat outdated.txt)
           EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
           echo "outdated<<$EOF" >> "$GITHUB_OUTPUT"
           echo "$YARN_OUTDATED" >> "$GITHUB_OUTPUT"
           echo "$EOF" >> "$GITHUB_OUTPUT"
-          rm outdated.txt
+      - name: Remove temporary file
+        run: rm outdated.txt
       - name: Do the upgrade
         run: yarn upgrade
       - name: Create Pull Request
