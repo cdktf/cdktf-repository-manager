@@ -1,0 +1,48 @@
+name: upgrade-dependencies
+on:
+  schedule:
+    - cron: 28 5 * * 0
+  workflow_dispatch: {}
+concurrency: ${{ github.workflow }}-${{ github.ref }}
+jobs:
+  upgrade:
+    name: Upgrade dependencies using yarn
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # v4.1.6
+      - name: Install
+        run: yarn install
+      - name: Get the output from yarn outdated and save it in a variable to reference in the PR body
+        id: yarn
+        run: |-
+          YARN_OUTDATED=$(yarn outdated)
+          echo "outdated=YARN_OUTDATED" >> $GITHUB_OUTPUT
+      - name: Do the upgrade
+        run: yarn upgrade
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@6d6857d36972b65feb161a90e484f2984215f83e # v6.0.5
+        with:
+          branch: auto/upgrade-dependencies
+          base: main
+          commit-message: "chore(deps): upgrade dependencies for this repo only"
+          title: "chore(deps): upgrade dependencies for this repo only"
+          body: |
+            This PR upgrades dependencies used by this repo (`cdktf-repository-manager`) to their latest version based on the version range specified in the `package.json` file.
+            For reference, here is the output from `yarn outdated` prior to running `yarn upgrade` which was used to produce this PR:
+
+            ```
+            ${{ steps.yarn.outputs.outdated }}
+            ```
+
+            Note that this auto-update process only stays within specified version ranges (typically minor or patch). If you want to upgrade to newer versions beyond those, you will need to manually check out this repository and run the command `yarn upgrade [package] --latest`.
+
+            For future reference: the reason why we're not using Dependabot for this is because this repo has a tendency to run into rate limits, and Dependabot produces so many PRs and workflow runs that it'd be likely to hit those limits quickly.
+          labels: automerge,auto-approve,dependencies
+          token: ${{ secrets.GH_TOKEN_ACTIONS_UPDATER }}
+          author: team-tf-cdk <github-team-tf-cdk@hashicorp.com>
+          committer: team-tf-cdk <github-team-tf-cdk@hashicorp.com>
+          signoff: true
+          delete-branch: true
