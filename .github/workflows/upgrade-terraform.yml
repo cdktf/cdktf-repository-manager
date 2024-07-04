@@ -1,7 +1,7 @@
 name: upgrade-terraform
 on:
   schedule:
-    - cron: 32 23 * * 0
+    - cron: 32 21 * * 0
   workflow_dispatch: {}
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 jobs:
@@ -15,6 +15,13 @@ jobs:
         uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # v4.1.6
       - name: Install
         run: yarn install
+      - name: Get current Terraform version
+        id: current_version
+        run: |-
+          CURRENT_VERSION=$(npm pkg get terraform.version | tr -d '"')
+          CURRENT_VERSION_MINOR=$(cut -d "." -f 2 <<< "$CURRENT_VERSION")
+          echo "value=$CURRENT_VERSION" >> $GITHUB_OUTPUT
+          echo "minor=$CURRENT_VERSION_MINOR" >> $GITHUB_OUTPUT
       - name: Get latest Terraform version
         uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
         with:
@@ -31,7 +38,10 @@ jobs:
       - name: Update the Terraform version used in GitHub Actions workflows
         run: |-
           find ./.github/workflows -type f -name "*.yml" ! -path "./.github/workflows/upgrade-terraform.yml" -print0 | xargs -0 sed -i "s/terraform_version: .*/terraform_version: $NEW_TERRAFORM_VERSION/g"
-      - name: Create pull request
+      - name: Save the new version in package.json
+        run: npm pkg set terraform.version="$NEW_TERRAFORM_VERSION"
+      - name: Create pull request for a new patch release
+        if: steps.current_version.outputs.minor == steps.latest_version.outputs.minor
         uses: peter-evans/create-pull-request@6d6857d36972b65feb161a90e484f2984215f83e # v6.0.5
         with:
           base: main
@@ -39,10 +49,26 @@ jobs:
           commit-message: "chore: upgrade Terraform to ${{ steps.latest_version.outputs.value }}"
           title: "chore: upgrade Terraform to ${{ steps.latest_version.outputs.value }}"
           body: |-
-            This PR initiates the upgrade of the version of Terraform used by this project's `diff` and `deploy` workflows to version `${{ steps.latest_version.outputs.value }}`.
+            This PR upgrades the version of Terraform used by this project's `diff` and `deploy` workflows to `${{ steps.latest_version.outputs.value }}`.
+          labels: auto-approve,automerge,dependencies
+          token: ${{ secrets.GH_TOKEN_ACTIONS_UPDATER }}
+          author: team-tf-cdk <github-team-tf-cdk@hashicorp.com>
+          committer: team-tf-cdk <github-team-tf-cdk@hashicorp.com>
+          signoff: true
+          delete-branch: true
+      - name: Create pull request for a new minor version
+        if: steps.current_version.outputs.minor != steps.latest_version.outputs.minor
+        uses: peter-evans/create-pull-request@6d6857d36972b65feb161a90e484f2984215f83e # v6.0.5
+        with:
+          base: main
+          branch: auto/upgrade-terraform-1-${{ steps.latest_version.outputs.minor }}
+          commit-message: "chore: upgrade Terraform to ${{ steps.latest_version.outputs.value }}"
+          title: "chore: upgrade Terraform to ${{ steps.latest_version.outputs.value }}"
+          body: |-
+            This PR initiates the upgrade of the version of Terraform used by this project's `diff` and `deploy` workflows to `${{ steps.latest_version.outputs.value }}`.
             Unfortunately, not everything can be automated, and the following steps need to be completed manually:
              
-            - Update the _Terraform Version_ in the TFC web UI in the following workspaces:
+            - Set the _Terraform Version_ to `~>${{ steps.latest_version.outputs.value }} latest` in the TFC web UI in the following workspaces:
               - [ ] [custom-constructs](https://app.terraform.io/app/cdktf-team/workspaces/custom-constructs/settings/general)
               - [ ] [prebuilt-providers](https://app.terraform.io/app/cdktf-team/workspaces/prebuilt-providers/settings/general)
               - [ ] [prebuilt-providers-official-new](https://app.terraform.io/app/cdktf-team/workspaces/prebuilt-providers-official-new/settings/general)
@@ -54,3 +80,4 @@ jobs:
           committer: team-tf-cdk <github-team-tf-cdk@hashicorp.com>
           signoff: true
           delete-branch: true
+          draft: true
