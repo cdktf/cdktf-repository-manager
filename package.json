@@ -13,12 +13,11 @@
     "compile": "tsc --pretty",
     "watch": "tsc -w",
     "test": "echo ok",
-    "lint": "eslint **/*.{ts,js}",
+    "lint": "npx lint-staged",
     "upgrade": "npm i cdktf@latest cdktf-cli@latest",
     "upgrade:next": "npm i cdktf@next cdktf-cli@next",
     "output": "cd cdktf.out && terraform output -json -state ../terraform.tfstate",
-    "repos": "yarn -s output | jq  'with_entries(select(.key|match(\"providerRepos\";\"i\")))[] | .value'",
-    "prepare": "husky install"
+    "repos": "yarn -s output | jq  'with_entries(select(.key|match(\"providerRepos\";\"i\")))[] | .value'"
   },
   "engines": {
     "node": ">= 18.12.0"
@@ -50,7 +49,6 @@
     "@typescript-eslint/eslint-plugin": "^6",
     "@typescript-eslint/parser": "^6",
     "eslint": "^8.27.0",
-    "husky": ">=6",
     "lint-staged": ">=10",
     "prettier": "^3",
     "tsx": "^4.0.0",
