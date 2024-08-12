@@ -12,7 +12,7 @@ jobs:
       contents: read
     steps:
       - name: Checkout
-        uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # v4.1.6
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
       - name: Install
         run: yarn install
       - name: Get current CDKTF version
@@ -44,7 +44,7 @@ jobs:
       contents: read
     steps:
       - name: Checkout
-        uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # v4.1.6
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
       - name: Do the upgrade
         run: |
           sed -i "s/cdktfVersion: \".*\",/cdktfVersion: \"^$NEW_CDKTF_VERSION\",/" ./projenrc.template.js
@@ -52,7 +52,7 @@ jobs:
           NEW_CDKTF_VERSION: ${{ needs.check_versions.outputs.latest_version }}
       - name: Create Pull Request
         id: cpr
-        uses: peter-evans/create-pull-request@6d6857d36972b65feb161a90e484f2984215f83e # v6.0.5
+        uses: peter-evans/create-pull-request@c5a7806660adbe173f04e3e038b0ccdcd758773c # v6.1.0
         with:
           branch: auto/upgrade-providers-cdktf-${{ needs.check_versions.outputs.latest_version_minor }}
           base: main
@@ -76,7 +76,7 @@ jobs:
       contents: read
     steps:
       - name: Checkout
-        uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # v4.1.6
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
       - name: Install
         run: yarn install
       - name: Do the upgrade
@@ -86,7 +86,7 @@ jobs:
         env:
           NEW_CDKTF_VERSION: ${{ needs.check_versions.outputs.latest_version }}
       - name: Create Pull Request
-        uses: peter-evans/create-pull-request@6d6857d36972b65feb161a90e484f2984215f83e # v6.0.5
+        uses: peter-evans/create-pull-request@c5a7806660adbe173f04e3e038b0ccdcd758773c # v6.1.0
         with:
           branch: auto/upgrade-self-cdktf-${{ needs.check_versions.outputs.latest_version_minor }}
           base: main

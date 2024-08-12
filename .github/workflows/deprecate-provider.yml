@@ -17,7 +17,7 @@ jobs:
       contents: read
     steps:
       - name: Checkout
-        uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # v4.1.6
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
         with:
           repository: ${{ env.PROVIDER_REPO }}
           token: ${{ secrets.GH_TOKEN_ACTIONS_UPDATER }}
@@ -32,7 +32,7 @@ jobs:
         run: npm pkg set version="0.0.0"
       - name: Create Pull Request
         id: cpr
-        uses: peter-evans/create-pull-request@6d6857d36972b65feb161a90e484f2984215f83e # v6.0.5
+        uses: peter-evans/create-pull-request@c5a7806660adbe173f04e3e038b0ccdcd758773c # v6.1.0
         with:
           branch: auto/deprecate-${{ inputs.provider }}
           base: main
@@ -73,7 +73,7 @@ jobs:
       contents: read
     steps:
       - name: Checkout
-        uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # v4.1.6
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
       - name: Install
         run: yarn install
       - name: Remove the provider from our configuration
@@ -82,7 +82,7 @@ jobs:
           sed -i '/"'"$PROVIDER"'"/d' sharded-stacks.json
           sed -i '/"'"$PROVIDER"'"/d' providersWithCustomRunners.json
       - name: Create Pull Request
-        uses: peter-evans/create-pull-request@6d6857d36972b65feb161a90e484f2984215f83e # v6.0.5
+        uses: peter-evans/create-pull-request@c5a7806660adbe173f04e3e038b0ccdcd758773c # v6.1.0
         with:
           branch: auto/deprecate-${{ inputs.provider }}
           base: main
