@@ -156,7 +156,7 @@ export class GithubRepository extends Construct {
       allowUpdateBranch: true,
       squashMergeCommitMessage: "PR_BODY",
       squashMergeCommitTitle: "PR_TITLE",
-      vulnerabilityAlerts: true,
+      vulnerabilityAlerts: !name.endsWith("-go"),
       topics,
       provider,
     });
