@@ -33,8 +33,21 @@ jobs:
         run: |-
           git config user.name "team-tf-cdk"
           git config user.email "github-team-tf-cdk@hashicorp.com"
-      - name: Delete old branches from previous runs
-        run: |
-          git branch -r | egrep -o "upgrade-provider-project.*" | xargs -n 1 git push origin --delete
-          git branch -r | egrep -o "cdktf-next-pr.*" | xargs -n 1 git push origin --delete
+      - name: Delete old branches from previous repo-manager runs
+        run: git branch -r | egrep -o "upgrade-provider-project.*" | xargs -n 1 git push origin --delete
+        continue-on-error: true # don't fail the run if these branches never existed
+      - name: Delete old branches from when we used to build providers against cdktf@next
+        run: git branch -r | egrep -o "cdktf-next-pr.*" | xargs -n 1 git push origin --delete
+        continue-on-error: true # don't fail the run if these branches never existed
+      - name: Delete old renovate branches that were never used
+        run: git branch -r | egrep -o ".*renovate.*" | xargs -n 1 git push origin --delete
+        continue-on-error: true # don't fail the run if these branches never existed
+      - name: Delete old update-main branch that has not been used in 3 years
+        run: git branch -r | egrep -o "update-main" | xargs -n 1 git push origin --delete
+        continue-on-error: true # don't fail the run if these branches never existed
+      - name: Delete old Projen branch name convention that has not been used in 3 years # the one we use nowadays is github-actions/upgrade-main
+        run: git branch -r | egrep -o "github-actions/upgrade" | xargs -n 1 git push origin --delete
+        continue-on-error: true # don't fail the run if these branches never existed
+      - name: Delete another Projen branch name convention that has not been used in 3 years
+        run: git branch -r | egrep -o "github-actions/upgrade-dependencies" | xargs -n 1 git push origin --delete
         continue-on-error: true # don't fail the run if these branches never existed
