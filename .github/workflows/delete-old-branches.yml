@@ -39,6 +39,8 @@ jobs:
       - name: Delete old branches from when we used to build providers against cdktf@next
         run: git branch -r | egrep -o "cdktf-next-pr.*" | xargs -n 1 git push origin --delete
         continue-on-error: true # don't fail the run if these branches never existed
+      - name: Delete old temporary branches from previous repo-manager runs
+        run: git branch -r | egrep -o "foo-bar.*" | xargs -n 1 git push origin --delete
       - name: Delete old renovate branches that were never used
         run: git branch -r | egrep -o ".*renovate.*" | xargs -n 1 git push origin --delete
         continue-on-error: true # don't fail the run if these branches never existed
