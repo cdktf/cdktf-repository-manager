@@ -2,7 +2,7 @@
   "acme": "vancluever/acme@~> 2.10",
   "archive": "hashicorp/archive@~> 2.2",
   "aws": "aws@~> 5.0",
-  "azuread": "hashicorp/azuread@~> 2.0",
+  "azuread": "hashicorp/azuread@~> 3.0",
   "azurerm": "azurerm@~> 4.0",
   "azurestack": "azurestack@~> 1.0",
   "boundary": "boundary@~> 1.0",
