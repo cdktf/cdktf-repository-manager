@@ -118,10 +118,12 @@ export class RepositorySetup extends Construct {
       provider,
     });
 
-    new RepositoryDependabotSecurityUpdates(this, "dependabot-security", {
-      repository: repository.name,
-      enabled: true,
-    });
+    if (!name.endsWith("-go")) {
+      new RepositoryDependabotSecurityUpdates(this, "dependabot-security", {
+        repository: repository.name,
+        enabled: true,
+      });
+    }
   }
 }
 
