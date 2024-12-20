@@ -13,7 +13,6 @@ import { BranchProtection } from "@cdktf/provider-github/lib/branch-protection";
 import { TeamRepository } from "@cdktf/provider-github/lib/team-repository";
 import { RepositoryDependabotSecurityUpdates } from "@cdktf/provider-github/lib/repository-dependabot-security-updates";
 import { RepositoryWebhook } from "@cdktf/provider-github/lib/repository-webhook";
-import { Token } from "cdktf";
 
 export interface ITeam {
   id: string;
@@ -118,13 +117,6 @@ export class RepositorySetup extends Construct {
       events: ["issues"],
       provider,
     });
-
-    if (!Token.asString(repository.name).endsWith("-go")) {
-      new RepositoryDependabotSecurityUpdates(this, "dependabot-security", {
-        repository: repository.name,
-        enabled: true,
-      });
-    }
   }
 }
 
@@ -174,6 +166,13 @@ export class GithubRepository extends Construct {
       ...config,
       repository: this.resource,
     });
+
+    if (!name.endsWith("-go")) {
+      new RepositoryDependabotSecurityUpdates(this, "dependabot-security", {
+        repository: this.resource.name,
+        enabled: true,
+      });
+    }
   }
 
   addSecret(name: string) {
@@ -203,5 +202,12 @@ export class GithubRepositoryFromExistingRepository extends Construct {
       ...config,
       repository: this.resource,
     });
+
+    if (!config.repositoryName.endsWith("-go")) {
+      new RepositoryDependabotSecurityUpdates(this, "dependabot-security", {
+        repository: this.resource.name,
+        enabled: true,
+      });
+    }
   }
 }
