@@ -118,7 +118,7 @@ export class RepositorySetup extends Construct {
       provider,
     });
 
-    if (!name.endsWith("-go")) {
+    if (!repository.name.endsWith("-go")) {
       new RepositoryDependabotSecurityUpdates(this, "dependabot-security", {
         repository: repository.name,
         enabled: true,
