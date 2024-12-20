@@ -169,7 +169,7 @@ export class GithubRepository extends Construct {
 
     if (!name.endsWith("-go")) {
       new RepositoryDependabotSecurityUpdates(this, "dependabot-security", {
-        repository: this.resource.fullName,
+        repository: this.resource.name,
         enabled: true,
       });
     }
@@ -205,7 +205,7 @@ export class GithubRepositoryFromExistingRepository extends Construct {
 
     if (!config.repositoryName.endsWith("-go")) {
       new RepositoryDependabotSecurityUpdates(this, "dependabot-security", {
-        repository: this.resource.fullName,
+        repository: this.resource.name,
         enabled: true,
       });
     }
