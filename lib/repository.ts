@@ -11,6 +11,7 @@ import { DataGithubRepository } from "@cdktf/provider-github/lib/data-github-rep
 import { IssueLabel } from "@cdktf/provider-github/lib/issue-label";
 import { BranchProtection } from "@cdktf/provider-github/lib/branch-protection";
 import { TeamRepository } from "@cdktf/provider-github/lib/team-repository";
+import { RepositoryDependabotSecurityUpdates } from "@cdktf/provider-github/lib/repository-dependabot-security-updates";
 import { RepositoryWebhook } from "@cdktf/provider-github/lib/repository-webhook";
 
 export interface ITeam {
@@ -115,6 +116,11 @@ export class RepositorySetup extends Construct {
       // We don't need to notify about PRs since they are auto-created
       events: ["issues"],
       provider,
+    });
+
+    new RepositoryDependabotSecurityUpdates(this, "dependabot-security", {
+      repository: repository.name,
+      enabled: true,
     });
   }
 }
