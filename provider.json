@@ -36,7 +36,7 @@
   "pagerduty": "PagerDuty/pagerduty@~> 3.0",
   "postgresql": "cyrilgdn/postgresql@~> 1.14",
   "random": "hashicorp/random@~> 3.1",
-  "snowflake": "Snowflake-Labs/snowflake@ ~> 0.40",
+  "snowflake": "Snowflake-Labs/snowflake@ ~> 1.0",
   "spotinst": "spotinst/spotinst@~> 1.0",
   "tfe": "hashicorp/tfe@~> 0.33",
   "time": "hashicorp/time@~> 0.7",
