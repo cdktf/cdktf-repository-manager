@@ -12,7 +12,7 @@ jobs:
       contents: read
     steps:
       - name: Checkout
-        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       - name: Install
         run: yarn install
       - name: Get current Terraform version
@@ -42,7 +42,7 @@ jobs:
         run: npm pkg set terraform.version="$NEW_TERRAFORM_VERSION"
       - name: Create pull request for a new patch release
         if: steps.current_version.outputs.minor == steps.latest_version.outputs.minor
-        uses: peter-evans/create-pull-request@d121e62763d8cc35b5fb1710e887d6e69a52d3a4 # v7.0.2
+        uses: peter-evans/create-pull-request@67ccf781d68cd99b580ae25a5c18a1cc84ffff1f # v7.0.6
         with:
           base: main
           branch: auto/upgrade-terraform-1-${{ steps.latest_version.outputs.minor }}
@@ -58,7 +58,7 @@ jobs:
           delete-branch: true
       - name: Create pull request for a new minor version
         if: steps.current_version.outputs.minor != steps.latest_version.outputs.minor
-        uses: peter-evans/create-pull-request@d121e62763d8cc35b5fb1710e887d6e69a52d3a4 # v7.0.2
+        uses: peter-evans/create-pull-request@67ccf781d68cd99b580ae25a5c18a1cc84ffff1f # v7.0.6
         with:
           base: main
           branch: auto/upgrade-terraform-1-${{ steps.latest_version.outputs.minor }}

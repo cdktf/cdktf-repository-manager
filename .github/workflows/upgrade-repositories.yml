@@ -11,7 +11,7 @@ jobs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
       - name: Checkout
-        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       - id: set-matrix
         run: |
           provider=$(jq -rcM "{ provider: keys }" provider.json)
@@ -29,11 +29,11 @@ jobs:
       max-parallel: 5
     steps:
       - name: Checkout this repository
-        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           path: main
       - name: Checkout cdktf-provider-${{ matrix.provider }} Repository
-        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           repository: cdktf/cdktf-provider-${{ matrix.provider }}
           token: ${{ secrets.GH_COMMENT_TOKEN }}
