@@ -12,6 +12,7 @@ import { IssueLabel } from "@cdktf/provider-github/lib/issue-label";
 import { BranchProtection } from "@cdktf/provider-github/lib/branch-protection";
 import { TeamRepository } from "@cdktf/provider-github/lib/team-repository";
 import { RepositoryWebhook } from "@cdktf/provider-github/lib/repository-webhook";
+import { RepositoryDependabotSecurityUpdates } from "@cdktf/provider-github/lib/repository-dependabot-security-updates";
 
 export interface ITeam {
   id: string;
@@ -165,6 +166,14 @@ export class GithubRepository extends Construct {
       ...config,
       repository: this.resource,
     });
+    
+    if (!name.endsWith("-go")) {
+      new RepositoryDependabotSecurityUpdates(this, "dependabot-security", {
+        provider,
+        repository: this.resource.name,
+        enabled: true,
+      });
+    }
   }
 
   addSecret(name: string) {
@@ -194,5 +203,13 @@ export class GithubRepositoryFromExistingRepository extends Construct {
       ...config,
       repository: this.resource,
     });
+    
+    if (!name.endsWith("-go")) {
+      new RepositoryDependabotSecurityUpdates(this, "dependabot-security", {
+        provider: config.provider,
+        repository: this.resource.name,
+        enabled: true,
+      });
+    }
   }
 }
