@@ -130,13 +130,13 @@ module.exports = async ({ core, exec }) => {
         prefix = `${hasBreakingChanges ? "feat!" : "fix"}: update `;
         break;
       case "constructsVersion":
-        name = `Constructs version`;
+        name = `constructs version`;
         break;
       case "minNodeVersion":
         name = `minimum Node version`;
         break;
       case "jsiiVersion":
-        name = "JSII version";
+        name = "jsii & typescript version";
         break;
     }
 
