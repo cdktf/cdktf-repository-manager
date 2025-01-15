@@ -27,7 +27,7 @@ const isBreaking = (key, before, after) => {
   const majorIncreased = aft.major > bef.major;
   const isDev = aft.major === 0 && bef.major === 0;
   const minorIncreased = aft.minor > bef.minor;
-  return majorIncreased || (isDev && minorIncreased);
+  return key === "jsiiVersion" ? false : majorIncreased || (isDev && minorIncreased);
 };
 
 async function getBeforeAndAfterFiles(exec, dir, fileName, isJson) {
