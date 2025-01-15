@@ -39,6 +39,11 @@ jobs:
           token: ${{ secrets.GH_COMMENT_TOKEN }}
           path: provider
 
+      - name: Setup Node.js
+        uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # v4.1.0
+        with:
+          node-version: "18"
+
       - uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
         name: Create projen run commands file
         with:
