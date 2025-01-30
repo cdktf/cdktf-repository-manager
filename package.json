@@ -52,7 +52,7 @@
     "lint-staged": ">=10",
     "prettier": "^3",
     "tsx": "^4.0.0",
-    "typescript": "~5.4.0"
+    "typescript": "~5.5.0"
   },
   "lint-staged": {
     "*.{md,yml}": "prettier --write",
