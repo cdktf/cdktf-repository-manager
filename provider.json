@@ -6,7 +6,7 @@
   "azurerm": "azurerm@~> 4.0",
   "azurestack": "azurestack@~> 1.0",
   "boundary": "boundary@~> 1.0",
-  "cloudflare": "cloudflare/cloudflare@~> 4.3",
+  "cloudflare": "cloudflare/cloudflare@~> 5.0",
   "cloudinit": "hashicorp/cloudinit@~> 2.2",
   "consul": "consul@~> 2.16",
   "databricks": "databricks/databricks@~> 1.0",
