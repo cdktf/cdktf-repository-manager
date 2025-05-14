@@ -15,11 +15,16 @@ updates:
   - package-ecosystem: github-actions
     directory: /
     schedule:
-      interval: weekly
+      interval: monthly
     labels:
       - auto-approve
       - automerge
       - dependencies
-    # only update hashicorp actions, external actions managed by tsccr
-    allow:
-      - dependency-name: hashicorp/*
+    groups:
+      github-actions-breaking:
+        update-types:
+          - major
+      github-actions-backward-compatible:
+        update-types:
+          - minor
+          - patch
