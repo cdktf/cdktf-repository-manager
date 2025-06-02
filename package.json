@@ -20,7 +20,7 @@
     "repos": "yarn -s output | jq  'with_entries(select(.key|match(\"providerRepos\";\"i\")))[] | .value'"
   },
   "engines": {
-    "node": ">= 18.12.0"
+    "node": ">= 20.9.0"
   },
   "eslintConfig": {
     "parser": "@typescript-eslint/parser",
@@ -45,7 +45,7 @@
     "constructs": "^10.3.0"
   },
   "devDependencies": {
-    "@types/node": "~18",
+    "@types/node": "~20",
     "@typescript-eslint/eslint-plugin": "^6",
     "@typescript-eslint/parser": "^6",
     "eslint": "^8.27.0",
