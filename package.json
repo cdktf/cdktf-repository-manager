@@ -52,7 +52,7 @@
     "lint-staged": ">=10",
     "prettier": "^3",
     "tsx": "^4.0.0",
-    "typescript": "~5.6.0"
+    "typescript": "~5.7.0"
   },
   "lint-staged": {
     "*.{md,yml}": "prettier --write",
@@ -62,6 +62,6 @@
     ]
   },
   "terraform": {
-    "version": "1.11.4"
+    "version": "1.12.1"
   }
 }
