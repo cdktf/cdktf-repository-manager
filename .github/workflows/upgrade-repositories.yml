@@ -64,7 +64,7 @@ jobs:
           yarn add --dev @cdktf/provider-project@latest
           npx projen
           yarn install --check-files
-          npx build-provider
+          yarn fetch
           # fix the readme as it requires src/version.json to be populated
           npx projen
         working-directory: ./provider
