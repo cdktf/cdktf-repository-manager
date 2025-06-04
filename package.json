@@ -39,10 +39,10 @@
   },
   "dependencies": {
     "@cdktf/provider-github": "^14.2.2",
-    "cdktf": "^0.20.0",
-    "cdktf-cli": "^0.20.0",
+    "cdktf": "^0.21.0",
+    "cdktf-cli": "^0.21.0",
     "change-case": "~4.1.2",
-    "constructs": "^10.3.0"
+    "constructs": "^10.4.2"
   },
   "devDependencies": {
     "@types/node": "~20",
