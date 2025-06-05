@@ -38,7 +38,7 @@
     ]
   },
   "dependencies": {
-    "@cdktf/provider-github": "^14.2.2",
+    "@cdktf/provider-github": "^15.0.0",
     "cdktf": "^0.21.0",
     "cdktf-cli": "^0.21.0",
     "change-case": "~4.1.2",
