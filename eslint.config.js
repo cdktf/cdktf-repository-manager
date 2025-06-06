@@ -1,3 +1,8 @@
+/**
+ * Copyright (c) HashiCorp, Inc.
+ * SPDX-License-Identifier: MPL-2.0
+ */
+
 const { defineConfig, globalIgnores } = require("eslint/config");
 
 const typescriptEslint = require("@typescript-eslint/eslint-plugin");
