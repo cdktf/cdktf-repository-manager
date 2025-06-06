@@ -22,21 +22,6 @@
   "engines": {
     "node": ">= 20.9.0"
   },
-  "eslintConfig": {
-    "parser": "@typescript-eslint/parser",
-    "plugins": [
-      "@typescript-eslint"
-    ],
-    "extends": [
-      "eslint:recommended",
-      "plugin:@typescript-eslint/eslint-recommended",
-      "plugin:@typescript-eslint/recommended"
-    ],
-    "ignorePatterns": [
-      "node_modules",
-      "scripts"
-    ]
-  },
   "dependencies": {
     "@cdktf/provider-github": "^15.0.0",
     "cdktf": "^0.21.0",
@@ -46,9 +31,9 @@
   },
   "devDependencies": {
     "@types/node": "~20",
-    "@typescript-eslint/eslint-plugin": "^6",
-    "@typescript-eslint/parser": "^6",
-    "eslint": "^8.27.0",
+    "@typescript-eslint/eslint-plugin": "^8",
+    "@typescript-eslint/parser": "^8",
+    "eslint": "^9",
     "lint-staged": "^15.5.2",
     "prettier": "^3",
     "tsx": "^4.0.0",
