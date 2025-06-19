@@ -1,7 +1,7 @@
 {
   "acme": "vancluever/acme@~> 2.10",
   "archive": "hashicorp/archive@~> 2.2",
-  "aws": "aws@~> 5.0",
+  "aws": "aws@~> 6.0",
   "azuread": "hashicorp/azuread@~> 3.0",
   "azurerm": "azurerm@~> 4.0",
   "azurestack": "azurestack@~> 1.0",
@@ -21,7 +21,7 @@
   "google": "google@~> 6.0",
   "googlebeta": "google-beta@~> 6.0",
   "hcp": "hcp@~> 0.45",
-  "helm": "helm@~> 2.3",
+  "helm": "helm@~> 3.0",
   "http": "http@~> 3.1",
   "ionoscloud": "ionos-cloud/ionoscloud@~> 6.2",
   "kubernetes": "kubernetes@~> 2.0",
