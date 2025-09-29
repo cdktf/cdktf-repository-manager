@@ -20,7 +20,7 @@ jobs:
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
           repository: ${{ env.PROVIDER_REPO }}
-          token: ${{ secrets.GH_TOKEN_ACTIONS_UPDATER }}
+          token: ${{ secrets.GH_COMMENT_TOKEN }}
       - name: Setup Node.js
         uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
         with:
@@ -54,7 +54,7 @@ jobs:
             the [`provider add` command](https://developer.hashicorp.com/terraform/cdktf/cli-reference/commands#provider-add) with the 
             `--force-local` flag enabled. For more information, check out our documentation on [generating provider bindings manually](https://cdk.tf/imports).
           labels: automated
-          token: ${{ secrets.GH_TOKEN_ACTIONS_UPDATER }}
+          token: ${{ secrets.GH_COMMENT_TOKEN }}
           author: team-tf-cdk <github-team-tf-cdk@hashicorp.com>
           committer: team-tf-cdk <github-team-tf-cdk@hashicorp.com>
           signoff: true
@@ -117,7 +117,7 @@ jobs:
             merged but other changes are deployed before that repo is properly archived, there could be unintended behavior. So, it is 
             highly recommended that you complete the above steps in short succession.
           labels: automated,do-not-merge
-          token: ${{ secrets.GH_TOKEN_ACTIONS_UPDATER }}
+          token: ${{ secrets.GH_COMMENT_TOKEN }}
           author: team-tf-cdk <github-team-tf-cdk@hashicorp.com>
           committer: team-tf-cdk <github-team-tf-cdk@hashicorp.com>
           signoff: true

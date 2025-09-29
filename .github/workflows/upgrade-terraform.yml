@@ -55,7 +55,7 @@ jobs:
           body: |-
             This PR upgrades the version of Terraform used by this project's `diff` and `deploy` workflows to `${{ steps.latest_version.outputs.value }}`.
           labels: auto-approve,automerge,dependencies
-          token: ${{ secrets.GH_TOKEN_ACTIONS_UPDATER }}
+          token: ${{ secrets.GH_COMMENT_TOKEN }}
           author: team-tf-cdk <github-team-tf-cdk@hashicorp.com>
           committer: team-tf-cdk <github-team-tf-cdk@hashicorp.com>
           signoff: true
@@ -79,7 +79,7 @@ jobs:
               - [ ] [prebuilt-providers-partners](https://app.terraform.io/app/cdktf-team/workspaces/prebuilt-providers-partners/settings/general)
             - Rerun the checks and carefully inspect the diff output before merging this PR.
           labels: automated,dependencies
-          token: ${{ secrets.GH_TOKEN_ACTIONS_UPDATER }}
+          token: ${{ secrets.GH_COMMENT_TOKEN }}
           author: team-tf-cdk <github-team-tf-cdk@hashicorp.com>
           committer: team-tf-cdk <github-team-tf-cdk@hashicorp.com>
           signoff: true

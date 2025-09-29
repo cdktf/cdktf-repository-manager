@@ -105,7 +105,7 @@ jobs:
           title: "chore!: increase minimum supported Node.js version to ${{ needs.version.outputs.major }}"
           body: This PR increases the minimum supported Node.js version to `${{ needs.version.outputs.latest }}` from `${{ needs.version.outputs.current }}` because the latter is less than 30 days away from EOL.
           labels: automerge,automated,security
-          token: ${{ secrets.GH_TOKEN_ACTIONS_UPDATER }}
+          token: ${{ secrets.GH_COMMENT_TOKEN }}
           author: team-tf-cdk <github-team-tf-cdk@hashicorp.com>
           committer: team-tf-cdk <github-team-tf-cdk@hashicorp.com>
           signoff: true

@@ -103,7 +103,7 @@ jobs:
           title: "chore(deps): upgrade jsii & typescript to v${{ needs.version.outputs.short }}"
           body: "This PR increases the version of JSII and TypeScript to `~${{ needs.version.outputs.latest }}` because the previous version is close to EOL or no longer supported. Support timeline: https://github.com/aws/jsii-compiler/blob/main/README.md#gear-maintenance--support"
           labels: auto-approve,automerge,automated
-          token: ${{ secrets.GH_TOKEN_ACTIONS_UPDATER }}
+          token: ${{ secrets.GH_COMMENT_TOKEN }}
           author: team-tf-cdk <github-team-tf-cdk@hashicorp.com>
           committer: team-tf-cdk <github-team-tf-cdk@hashicorp.com>
           signoff: true
