@@ -46,7 +46,7 @@ jobs:
         run: npm pkg set terraform.version="$NEW_TERRAFORM_VERSION"
       - name: Create pull request for a new patch release
         if: steps.current_version.outputs.minor == steps.latest_version.outputs.minor
-        uses: peter-evans/create-pull-request@271a8d0340265f705b14b6d32b9829c1cb33d45e # v7.0.8
+        uses: peter-evans/create-pull-request@84ae59a2cdc2258d6fa0732dd66352dddae2a412 # v7.0.9
         with:
           base: main
           branch: auto/upgrade-terraform-1-${{ steps.latest_version.outputs.minor }}
@@ -62,7 +62,7 @@ jobs:
           delete-branch: true
       - name: Create pull request for a new minor version
         if: steps.current_version.outputs.minor != steps.latest_version.outputs.minor
-        uses: peter-evans/create-pull-request@271a8d0340265f705b14b6d32b9829c1cb33d45e # v7.0.8
+        uses: peter-evans/create-pull-request@84ae59a2cdc2258d6fa0732dd66352dddae2a412 # v7.0.9
         with:
           base: main
           branch: auto/upgrade-terraform-1-${{ steps.latest_version.outputs.minor }}
