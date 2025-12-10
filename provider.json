@@ -7,7 +7,6 @@
   "azurestack": "azurestack@~> 1.0",
   "boundary": "boundary@~> 1.0",
   "cloudflare": "cloudflare/cloudflare@~> 5.0",
-  "cloudinit": "hashicorp/cloudinit@~> 2.2",
   "consul": "consul@~> 2.16",
   "databricks": "databricks/databricks@~> 1.0",
   "datadog": "DataDog/datadog@~> 3.0",

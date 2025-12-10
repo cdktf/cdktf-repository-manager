@@ -12,7 +12,6 @@
         "azuread",
         "azurerm",
         "cloudflare",
-        "cloudinit",
         "databricks",
         "datadog",
         "digitalocean",
