@@ -3,7 +3,6 @@
   "azurerm": "azurerm@~> 4.0",
   "boundary": "boundary@~> 1.0",
   "cloudflare": "cloudflare/cloudflare@~> 5.0",
-  "databricks": "databricks/databricks@~> 1.0",
   "datadog": "DataDog/datadog@~> 3.0",
   "dns": "dns@~> 3.2",
   "external": "external@~> 2.1",
