@@ -27,7 +27,6 @@
         "snowflake",
         "tfe",
         "time",
-        "tls",
         "vault"
       ]
     },
