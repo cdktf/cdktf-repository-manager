@@ -383,12 +383,6 @@ stackNames.forEach((stackName) => {
   Aspects.of(providerStack).add(new MigrateIds());
 });
 
-const customConstructs = new CustomConstructsStack(app, "custom-constructs", [
-  {
-    name: "cdktf-local-exec",
-    languages: ["typescript", "python"],
-  },
-]);
-Aspects.of(customConstructs).add(new MigrateIds());
+const customConstructs = new CustomConstructsStack(app, "custom-constructs", []);
 
 app.synth();
