@@ -6,20 +6,8 @@
         "workspaceName": "prebuilt-providers"
       },
       "providers": [
-        "azurerm",
-        "datadog",
-        "google",
         "googlebeta",
-        "kubernetes",
-        "vault"
-      ]
-    },
-    "repos-official-new": {
-      "backend": {
-        "workspaceName": "prebuilt-providers-official-new"
-      },
-      "providers": [
-        "vsphere"
+        "kubernetes"
       ]
     }
   }
