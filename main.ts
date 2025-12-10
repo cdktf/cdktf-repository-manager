@@ -385,20 +385,7 @@ stackNames.forEach((stackName) => {
 
 const customConstructs = new CustomConstructsStack(app, "custom-constructs", [
   {
-    name: "cdktf-tf-module-stack",
-    languages: ["typescript", "python", "csharp", "java", "go"],
-    topics: ["terraform", "cdktf", "terraform-module"],
-  },
-  {
-    name: "cdktf-cdk8s",
-    languages: ["typescript", "python"],
-  },
-  {
     name: "cdktf-local-exec",
-    languages: ["typescript", "python"],
-  },
-  {
-    name: "cdktf-multi-stack-tfe",
     languages: ["typescript", "python"],
   },
 ]);
