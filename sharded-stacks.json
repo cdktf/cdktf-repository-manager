@@ -30,7 +30,6 @@
         "okta",
         "opentelekomcloud",
         "pagerduty",
-        "postgresql",
         "random",
         "snowflake",
         "spotinst",
