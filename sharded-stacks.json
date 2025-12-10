@@ -20,7 +20,6 @@
         "null",
         "pagerduty",
         "random",
-        "snowflake",
         "tfe",
         "time",
         "vault"
