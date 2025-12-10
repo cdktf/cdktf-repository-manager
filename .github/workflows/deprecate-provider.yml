@@ -53,7 +53,7 @@ jobs:
             even with newer versions of CDKTF, but you will need to generate the bindings locally. The easiest way to do so is to use
             the [`provider add` command](https://developer.hashicorp.com/terraform/cdktf/cli-reference/commands#provider-add) with the 
             `--force-local` flag enabled. For more information, check out our documentation on [generating provider bindings manually](https://cdk.tf/imports).
-          labels: automated
+          labels: automated,auto-approve,automerge
           token: ${{ secrets.GH_COMMENT_TOKEN }}
           author: team-tf-cdk <github-team-tf-cdk@hashicorp.com>
           committer: team-tf-cdk <github-team-tf-cdk@hashicorp.com>
