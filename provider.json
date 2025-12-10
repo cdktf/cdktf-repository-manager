@@ -17,7 +17,6 @@
   "null": "null@~> 3.0",
   "random": "hashicorp/random@~> 3.1",
   "tfe": "hashicorp/tfe@~> 0.33",
-  "time": "hashicorp/time@~> 0.7",
   "vault": "hashicorp/vault@~> 5.0",
   "vsphere": "vmware/vsphere@~> 2.13"
 }
