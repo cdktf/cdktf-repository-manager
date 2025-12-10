@@ -8,7 +8,6 @@
   "databricks": "databricks/databricks@~> 1.0",
   "datadog": "DataDog/datadog@~> 3.0",
   "digitalocean": "digitalocean/digitalocean@~> 2.19",
-  "docker": "kreuzwerker/docker@~> 3.0",
   "dns": "dns@~> 3.2",
   "dnsimple": "dnsimple/dnsimple@~> 1.0",
   "external": "external@~> 2.1",
