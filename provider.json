@@ -1,5 +1,4 @@
 {
-  "acme": "vancluever/acme@~> 2.10",
   "aws": "aws@~> 6.0",
   "azuread": "hashicorp/azuread@~> 3.0",
   "azurerm": "azurerm@~> 4.0",
