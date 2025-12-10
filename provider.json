@@ -7,7 +7,6 @@
   "datadog": "DataDog/datadog@~> 3.0",
   "digitalocean": "digitalocean/digitalocean@~> 2.19",
   "dns": "dns@~> 3.2",
-  "dnsimple": "dnsimple/dnsimple@~> 1.0",
   "external": "external@~> 2.1",
   "github": "integrations/github@~> 6.0",
   "gitlab": "gitlabhq/gitlab@~> 18.0",
