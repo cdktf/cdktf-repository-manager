@@ -18,7 +18,6 @@
         "kubernetes",
         "local",
         "null",
-        "pagerduty",
         "random",
         "tfe",
         "time",
