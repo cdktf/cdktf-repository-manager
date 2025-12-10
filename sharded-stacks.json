@@ -9,7 +9,6 @@
         "aws",
         "azurerm",
         "datadog",
-        "github",
         "google",
         "googlebeta",
         "kubernetes",
