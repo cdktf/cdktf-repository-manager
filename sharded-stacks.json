@@ -30,7 +30,6 @@
         "pagerduty",
         "random",
         "snowflake",
-        "spotinst",
         "tfe",
         "time",
         "tls",
