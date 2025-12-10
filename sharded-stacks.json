@@ -7,18 +7,8 @@
       },
       "providers": [
         "aws",
-        "datadog",
-        "google",
         "googlebeta",
         "kubernetes"
-      ]
-    },
-    "repos-official-new": {
-      "backend": {
-        "workspaceName": "prebuilt-providers-official-new"
-      },
-      "providers": [
-        "vsphere"
       ]
     }
   }

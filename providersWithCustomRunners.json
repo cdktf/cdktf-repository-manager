@@ -1,7 +1,5 @@
 [
   "aws",
-  "datadog",
-  "google",
   "googlebeta",
   "kubernetes"
 ]
