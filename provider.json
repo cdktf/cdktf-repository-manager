@@ -2,7 +2,6 @@
   "aws": "aws@~> 6.0",
   "azurerm": "azurerm@~> 4.0",
   "datadog": "DataDog/datadog@~> 3.0",
-  "google": "google@~> 6.0",
   "googlebeta": "google-beta@~> 6.0",
   "kubernetes": "kubernetes@~> 2.0",
   "vsphere": "vmware/vsphere@~> 2.13"
