@@ -12,7 +12,6 @@
   "gitlab": "gitlabhq/gitlab@~> 18.0",
   "google": "google@~> 6.0",
   "googlebeta": "google-beta@~> 6.0",
-  "helm": "helm@~> 3.0",
   "http": "http@~> 3.1",
   "kubernetes": "kubernetes@~> 2.0",
   "local": "hashicorp/local@~> 2.1",
