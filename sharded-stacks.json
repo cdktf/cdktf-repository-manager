@@ -25,7 +25,6 @@
       "providers": [
         "boundary",
         "http",
-        "nomad",
         "vsphere"
       ]
     },
