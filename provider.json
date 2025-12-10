@@ -25,7 +25,6 @@
   "nomad": "nomad@~> 2.0",
   "null": "null@~> 3.0",
   "okta": "okta/okta@~> 4.0",
-  "opentelekomcloud": "opentelekomcloud/opentelekomcloud@~> 1.26",
   "pagerduty": "PagerDuty/pagerduty@~> 3.0",
   "random": "hashicorp/random@~> 3.1",
   "snowflake": "snowflakedb/snowflake@ ~> 2.0",
