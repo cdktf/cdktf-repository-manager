@@ -15,7 +15,6 @@
   "kubernetes": "kubernetes@~> 2.0",
   "local": "hashicorp/local@~> 2.1",
   "mongodbatlas": "mongodb/mongodbatlas@~> 1.8",
-  "newrelic": "newrelic/newrelic@~> 3.7",
   "nomad": "nomad@~> 2.0",
   "null": "null@~> 3.0",
   "pagerduty": "PagerDuty/pagerduty@~> 3.0",
