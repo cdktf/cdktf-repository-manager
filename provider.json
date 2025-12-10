@@ -5,7 +5,6 @@
   "cloudflare": "cloudflare/cloudflare@~> 5.0",
   "datadog": "DataDog/datadog@~> 3.0",
   "dns": "dns@~> 3.2",
-  "external": "external@~> 2.1",
   "github": "integrations/github@~> 6.0",
   "google": "google@~> 6.0",
   "googlebeta": "google-beta@~> 6.0",
