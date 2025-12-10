@@ -7,7 +7,6 @@
       },
       "providers": [
         "aws",
-        "azurerm",
         "datadog",
         "google",
         "googlebeta",
