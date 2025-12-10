@@ -13,13 +13,6 @@
         "googlebeta",
         "kubernetes"
       ]
-    },
-    "repos-official-new": {
-      "backend": {
-        "workspaceName": "prebuilt-providers-official-new"
-      },
-      "providers": [
-      ]
     }
   }
 }
