@@ -61,7 +61,6 @@
         "workspaceName": "prebuilt-providers-partners"
       },
       "providers": [
-        "launchdarkly",
         "mongodbatlas"
       ]
     }

@@ -23,7 +23,6 @@
   "http": "http@~> 3.1",
   "ionoscloud": "ionos-cloud/ionoscloud@~> 6.2",
   "kubernetes": "kubernetes@~> 2.0",
-  "launchdarkly": "launchdarkly/launchdarkly@~> 2.13",
   "local": "hashicorp/local@~> 2.1",
   "mongodbatlas": "mongodb/mongodbatlas@~> 1.8",
   "newrelic": "newrelic/newrelic@~> 3.7",
