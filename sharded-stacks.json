@@ -23,7 +23,6 @@
       },
       "providers": [
         "boundary",
-        "http",
         "vsphere"
       ]
     },
