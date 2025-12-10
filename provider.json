@@ -3,7 +3,6 @@
   "aws": "aws@~> 6.0",
   "azuread": "hashicorp/azuread@~> 3.0",
   "azurerm": "azurerm@~> 4.0",
-  "azurestack": "azurestack@~> 1.0",
   "boundary": "boundary@~> 1.0",
   "cloudflare": "cloudflare/cloudflare@~> 5.0",
   "databricks": "databricks/databricks@~> 1.0",
