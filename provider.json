@@ -5,5 +5,4 @@
   "google": "google@~> 6.0",
   "googlebeta": "google-beta@~> 6.0",
   "kubernetes": "kubernetes@~> 2.0",
-  "vsphere": "vmware/vsphere@~> 2.13"
 }
