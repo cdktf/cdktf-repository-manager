@@ -5,7 +5,6 @@
   "google": "google@~> 6.0",
   "googlebeta": "google-beta@~> 6.0",
   "kubernetes": "kubernetes@~> 2.0",
-  "mongodbatlas": "mongodb/mongodbatlas@~> 1.8",
   "vault": "hashicorp/vault@~> 5.0",
   "vsphere": "vmware/vsphere@~> 2.13"
 }
