@@ -10,7 +10,6 @@
         "azurerm",
         "datadog",
         "google",
-        "googlebeta",
         "kubernetes"
       ]
     }
