@@ -6,7 +6,6 @@
         "workspaceName": "prebuilt-providers"
       },
       "providers": [
-        "aws",
         "googlebeta",
         "kubernetes"
       ]
