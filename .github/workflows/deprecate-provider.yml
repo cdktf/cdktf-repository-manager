@@ -12,7 +12,8 @@ env:
 jobs:
   update_provider:
     name: Create a PR in the provider repo to mark it as deprecated
-    runs-on: ubuntu-latest
+    # runs-on: ubuntu-latest
+    runs-on: custom-linux-medium
     permissions:
       contents: read
     steps:
