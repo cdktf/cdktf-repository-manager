@@ -12,7 +12,6 @@
         "google",
         "googlebeta",
         "kubernetes",
-        "null",
         "vault"
       ]
     },
@@ -21,7 +20,6 @@
         "workspaceName": "prebuilt-providers-official-new"
       },
       "providers": [
-        "boundary",
         "vsphere"
       ]
     },
