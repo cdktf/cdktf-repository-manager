@@ -9,7 +9,6 @@
         "aws",
         "azurerm",
         "cloudflare",
-        "databricks",
         "datadog",
         "external",
         "github",
