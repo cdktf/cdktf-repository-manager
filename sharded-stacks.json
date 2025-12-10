@@ -7,7 +7,6 @@
       },
       "providers": [
         "acme",
-        "archive",
         "aws",
         "azuread",
         "azurerm",
