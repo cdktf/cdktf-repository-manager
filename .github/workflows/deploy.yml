@@ -28,10 +28,3 @@ jobs:
       stacks: ${{ needs.build-shard-matrix.outputs.matrix }}
       upgrade-repositories: true
     secrets: inherit
-
-  deploy_constructs:
-    uses: ./.github/workflows/deploy-cdktf-stacks.yml
-    with:
-      stacks: '{"stack":["custom-constructs"]}'
-      upgrade-repositories: false
-    secrets: inherit
