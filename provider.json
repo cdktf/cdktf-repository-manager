@@ -1,6 +1,5 @@
 {
   "aws": "aws@~> 6.0",
-  "azuread": "hashicorp/azuread@~> 3.0",
   "azurerm": "azurerm@~> 4.0",
   "boundary": "boundary@~> 1.0",
   "cloudflare": "cloudflare/cloudflare@~> 5.0",

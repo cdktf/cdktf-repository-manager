@@ -7,7 +7,6 @@
       },
       "providers": [
         "aws",
-        "azuread",
         "azurerm",
         "cloudflare",
         "databricks",
