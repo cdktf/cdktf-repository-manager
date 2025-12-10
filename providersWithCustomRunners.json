@@ -1,7 +1,6 @@
 [
   "aws",
   "azurerm",
-  "datadog",
   "google",
   "googlebeta",
   "kubernetes"
