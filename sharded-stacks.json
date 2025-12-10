@@ -22,13 +22,6 @@
       "providers": [
         "vsphere"
       ]
-    },
-    "repos-partners": {
-      "backend": {
-        "workspaceName": "prebuilt-providers-partners"
-      },
-      "providers": [
-      ]
     }
   }
 }
