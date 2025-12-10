@@ -11,7 +11,7 @@
         "datadog",
         "google",
         "googlebeta",
-        "kubernetes",
+        "kubernetes"
       ]
     },
     "repos-official-new": {
