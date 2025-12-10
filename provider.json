@@ -1,7 +1,6 @@
 {
   "aws": "aws@~> 6.0",
   "azurerm": "azurerm@~> 4.0",
-  "boundary": "boundary@~> 1.0",
   "datadog": "DataDog/datadog@~> 3.0",
   "google": "google@~> 6.0",
   "googlebeta": "google-beta@~> 6.0",
