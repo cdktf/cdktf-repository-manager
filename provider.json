@@ -8,7 +8,6 @@
   "dns": "dns@~> 3.2",
   "external": "external@~> 2.1",
   "github": "integrations/github@~> 6.0",
-  "gitlab": "gitlabhq/gitlab@~> 18.0",
   "google": "google@~> 6.0",
   "googlebeta": "google-beta@~> 6.0",
   "http": "http@~> 3.1",
