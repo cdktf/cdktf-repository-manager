@@ -6,7 +6,7 @@
         "workspaceName": "prebuilt-providers"
       },
       "providers": [
-        "googlebeta",
+        "googlebeta"
       ]
     }
   }
