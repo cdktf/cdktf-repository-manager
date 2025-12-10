@@ -15,7 +15,6 @@
   "mongodbatlas": "mongodb/mongodbatlas@~> 1.8",
   "nomad": "nomad@~> 2.0",
   "null": "null@~> 3.0",
-  "pagerduty": "PagerDuty/pagerduty@~> 3.0",
   "random": "hashicorp/random@~> 3.1",
   "tfe": "hashicorp/tfe@~> 0.33",
   "time": "hashicorp/time@~> 0.7",
