@@ -50,7 +50,6 @@
         "azurestack",
         "boundary",
         "dns",
-        "hcp",
         "http",
         "nomad",
         "vsphere"
