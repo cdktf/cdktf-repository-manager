@@ -21,7 +21,6 @@
         "workspaceName": "prebuilt-providers-official-new"
       },
       "providers": [
-        "boundary",
         "http",
         "vsphere"
       ]
