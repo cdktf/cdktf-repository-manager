@@ -12,7 +12,6 @@
   "nomad": "nomad@~> 2.0",
   "null": "null@~> 3.0",
   "random": "hashicorp/random@~> 3.1",
-  "tfe": "hashicorp/tfe@~> 0.33",
   "vault": "hashicorp/vault@~> 5.0",
   "vsphere": "vmware/vsphere@~> 2.13"
 }
