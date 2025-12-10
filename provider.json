@@ -30,7 +30,6 @@
   "tfe": "hashicorp/tfe@~> 0.33",
   "time": "hashicorp/time@~> 0.7",
   "tls": "hashicorp/tls@~> 4.0",
-  "upcloud": "UpCloudLtd/upcloud@~> 5.0",
   "vault": "hashicorp/vault@~> 5.0",
   "vsphere": "vmware/vsphere@~> 2.13"
 }
