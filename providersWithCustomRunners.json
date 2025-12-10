@@ -1,7 +1,6 @@
 [
   "aws",
   "azurerm",
-  "google",
   "googlebeta",
   "kubernetes"
 ]
