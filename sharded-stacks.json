@@ -30,7 +30,6 @@
         "workspaceName": "prebuilt-providers-partners"
       },
       "providers": [
-        "mongodbatlas"
       ]
     }
   }
