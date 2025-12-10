@@ -9,7 +9,6 @@
   "kubernetes": "kubernetes@~> 2.0",
   "mongodbatlas": "mongodb/mongodbatlas@~> 1.8",
   "null": "null@~> 3.0",
-  "random": "hashicorp/random@~> 3.1",
   "vault": "hashicorp/vault@~> 5.0",
   "vsphere": "vmware/vsphere@~> 2.13"
 }
