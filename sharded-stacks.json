@@ -6,11 +6,6 @@
         "workspaceName": "prebuilt-providers"
       },
       "providers": [
-        "aws",
-        "azurerm",
-        "datadog",
-        "google",
-        "kubernetes"
       ]
     }
   }

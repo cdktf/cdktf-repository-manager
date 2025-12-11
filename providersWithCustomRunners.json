@@ -1,7 +1,2 @@
 [
-  "aws",
-  "azurerm",
-  "datadog",
-  "google",
-  "kubernetes"
 ]
